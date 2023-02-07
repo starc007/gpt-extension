@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Gpt3 Chrome Extension",
+  "description": "react-boilerplate for chrome extension",
+  "version": "1.0.0",
+  "action": {
+    "default_title": "Gpt3 Chrome Extension"
+  },
+
+  "permissions": ["tabs", "bookmarks", "storage", "identity"],
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.upwork.com/ab/proposals/job/*"],
+      "js": ["contentScript.js"]
+    }
+  ]
+}
