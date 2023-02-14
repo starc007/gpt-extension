@@ -7,7 +7,12 @@
     "default_title": "Gpt3 Chrome Extension"
   },
 
-  "permissions": ["tabs", "bookmarks", "storage", "identity"],
+  "permissions": ["bookmarks", "storage", "identity", "tabs", "cookies"],
+  "host_permissions": [
+    "*://*.google.com/*",
+    "*://*.upwork.com/*",
+    "http://vakya.ai/*"
+  ],
   "icons": {
     "16": "icon.png",
     "48": "icon.png",

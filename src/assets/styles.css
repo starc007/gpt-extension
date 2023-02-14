@@ -28,7 +28,7 @@
 .sb__content69 {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 0 1rem;
 }
 
 .sidebar-overlay {
@@ -62,10 +62,28 @@
   display: none !important;
 }
 
-.generate__btn {
+.bottom__btn69 {
+  display: flex;
+  gap: 0.5rem;
   position: absolute;
-  bottom: 5px;
-  right: 10px;
+  bottom: 15px;
+  right: 15px;
+}
+.fill__btn69 {
+  border-radius: 5px;
+  background-color: rgb(198, 197, 197);
+  color: #1e1e1e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  width: 80px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.generate__btn69 {
   border-radius: 5px;
   background-color: #0d6efd;
   color: #fff;
@@ -80,4 +98,12 @@
 
 .select__width69 {
   width: 50%;
+}
+
+.options__sd__height69 {
+  height: calc(100vh - 7rem);
+}
+
+.bg-primary {
+  background-color: #0d6efd;
 }

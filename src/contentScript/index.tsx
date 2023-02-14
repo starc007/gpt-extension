@@ -64,6 +64,9 @@ function init() {
   );
 }
 
-setTimeout(() => {
-  init();
-}, 3000);
+const interval = setInterval(() => {
+  if (document.querySelector("[aria-labelledby='cover_letter_label']")) {
+    init();
+    clearInterval(interval);
+  }
+}, 500);

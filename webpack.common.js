@@ -7,8 +7,7 @@ const autoprefixer = require("autoprefixer");
 module.exports = {
   devtool: "cheap-module-source-map",
   entry: {
-    popup: path.resolve("src/popup/popup.tsx"),
-    options: path.resolve("src/options/options.tsx"),
+    options: path.resolve("src/options/index.tsx"),
     background: path.resolve("src/background/background.ts"),
     contentScript: path.resolve("src/contentScript/index.tsx"),
   },

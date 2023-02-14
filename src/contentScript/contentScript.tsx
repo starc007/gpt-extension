@@ -7,6 +7,67 @@ const options = [
   { value: "vanilla", label: "Vanilla" },
 ];
 
+const toneOptions = [
+  {
+    value: "1",
+    label: "Informal",
+  },
+  {
+    value: "3",
+    label: "Neutral",
+  },
+  {
+    value: "3",
+    label: "Formal",
+  },
+  {
+    value: "4",
+    label: "Friendly",
+  },
+  {
+    value: "5",
+    label: "Sarcastic",
+  },
+  {
+    value: "6",
+    label: "Confident",
+  },
+  {
+    value: "7",
+    label: "Optimistic",
+  },
+  {
+    value: "8",
+    label: "Knowledgeable",
+  },
+];
+
+const wordOptions = [
+  {
+    value: "50",
+    label: "Approx 50 words",
+  },
+  {
+    value: "100",
+    label: "Approx 100 words",
+  },
+  {
+    value: "150",
+    label: "Approx 150 words",
+  },
+  {
+    value: "200",
+    label: "Approx 200 words",
+  },
+];
+
+const profileData = [
+  {
+    id: 1,
+    name: "Profile 1",
+  },
+];
+
 const contentScript = () => {
   const [jdText, setJdText] = useState<string | undefined>(undefined);
 
@@ -35,6 +96,16 @@ const contentScript = () => {
   const ToggleSidebar = () => {
     isOpen === true ? setIsopen(false) : setIsopen(true);
   };
+
+  const fillDetails = () => {
+    console.log("filling details");
+    const textArea = document.querySelector<HTMLElement>(
+      "[aria-labelledby='cover_letter_label']"
+    );
+    const text = " hello world";
+    textArea.innerText = text;
+  };
+
   return (
     <>
       <div className="container-fluid">
@@ -106,20 +177,19 @@ const contentScript = () => {
               }}
             >
               <Select
-                options={options}
+                options={toneOptions}
                 placeholder="Select Tone"
-                defaultValue={options[0]}
+                defaultValue={toneOptions[0]}
                 className="select__width69"
               />
               <Select
-                options={options}
+                options={wordOptions}
                 placeholder="Select Words Count"
-                defaultValue={options[1]}
+                defaultValue={toneOptions[1]}
                 className="select__width69"
               />
             </div>
             <textarea
-              // className="border p-4 rounded-lg w-full"
               style={{
                 border: "1px solid #e5e7eb",
                 borderRadius: "0.5rem",
@@ -141,7 +211,12 @@ const contentScript = () => {
             </span>{" "}
             {jdText}
           </p>
-          <button className="generate__btn">Generate</button>
+          <div className="bottom__btn69">
+            <button className="fill__btn69" onClick={fillDetails}>
+              Fill
+            </button>
+            <button className="generate__btn69">Generate</button>
+          </div>
         </div>
         <div
           className={`sidebar-overlay ${isOpen == true ? "active" : ""}`}
