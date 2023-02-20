@@ -11,7 +11,9 @@
   "host_permissions": [
     "*://*.google.com/*",
     "*://*.upwork.com/*",
-    "http://vakya.ai/*"
+    "http://vakya.ai/*",
+    "https://api.vakya.ai/*",
+    "http://api.vakya.ai/*"
   ],
   "icons": {
     "16": "icon.png",

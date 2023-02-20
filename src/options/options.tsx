@@ -2,15 +2,8 @@ import React, { useEffect, useState } from "react";
 import AddProfileModal from "./AddProfileModal";
 import toast, { Toaster } from "react-hot-toast";
 
-const HOST = "http://vakya.ai";
-const SUCCESS_URL = [
-  "https://vakya.ai/api/v1/login/success",
-  "http://vakya.ai/api/v1/login/success",
-];
-
 const Options = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [cookieData, setCookieData] = useState<any>(null);
 
   const [profiles, setProfiles] = useState([]);
   useEffect(() => {
@@ -21,34 +14,32 @@ const Options = () => {
     });
   }, []);
 
-  // useEffect(() => {
-  //   if (cookieData) {
-  //     console.log("cookieData", cookieData);
-  //     chrome.cookies.set(
-  //       {
-  //         domain: cookieData.domain,
-  //         expirationDate: cookieData.expirationDate,
-  //         httpOnly: cookieData.httpOnly,
-  //         name: cookieData.name,
-  //         path: cookieData.path,
-  //         sameSite: cookieData.sameSite,
-  //         secure: cookieData.secure,
-  //         storeId: cookieData.storeId,
-  //         value: cookieData.value,
-  //         url: "http://vakya.ai",
-  //       },
-  //       () => {
-  //         console.log("cookie set successfully");
-  //         fetch("http://vakya.ai/api/v1/login/success", {
-  //           method: "GET",
-  //           credentials: "include",
-  //         }).then((res) => {
-  //           console.log("res", res);
-  //         });
-  //       }
-  //     );
-  //   }
-  // }, [cookieData]);
+  useEffect(() => {
+    chrome.cookies.get(
+      { url: "http://vakya.ai", name: "connect.sid" },
+      (cookie) => {
+        console.log("cookie", cookie);
+      }
+    );
+    // fetch("https://api.vakya.ai/api/v1/login/success", {
+    //   method: "GET",
+    //   credentials: "include",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((res) => {
+    //     console.log("res", res);
+    //   });
+    // clear cookies
+    // chrome.cookies.remove(
+    //   { url: "http://vakya.ai", name: "connect.sid" },
+    //   (cookie) => {
+    //     console.log("cookie", cookie);
+    //   }
+    // );
+  }, []);
 
   const handleDelete = (id: number) => {
     const newProfiles = profiles.filter((profile) => profile.id !== id);
@@ -67,39 +58,6 @@ const Options = () => {
       .then((res) => {
         console.log("res", res);
       });
-    // chrome.windows.create(
-    //   {
-    //     url: `${HOST}/api/v1/login/google`,
-    //     type: "popup",
-    //     focused: true,
-    //     width: 500,
-    //     height: 500,
-    //   },
-    //   (window) => {
-    //     console.log("coming from content2.....", window);
-    //     chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    //       console.log(changeInfo.url);
-    //       if (
-    //         changeInfo.url === SUCCESS_URL[0] ||
-    //         changeInfo.url === SUCCESS_URL[1]
-    //       ) {
-    //         chrome.cookies.get(
-    //           {
-    //             url: "http://vakya.ai",
-    //             name: "connect.sid",
-    //           },
-    //           (cookie) => {
-    //             setCookieData(cookie);
-    //             chrome.tabs.onUpdated.removeListener(() => {});
-    //             chrome.windows.remove(window.id);
-    //           }
-    //         );
-    //       }
-    //     });
-    //   }
-    // );
-
-    //
   };
 
   return (

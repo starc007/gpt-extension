@@ -8,10 +8,10 @@ chrome.action.onClicked.addListener(() => {
   });
 });
 
-const HOST = "http://vakya.ai";
+const HOST = "http://api.vakya.ai";
 const SUCCESS_URL = [
-  "https://vakya.ai/api/v1/login/success",
-  "http://vakya.ai/api/v1/login/success",
+  "https://api.vakya.ai/api/v1/login/success",
+  "http://api.vakya.ai/api/v1/login/success",
 ];
 
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
@@ -27,19 +27,18 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
       (window) => {
         console.log("coming from content2.....", window);
         chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-          console.log(changeInfo.url);
           if (
             changeInfo.url === SUCCESS_URL[0] ||
             changeInfo.url === SUCCESS_URL[1]
           ) {
             chrome.cookies.get(
               {
-                url: "http://vakya.ai",
+                url: "http://api.vakya.ai",
                 name: "connect.sid",
               },
               (cookie) => {
-                console.log(cookie);
-                chrome.windows.remove(window.id);
+                console.log("cook", cookie);
+                // chrome.windows.remove(window.id);
                 // remove listener
                 chrome.tabs.onUpdated.removeListener(() => {});
                 chrome.cookies.set(
@@ -58,7 +57,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
 
                   () => {
                     console.log("cookie set");
-                    fetch("http://vakya.ai/api/v1/login/success", {
+                    fetch("http://api.vakya.ai/api/v1/login/success", {
                       method: "GET",
                       credentials: "include",
                     })
