@@ -8,7 +8,7 @@ chrome.action.onClicked.addListener(() => {
   });
 });
 
-const HOST = "http://api.vakya.ai";
+const HOST = "https://api.vakya.ai";
 const SUCCESS_URL = [
   "https://api.vakya.ai/api/v1/login/success",
   "http://api.vakya.ai/api/v1/login/success",
@@ -25,7 +25,6 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
         height: 500,
       },
       (window) => {
-        console.log("coming from content2.....", window);
         chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
           if (
             changeInfo.url === SUCCESS_URL[0] ||
@@ -33,14 +32,16 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
           ) {
             chrome.cookies.get(
               {
-                url: "http://api.vakya.ai",
+                url: "https://api.vakya.ai",
                 name: "connect.sid",
               },
               (cookie) => {
-                console.log("cook", cookie);
-                // chrome.windows.remove(window.id);
+                chrome.windows.remove(window.id);
                 // remove listener
                 chrome.tabs.onUpdated.removeListener(() => {});
+                chrome.storage.sync.set({ cookie69: cookie }, () => {
+                  console.log("%c hey bro", "color: green;");
+                });
                 chrome.cookies.set(
                   {
                     domain: cookie.domain,
@@ -52,21 +53,17 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
                     secure: cookie.secure,
                     storeId: cookie.storeId,
                     value: cookie.value,
-                    url: "http://vakya.ai",
+                    url: "https://api.vakya.ai",
                   },
 
                   () => {
-                    console.log("cookie set");
-                    fetch("http://api.vakya.ai/api/v1/login/success", {
-                      method: "GET",
-                      credentials: "include",
-                    })
-                      .then((res) => res.json())
-                      .then((res) => {
-                        console.log("res", res);
-                      });
-
-                    // sendResponse({ message: "success" });
+                    chrome.tabs.query(
+                      { active: true, currentWindow: true },
+                      function (tabs) {
+                        chrome.tabs.reload(tabs[0].id);
+                      }
+                    );
+                    sendResponse({ message: "success" });
                   }
                 );
               }
@@ -76,5 +73,38 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
       }
     );
   }
+
+  if (request.message === "setCookie") {
+    console.log("setCookie");
+    chrome.cookies.get(
+      {
+        url: "https://api.vakya.ai",
+        name: "connect.sid",
+      },
+      (cookie) => {
+        // set the cookie in options page and content script
+        console.log("cookie", cookie);
+        chrome.cookies.set(
+          {
+            domain: cookie.domain,
+            expirationDate: cookie.expirationDate,
+            httpOnly: cookie.httpOnly,
+            name: cookie.name,
+            path: cookie.path,
+            sameSite: cookie.sameSite,
+            secure: cookie.secure,
+            storeId: cookie.storeId,
+            value: cookie.value,
+            url: "https://api.vakya.ai",
+          },
+
+          () => {
+            sendResponse({ message: "success", cookie: cookie });
+          }
+        );
+      }
+    );
+  }
+
   return true;
 });

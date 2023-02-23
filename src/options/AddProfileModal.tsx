@@ -1,20 +1,28 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { FC, Fragment, useState } from "react";
+import React, { FC, Fragment, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { __addProfile, __updateProfile, ProfileType } from "../api";
 
 interface Props {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setProfiles: any;
+  setProfiles: React.Dispatch<React.SetStateAction<ProfileType[] | []>>;
+  isLoggedin: boolean;
+  editData?: ProfileType;
 }
 
 const cmnLabel = "text-gray-600 text-sm mb-1";
 const cmnClass =
   "border rounded px-2 h-10 transition duration-300 focus:outline-none focus:ring-1 focus:ring-blue-500";
 
-const AddProfileModal: FC<Props> = ({ isOpen, setIsOpen, setProfiles }) => {
+const AddProfileModal: FC<Props> = ({
+  isOpen,
+  setIsOpen,
+  setProfiles,
+  isLoggedin,
+  editData,
+}) => {
   const [formData, setFormData] = useState({
-    id: 0,
     title: "",
     skills: "",
     experience: "",
@@ -23,62 +31,74 @@ const AddProfileModal: FC<Props> = ({ isOpen, setIsOpen, setProfiles }) => {
     name: "",
   });
 
+  useEffect(() => {
+    if (editData?.toneDescription) {
+      setFormData(editData?.toneDescription);
+    } else {
+      setFormData({
+        title: "",
+        skills: "",
+        experience: "",
+        clients: "",
+        portfolioLink: "",
+        name: "",
+      });
+    }
+  }, [editData]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
+  const AddData = async () => {
+    if (!isLoggedin) {
+      toast.error("Please login to add profile");
+      return;
+    }
     if (
       !formData.title ||
       !formData.skills ||
       !formData.experience ||
       !formData.name
     ) {
-      toast.error("Please fill all the required fields");
+      toast.error("Please fill all the fields");
       return;
     }
-    console.log("adding data....", formData);
-    formData.id = new Date().getTime();
-    // push data to chrome storage
-    chrome.storage.sync.get("profiles", (data) => {
-      if (data.profiles) {
-        const profiles = data.profiles;
-        // push formData to profiles at the beginning
-        profiles.unshift(formData);
-        chrome.storage.sync.set({ profiles }, () => {
-          console.log("data saved");
-          toast.success("Profile added successfully");
-          setIsOpen(false);
-          setProfiles(profiles);
-          setFormData({
-            id: 0,
-            title: "",
-            skills: "",
-            experience: "",
-            clients: "",
-            portfolioLink: "",
-            name: "",
-          });
-        });
-      } else {
-        chrome.storage.sync.set({ profiles: [formData] }, () => {
-          console.log("data saved");
-          toast.success("Profile added successfully");
-          setIsOpen(false);
-          setProfiles([formData]);
-          setFormData({
-            id: 0,
-            title: "",
-            skills: "",
-            experience: "",
-            clients: "",
-            portfolioLink: "",
-            name: "",
-          });
-        });
-      }
-    });
+
+    const res = await __addProfile(formData, setProfiles);
+    if (res) {
+      toast.success("Profile added successfully");
+      setIsOpen(false);
+      setFormData({
+        title: "",
+        skills: "",
+        experience: "",
+        clients: "",
+        portfolioLink: "",
+        name: "",
+      });
+    } else {
+      toast.error("Something went wrong");
+    }
+  };
+
+  const updateData = async () => {
+    if (!isLoggedin) {
+      toast.error("Please login to add profile");
+      return;
+    }
+    if (!editData) return toast.error("Something went wrong");
+    const res = await __updateProfile(formData, editData);
+    if (res) {
+      toast.success("Profile updated successfully");
+      setTimeout(() => {
+        window.location.reload();
+      }, 400);
+      setIsOpen(false);
+    } else {
+      toast.error("Something went wrong");
+    }
   };
 
   return (
@@ -116,72 +136,69 @@ const AddProfileModal: FC<Props> = ({ isOpen, setIsOpen, setProfiles }) => {
                   as="h3"
                   className="text-lg font-semibold leading-6 text-gray-900"
                 >
-                  Add Profile
+                  {editData ? "Edit Profile" : "Add Profile"}
                 </Dialog.Title>
                 <div className="grid md:grid-cols-2 gap-3 mt-4">
                   <div className="flex flex-col">
-                    <label htmlFor="title" className={cmnLabel}>
+                    <label className={cmnLabel}>
                       Profile Title <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
-                      id="title"
                       name="title"
                       className={cmnClass}
                       placeholder="e.g: Full Stack Developer"
                       value={formData.title}
                       onChange={handleChange}
+                      required
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label htmlFor="name" className={cmnLabel}>
+                    <label className={cmnLabel}>
                       Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
-                      id="name"
                       name="name"
                       className={cmnClass}
                       placeholder="e.g: Saurabh"
                       value={formData.name}
                       onChange={handleChange}
+                      required
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label htmlFor="skills" className={cmnLabel}>
+                    <label className={cmnLabel}>
                       Skills <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
-                      id="skills"
                       name="skills"
                       className={cmnClass}
                       placeholder="e.g: React, Bahut kuch"
                       value={formData.skills}
                       onChange={handleChange}
+                      required
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label htmlFor="experience" className={cmnLabel}>
+                    <label className={cmnLabel}>
                       Experience <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
-                      id="experience"
                       name="experience"
                       className={cmnClass}
                       placeholder="e.g: 1 year"
                       value={formData.experience}
                       onChange={handleChange}
+                      required
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label htmlFor="clients" className={cmnLabel}>
-                      Clients
-                    </label>
+                    <label className={cmnLabel}>Clients</label>
                     <input
                       type="text"
-                      id="clients"
                       name="clients"
                       className={cmnClass}
                       placeholder="e.g: Playota, G69"
@@ -190,12 +207,9 @@ const AddProfileModal: FC<Props> = ({ isOpen, setIsOpen, setProfiles }) => {
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label htmlFor="portfolioLink" className={cmnLabel}>
-                      Portfolio Link
-                    </label>
+                    <label className={cmnLabel}>Portfolio Link</label>
                     <input
                       type="text"
-                      id="portfolioLink"
                       name="portfolioLink"
                       className={cmnClass}
                       placeholder="e.g: https://saura3h.xyz"
@@ -215,10 +229,10 @@ const AddProfileModal: FC<Props> = ({ isOpen, setIsOpen, setProfiles }) => {
                   </button>
                   <button
                     type="button"
-                    onClick={handleSubmit}
+                    onClick={editData ? updateData : AddData}
                     className="inline-flex justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white"
                   >
-                    Add Profile
+                    {editData ? "Update" : "Add"} Profile
                   </button>
                 </div>
               </Dialog.Panel>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
+import { fetchProfiles, fetchUser, ProfileType, UserType } from "../api";
 
 const options = [
   { value: "chocolate", label: "Chocolate" },
@@ -70,8 +71,30 @@ const profileData = [
 
 const contentScript = () => {
   const [jdText, setJdText] = useState<string | undefined>(undefined);
+  const [isOpen, setIsopen] = useState(false);
+  const [profiles, setProfiles] = useState<ProfileType[] | []>([]);
+  const [user, setUser] = useState<UserType | null>(null);
+  const [isLoggedin, setIsLoggedin] = useState(false);
 
   useEffect(() => {
+    // chrome.cookies.get(
+    //   { url: "https://api.vakya.ai", name: "connect.sid" },
+    //   function (cookie) {
+    //     if (cookie) {
+    //       fetchUser(setUser, setIsLoggedin);
+    //     }
+    //   }
+    // );
+    console.log("content script");
+
+    chrome.runtime
+      .sendMessage({
+        message: "setCookie",
+      })
+      .then((res) => {
+        console.log("res", res);
+      });
+
     const JD = document.getElementById("up-truncation-1");
     const JDText = JD?.innerText;
     setJdText(JDText);
@@ -92,7 +115,12 @@ const contentScript = () => {
     };
   }, []);
 
-  const [isOpen, setIsopen] = useState(false);
+  useEffect(() => {
+    if (isOpen) {
+      fetchUser(setUser, setIsLoggedin);
+    }
+  }, [isOpen]);
+
   const ToggleSidebar = () => {
     isOpen === true ? setIsopen(false) : setIsopen(true);
   };
@@ -105,6 +133,8 @@ const contentScript = () => {
     const text = " hello world";
     textArea.innerText = text;
   };
+
+  console.log("profiles", user);
 
   return (
     <>
