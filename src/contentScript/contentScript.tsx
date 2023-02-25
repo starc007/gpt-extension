@@ -142,8 +142,7 @@ const contentScript = () => {
     const textArea = document.querySelector<HTMLElement>(
       "[aria-labelledby='cover_letter_label']"
     );
-    const text = " hello world";
-    textArea.innerText = text;
+    textArea.innerText = generatedResponse;
   };
 
   const handleSubmit = () => {
