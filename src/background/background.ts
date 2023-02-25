@@ -9,6 +9,7 @@ chrome.action.onClicked.addListener(() => {
 });
 
 const HOST = "https://api.vakya.ai";
+const UPWORK_ID = 1;
 const SUCCESS_URL = [
   "https://api.vakya.ai/api/v1/login/success",
   "http://api.vakya.ai/api/v1/login/success",
@@ -49,26 +50,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.type === "getUser") {
-    fetch(`${HOST}/api/v1/login/success`, {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("user", data);
-        sendResponse({ message: "success", data: data });
-      })
-      .catch((err) => {
-        console.log("err", err);
-        sendResponse({ message: "error", data: err });
-      });
+  // if (request.type === "getUser") {
+  //   fetch(`${HOST}/api/v1/login/success`, {
+  //     method: "GET",
+  //     credentials: "include",
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log("user", data);
+  //       sendResponse({ message: "success", data: data });
+  //     })
+  //     .catch((err) => {
+  //       console.log("err", err);
+  //       sendResponse({ message: "error", data: err });
+  //     });
 
-    return true;
-  }
+  //   return true;
+  // }
 
   if (request.type === "getPrompt" && request.promptData) {
-    console.log("request", request.promptData);
     fetch(`${HOST}/api/v1/prompts/getPrompts`, {
       method: "POST",
       credentials: "include",
@@ -87,6 +87,32 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse({ message: "error", data: err });
       });
 
+    return true;
+  }
+
+  if (request.type === "fetchProfiles") {
+    fetch(`${HOST}/api/v1/user/getUserCustomTones?categoryID=${UPWORK_ID}`, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.headers.success) {
+          sendResponse({
+            message: "success",
+            profiles: data.body,
+          });
+        } else {
+          sendResponse({
+            message: "fail",
+            profiles: [],
+          });
+        }
+      })
+      .catch((err) => {
+        console.log("err", err);
+        sendResponse({ message: "error", profiles: [] });
+      });
     return true;
   }
 });

@@ -1,7 +1,9 @@
 import { Dialog, Transition } from "@headlessui/react";
 import React, { FC, Fragment, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { __addProfile, __updateProfile, ProfileType } from "../api";
+import CreatableSelect from "react-select/creatable";
+import { __addProfile, __updateProfile, ProfileType, Datatype } from "../api";
+import { skills } from "./skills";
 
 interface Props {
   isOpen: boolean;
@@ -22,13 +24,10 @@ const AddProfileModal: FC<Props> = ({
   isLoggedin,
   editData,
 }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Datatype>({
     title: "",
-    skills: "",
-    experience: "",
-    clients: "",
-    portfolioLink: "",
-    name: "",
+    skills: [],
+    bio: "",
   });
 
   useEffect(() => {
@@ -37,11 +36,8 @@ const AddProfileModal: FC<Props> = ({
     } else {
       setFormData({
         title: "",
-        skills: "",
-        experience: "",
-        clients: "",
-        portfolioLink: "",
-        name: "",
+        skills: [],
+        bio: "",
       });
     }
   }, [editData]);
@@ -56,12 +52,7 @@ const AddProfileModal: FC<Props> = ({
       toast.error("Please login to add profile");
       return;
     }
-    if (
-      !formData.title ||
-      !formData.skills ||
-      !formData.experience ||
-      !formData.name
-    ) {
+    if (!formData.title || !formData.skills || !formData.bio) {
       toast.error("Please fill all the fields");
       return;
     }
@@ -69,14 +60,12 @@ const AddProfileModal: FC<Props> = ({
     const res = await __addProfile(formData, setProfiles);
     if (res) {
       toast.success("Profile added successfully");
+
       setIsOpen(false);
       setFormData({
         title: "",
-        skills: "",
-        experience: "",
-        clients: "",
-        portfolioLink: "",
-        name: "",
+        skills: [],
+        bio: "",
       });
     } else {
       toast.error("Something went wrong");
@@ -92,6 +81,7 @@ const AddProfileModal: FC<Props> = ({
     const res = await __updateProfile(formData, editData);
     if (res) {
       toast.success("Profile updated successfully");
+
       setTimeout(() => {
         window.location.reload();
       }, 400);
@@ -131,14 +121,14 @@ const AddProfileModal: FC<Props> = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
                   className="text-lg font-semibold leading-6 text-gray-900"
                 >
                   {editData ? "Edit Profile" : "Add Profile"}
                 </Dialog.Title>
-                <div className="grid md:grid-cols-2 gap-3 mt-4">
+                <div className="flex flex-col space-y-4 mt-4">
                   <div className="flex flex-col">
                     <label className={cmnLabel}>
                       Profile Title <span className="text-red-500">*</span>
@@ -155,67 +145,36 @@ const AddProfileModal: FC<Props> = ({
                   </div>
                   <div className="flex flex-col">
                     <label className={cmnLabel}>
-                      Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      className={cmnClass}
-                      placeholder="e.g: Saurabh"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <label className={cmnLabel}>
                       Skills <span className="text-red-500">*</span>
                     </label>
-                    <input
-                      type="text"
-                      name="skills"
-                      className={cmnClass}
-                      placeholder="e.g: React, Bahut kuch"
+                    <CreatableSelect
+                      isMulti
+                      options={skills}
+                      className="h-10 w-full transition duration-300 focus:outline-none focus:ring-1 focus:ring-primary"
+                      placeholder="e.g: React, Node, Express"
                       value={formData.skills}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        if (e.length > 5) {
+                          toast.error("Only 5 skills are allowed");
+                          return;
+                        }
+                        setFormData({ ...formData, skills: e });
+                      }}
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label className={cmnLabel}>Bio</label>
+                    <textarea
+                      name="bio"
+                      rows={3}
+                      className="border rounded p-2 transition duration-300 focus:outline-none focus:ring-1 focus:ring-primary"
+                      placeholder="e.g: I am a full stack developer."
+                      value={formData.bio}
+                      onChange={(e) =>
+                        setFormData({ ...formData, bio: e.target.value })
+                      }
                       required
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <label className={cmnLabel}>
-                      Experience <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="experience"
-                      className={cmnClass}
-                      placeholder="e.g: 1 year"
-                      value={formData.experience}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <label className={cmnLabel}>Clients</label>
-                    <input
-                      type="text"
-                      name="clients"
-                      className={cmnClass}
-                      placeholder="e.g: Playota, G69"
-                      value={formData.clients}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <label className={cmnLabel}>Portfolio Link</label>
-                    <input
-                      type="text"
-                      name="portfolioLink"
-                      className={cmnClass}
-                      placeholder="e.g: https://saura3h.xyz"
-                      value={formData.portfolioLink}
-                      onChange={handleChange}
-                    />
+                    ></textarea>
                   </div>
                 </div>
 

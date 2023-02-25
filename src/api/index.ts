@@ -8,13 +8,15 @@ export interface UserType {
   userId: string;
 }
 
+type SkillType = {
+  value: string;
+  label: string;
+};
+
 export interface Datatype {
   title: string;
-  skills: string;
-  experience: string;
-  portfolioLink: string;
-  name: string;
-  clients: string;
+  skills: readonly SkillType[];
+  bio: string;
 }
 export interface ProfileType {
   toneDescription: Datatype;
@@ -59,10 +61,7 @@ export const fetchUser = async (
     });
 
     const data = await res.json();
-    if (data.headers.success === "0") {
-      setUser(null);
-      setIsLoggedin(false);
-    } else {
+    if (data.headers.success === 1) {
       const user = {
         name: data?.body?.body?.displayName,
         email: data?.body?.body?.email,
@@ -71,11 +70,17 @@ export const fetchUser = async (
       };
       setUser(user);
       setIsLoggedin(true);
+      chrome.storage.sync.set({ isLoggedin: true });
+    } else {
+      setUser(null);
+      setIsLoggedin(false);
+      chrome.storage.sync.set({ isLoggedin: false });
     }
   } catch (err) {
     console.log("err", err);
     setUser(null);
     setIsLoggedin(false);
+    chrome.storage.sync.set({ isLoggedin: false });
   }
 };
 
@@ -153,6 +158,7 @@ export const __updateProfile = async (
       body: JSON.stringify(filldata),
     });
     const data = await res.json();
+    console.log("data", data);
     if (data.headers.success) {
       return true;
     } else {
@@ -177,7 +183,7 @@ export const __logout = async (
     chrome.cookies.remove(
       { url: "https://api.vakya.ai", name: "connect.sid" },
       function (cookie) {
-        chrome.storage.local.remove("cookie89", function () {
+        chrome.storage.sync.set({ isLoggedIn: false }, function () {
           setIsLoggedin(false);
           setUser(null);
         });

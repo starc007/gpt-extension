@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
-import { fetchProfiles, fetchUser, ProfileType, UserType } from "../api";
-
-const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
-];
+import { ProfileType } from "../api";
 
 const toneOptions = [
   {
@@ -62,18 +56,16 @@ const wordOptions = [
   },
 ];
 
-const profileData = [
-  {
-    id: 1,
-    name: "Profile 1",
-  },
-];
-
 const contentScript = () => {
   const [jdText, setJdText] = useState<string | undefined>(undefined);
   const [isOpen, setIsopen] = useState(false);
-  const [profiles, setProfiles] = useState<ProfileType[] | []>([]);
-  const [user, setUser] = useState<UserType | null>(null);
+  const [profiles, setProfiles] = useState<
+    | {
+        label: string;
+        value: string;
+      }[]
+    | []
+  >([]);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [formData, setFormData] = useState({
     prompt: "",
@@ -103,14 +95,28 @@ const contentScript = () => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (isOpen) {
-  //     chrome.runtime.sendMessage({ type: "getUser" }, (response) => {
-  //       console.log("response", response);
-  //       // setProfiles(response);
-  //     });
-  //   }
-  // }, [isOpen]);
+  useEffect(() => {
+    if (isOpen) {
+      chrome.storage.sync.get("isLoggedin", (result) => {
+        setIsLoggedin(result.isLoggedin);
+        if (result.isLoggedin) {
+          chrome.runtime.sendMessage({ type: "fetchProfiles" }, (response) => {
+            if (response?.profiles?.length) {
+              const options = response.profiles.map((profile: ProfileType) => {
+                return {
+                  value: profile.id,
+                  label: profile.toneDescription.title,
+                };
+              });
+              setProfiles(options);
+            } else {
+              setProfiles([]);
+            }
+          });
+        }
+      });
+    }
+  }, [isOpen]);
 
   const ToggleSidebar = () => {
     isOpen === true ? setIsopen(false) : setIsopen(true);
@@ -133,6 +139,8 @@ const contentScript = () => {
       }
     );
   };
+
+  console.log("profiles", profiles);
 
   return (
     <>
@@ -187,7 +195,11 @@ const contentScript = () => {
           </div>
           <div className="sb__content69">
             <Select
-              options={options}
+              options={
+                profiles.length
+                  ? profiles
+                  : [{ value: "69", label: "Create your profile" }]
+              }
               placeholder="Select Profile"
               styles={{
                 control: (provided) => ({
@@ -213,7 +225,7 @@ const contentScript = () => {
               <Select
                 options={wordOptions}
                 placeholder="Select Words Count"
-                defaultValue={toneOptions[1]}
+                defaultValue={wordOptions[0]}
                 className="select__width69"
               />
             </div>
