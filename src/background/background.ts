@@ -79,12 +79,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("prompt", data);
-        sendResponse({ message: "success", data: data });
+        if (data.headers.success) {
+          sendResponse({ message: "success", data: data.body.choices });
+        } else {
+          sendResponse({ message: "fail", data: [] });
+        }
       })
       .catch((err) => {
         console.log("err", err);
-        sendResponse({ message: "error", data: err });
+        sendResponse({ message: "error", data: [] });
       });
 
     return true;

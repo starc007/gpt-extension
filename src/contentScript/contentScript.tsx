@@ -4,54 +4,54 @@ import { ProfileType } from "../api";
 
 const toneOptions = [
   {
-    value: "1",
+    value: 1,
     label: "Informal",
   },
   {
-    value: "3",
+    value: 2,
     label: "Neutral",
   },
   {
-    value: "3",
+    value: 3,
     label: "Formal",
   },
   {
-    value: "4",
+    value: 4,
     label: "Friendly",
   },
   {
-    value: "5",
+    value: 5,
     label: "Sarcastic",
   },
   {
-    value: "6",
+    value: 6,
     label: "Confident",
   },
   {
-    value: "7",
+    value: 7,
     label: "Optimistic",
   },
   {
-    value: "8",
+    value: 8,
     label: "Knowledgeable",
   },
 ];
 
 const wordOptions = [
   {
-    value: "50",
+    value: 50,
     label: "Approx 50 words",
   },
   {
-    value: "100",
+    value: 100,
     label: "Approx 100 words",
   },
   {
-    value: "150",
+    value: 150,
     label: "Approx 150 words",
   },
   {
-    value: "200",
+    value: 200,
     label: "Approx 200 words",
   },
 ];
@@ -59,6 +59,14 @@ const wordOptions = [
 const contentScript = () => {
   const [jdText, setJdText] = useState<string | undefined>(undefined);
   const [isOpen, setIsopen] = useState(false);
+  const [errMsg, setErrMsg] = useState<string | undefined>(undefined);
+  const [isGenerating, setIsGenerating] = useState<{
+    success: boolean;
+    loader: boolean;
+  }>({
+    success: false,
+    loader: false,
+  });
   const [profiles, setProfiles] = useState<
     | {
         label: string;
@@ -67,10 +75,17 @@ const contentScript = () => {
     | []
   >([]);
   const [isLoggedin, setIsLoggedin] = useState(false);
+  const [generatedResponse, setGeneratedResponse] = useState<string | null>(
+    null
+  );
   const [formData, setFormData] = useState({
     prompt: "",
-    maxTokens: 1000,
+    maxTokens: wordOptions[0].value,
     numResponses: 1,
+    toneId: toneOptions[1].value,
+    categoryInfoId: 1,
+    customToneId: "", //profileid
+    additionalInfo: "",
   });
 
   useEffect(() => {
@@ -132,15 +147,41 @@ const contentScript = () => {
   };
 
   const handleSubmit = () => {
+    if (!isLoggedin) {
+      setErrMsg("Please login to use this feature");
+      return;
+    }
+
+    if (profiles.length === 0) {
+      setErrMsg("Please create a profile to use this feature");
+      return;
+    }
+
+    setIsGenerating({
+      success: false,
+      loader: true,
+    });
+    setErrMsg("");
     chrome.runtime.sendMessage(
       { type: "getPrompt", promptData: formData },
       (response) => {
-        console.log("response", response);
+        console.log("response 69", response);
+        if (response?.data?.length) {
+          setGeneratedResponse(response.data[0]);
+          setIsGenerating({
+            success: true,
+            loader: false,
+          });
+        } else {
+          setErrMsg("Something went wrong");
+          setIsGenerating({
+            success: false,
+            loader: false,
+          });
+        }
       }
     );
   };
-
-  console.log("profiles", profiles);
 
   return (
     <>
@@ -160,16 +201,6 @@ const contentScript = () => {
                 }}
               >
                 Smart A.I Cover Letter Writer
-              </p>
-              <p
-                style={{
-                  maxWidth: "350px",
-                  color: "#939393",
-                  marginTop: "-14px",
-                }}
-              >
-                UpCat - the smart way to stand out from the competition on
-                Upwork with a little help from your furry companion.
               </p>
             </div>
             <button
@@ -207,6 +238,9 @@ const contentScript = () => {
                   width: "100%",
                 }),
               }}
+              onChange={(e) =>
+                setFormData({ ...formData, customToneId: e.value })
+              }
             />
             <div
               style={{
@@ -221,27 +255,60 @@ const contentScript = () => {
                 placeholder="Select Tone"
                 defaultValue={toneOptions[0]}
                 className="select__width69"
+                onChange={(e) => setFormData({ ...formData, toneId: e.value })}
               />
               <Select
                 options={wordOptions}
                 placeholder="Select Words Count"
                 defaultValue={wordOptions[0]}
                 className="select__width69"
+                onChange={(e) =>
+                  setFormData({ ...formData, maxTokens: e.value })
+                }
               />
             </div>
             <textarea
-              style={{
-                border: "1px solid #e5e7eb",
-                borderRadius: "0.5rem",
-                width: "100%",
-                padding: "1rem",
-              }}
+              className="text__area69"
               placeholder="Additional Information"
-              rows={3}
+              rows={4}
+              onChange={(e) =>
+                setFormData({ ...formData, additionalInfo: e.target.value })
+              }
             ></textarea>
+
+            {isGenerating.loader ? (
+              <div className="loading_parent69">
+                <div className="loading__div69"></div>
+                <div className="loading__div69"></div>
+                <div className="loading__div69"></div>
+              </div>
+            ) : isGenerating.success ? (
+              <div>
+                <p
+                  style={{
+                    paddingTop: "10px",
+                  }}
+                >
+                  Generated Response
+                </p>
+                <textarea
+                  className="text__area69"
+                  rows={6}
+                  value={
+                    //remove /n from generated response
+                    generatedResponse?.replace(/(\r\n|\n|\r)/gm, " ")
+                  }
+                  onChange={(e) => setGeneratedResponse(e.target.value)}
+                ></textarea>
+              </div>
+            ) : (
+              <p>{errMsg}</p>
+            )}
+
+            {errMsg && <p>{errMsg}</p>}
           </div>
 
-          <p>
+          {/* <p>
             <span
               style={{
                 fontWeight: "bold",
@@ -250,13 +317,21 @@ const contentScript = () => {
               Job Description:
             </span>{" "}
             {jdText}
-          </p>
+          </p> */}
           <div className="bottom__btn69">
             <button className="fill__btn69" onClick={fillDetails}>
               Fill
             </button>
-            <button onClick={handleSubmit} className="generate__btn69">
-              Generate
+            <button
+              disabled={isGenerating.loader}
+              onClick={handleSubmit}
+              className="generate__btn69"
+            >
+              {isGenerating.loader
+                ? "Generating..."
+                : isGenerating.success
+                ? "Generated"
+                : "Generate"}
             </button>
           </div>
         </div>
