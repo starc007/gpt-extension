@@ -70,9 +70,3 @@ const interval = setInterval(() => {
     clearInterval(interval);
   }
 }, 400);
-
-// chrome.storage.sync.get(["cookie69"], function (result) {
-//   const cookie69 = JSON.stringify(result.cookie69);
-//   console.log("Value currently is " + JSON.stringify(result.cookie69));
-//   console.log("Value currently is " + result);
-// });

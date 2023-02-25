@@ -57,6 +57,7 @@ export const fetchUser = async (
       method: "GET",
       credentials: "include",
     });
+
     const data = await res.json();
     if (data.headers.success === "0") {
       setUser(null);
@@ -176,8 +177,10 @@ export const __logout = async (
     chrome.cookies.remove(
       { url: "https://api.vakya.ai", name: "connect.sid" },
       function (cookie) {
-        setIsLoggedin(false);
-        setUser(null);
+        chrome.storage.local.remove("cookie89", function () {
+          setIsLoggedin(false);
+          setUser(null);
+        });
       }
     );
   } catch (err) {

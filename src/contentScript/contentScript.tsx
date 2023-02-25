@@ -75,29 +75,17 @@ const contentScript = () => {
   const [profiles, setProfiles] = useState<ProfileType[] | []>([]);
   const [user, setUser] = useState<UserType | null>(null);
   const [isLoggedin, setIsLoggedin] = useState(false);
+  const [formData, setFormData] = useState({
+    prompt: "",
+    maxTokens: 1000,
+    numResponses: 1,
+  });
 
   useEffect(() => {
-    // chrome.cookies.get(
-    //   { url: "https://api.vakya.ai", name: "connect.sid" },
-    //   function (cookie) {
-    //     if (cookie) {
-    //       fetchUser(setUser, setIsLoggedin);
-    //     }
-    //   }
-    // );
-    console.log("content script");
-
-    chrome.runtime
-      .sendMessage({
-        message: "setCookie",
-      })
-      .then((res) => {
-        console.log("res", res);
-      });
-
     const JD = document.getElementById("up-truncation-1");
     const JDText = JD?.innerText;
     setJdText(JDText);
+    setFormData({ ...formData, prompt: JDText });
     const btn1 = document.getElementById("ctOpen69");
     const btn2 = document.getElementById("littleIcn69");
 
@@ -115,11 +103,14 @@ const contentScript = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (isOpen) {
-      fetchUser(setUser, setIsLoggedin);
-    }
-  }, [isOpen]);
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     chrome.runtime.sendMessage({ type: "getUser" }, (response) => {
+  //       console.log("response", response);
+  //       // setProfiles(response);
+  //     });
+  //   }
+  // }, [isOpen]);
 
   const ToggleSidebar = () => {
     isOpen === true ? setIsopen(false) : setIsopen(true);
@@ -134,7 +125,14 @@ const contentScript = () => {
     textArea.innerText = text;
   };
 
-  console.log("profiles", user);
+  const handleSubmit = () => {
+    chrome.runtime.sendMessage(
+      { type: "getPrompt", promptData: formData },
+      (response) => {
+        console.log("response", response);
+      }
+    );
+  };
 
   return (
     <>
@@ -245,7 +243,9 @@ const contentScript = () => {
             <button className="fill__btn69" onClick={fillDetails}>
               Fill
             </button>
-            <button className="generate__btn69">Generate</button>
+            <button onClick={handleSubmit} className="generate__btn69">
+              Generate
+            </button>
           </div>
         </div>
         <div
