@@ -27,4 +27,16 @@ export const skills = [
     value: "node",
     label: "Node",
   },
+  {
+    value: "typescript",
+    label: "Typescript",
+  },
+  {
+    value: "java",
+    label: "Java",
+  },
+  {
+    value: "c++",
+    label: "C++",
+  },
 ];

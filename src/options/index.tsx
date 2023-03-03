@@ -4,11 +4,16 @@ import "../assets/tailwind.css";
 import "../assets/styles.css";
 
 import Options from "./options";
+import { AuthProvider } from "./AuthContext";
 
 function init() {
   const container = document.createElement("div");
   document.body.appendChild(container);
-  createRoot(container).render(<Options />);
+  createRoot(container).render(
+    <AuthProvider>
+      <Options />
+    </AuthProvider>
+  );
 }
 
 init();

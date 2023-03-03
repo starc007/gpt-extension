@@ -17,28 +17,53 @@ const SUCCESS_URL = [
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message === "googleLogin") {
-    chrome.windows.create(
+    // chrome.windows.create(
+    //   {
+    //     url: `${HOST}/api/v1/login/google`,
+    //     type: "popup",
+    //     focused: true,
+    //     width: 500,
+    //     height: 500,
+    //   },
+    //   (window) => {
+    //     chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    //       if (
+    //         changeInfo.url === SUCCESS_URL[0] ||
+    //         changeInfo.url === SUCCESS_URL[1]
+    //       ) {
+    //         chrome.windows.remove(window.id);
+    //         chrome.tabs.onUpdated.removeListener(() => {});
+    //         chrome.tabs.query(
+    //           { active: true, currentWindow: true },
+    //           function (tabs) {
+    //             chrome.tabs.reload(tabs[0].id);
+    //           }
+    //         );
+    //         sendResponse({ message: "success" });
+    //       }
+    //     });
+    //   }
+    // );
+
+    // opena new tab
+    chrome.tabs.create(
       {
         url: `${HOST}/api/v1/login/google`,
-        type: "popup",
-        focused: true,
-        width: 500,
-        height: 500,
+        active: true,
       },
-      (window) => {
+      (tab) => {
         chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
           if (
             changeInfo.url === SUCCESS_URL[0] ||
             changeInfo.url === SUCCESS_URL[1]
           ) {
-            chrome.windows.remove(window.id);
+            chrome.storage.sync.set({ isLoggedin: true });
+            chrome.tabs.remove(tab.id);
             chrome.tabs.onUpdated.removeListener(() => {});
-            chrome.tabs.query(
-              { active: true, currentWindow: true },
-              function (tabs) {
-                chrome.tabs.reload(tabs[0].id);
-              }
-            );
+            chrome.runtime.openOptionsPage(() => {
+              console.log("Options page opened");
+            });
+
             sendResponse({ message: "success" });
           }
         });

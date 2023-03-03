@@ -18,8 +18,14 @@ export interface Datatype {
   skills: readonly SkillType[];
   bio: string;
 }
+
+export interface SubmitProfileType {
+  title: string;
+  skills: string[];
+  bio: string;
+}
 export interface ProfileType {
-  toneDescription: Datatype;
+  toneDescription: SubmitProfileType;
   id: string;
   categoryInfoId: string;
   updatedAt: string;
@@ -27,9 +33,7 @@ export interface ProfileType {
   userId: string;
 }
 
-export const fetchProfiles = async (
-  setProfiles: React.Dispatch<React.SetStateAction<ProfileType[] | []>>
-) => {
+export const fetchProfiles = async () => {
   try {
     const res = await fetch(
       `${BASE_URL}/api/v1/user/getUserCustomTones?categoryID=${UPWORK_ID}`,
@@ -40,20 +44,17 @@ export const fetchProfiles = async (
     );
     const data = await res.json();
     if (data.headers.success) {
-      setProfiles(data.body);
+      return data.body;
     } else {
-      setProfiles([]);
+      return [];
     }
   } catch (err) {
     console.log("err", err);
-    setProfiles([]);
+    return [];
   }
 };
 
-export const fetchUser = async (
-  setUser: React.Dispatch<React.SetStateAction<UserType | null>>,
-  setIsLoggedin: React.Dispatch<React.SetStateAction<boolean>>
-) => {
+export const fetchUser = async () => {
   try {
     const res = await fetch(`${BASE_URL}/api/v1/login/success`, {
       method: "GET",
@@ -68,26 +69,17 @@ export const fetchUser = async (
         userId: data?.body?.userId,
         picture: data?.body?.body?.picture,
       };
-      setUser(user);
-      setIsLoggedin(true);
-      chrome.storage.sync.set({ isLoggedin: true });
+      return user;
     } else {
-      setUser(null);
-      setIsLoggedin(false);
-      chrome.storage.sync.set({ isLoggedin: false });
+      return null;
     }
   } catch (err) {
     console.log("err", err);
-    setUser(null);
-    setIsLoggedin(false);
-    chrome.storage.sync.set({ isLoggedin: false });
+    return null;
   }
 };
 
-export const __addProfile = async (
-  formData: Datatype,
-  setProfiles: React.Dispatch<React.SetStateAction<ProfileType[] | []>>
-) => {
+export const __addProfile = async (formData: SubmitProfileType) => {
   try {
     const filldata = {
       toneDescription: formData,
@@ -103,14 +95,13 @@ export const __addProfile = async (
     });
     const data = await res.json();
     if (data.headers.success) {
-      setProfiles((prev) => [data.body, ...prev]);
-      return true;
+      return data.body;
     } else {
-      return false;
+      return [];
     }
   } catch (err) {
     console.log(err);
-    return false;
+    return [];
   }
 };
 
@@ -140,7 +131,7 @@ export const __deleteProfile = async (id: string) => {
 };
 
 export const __updateProfile = async (
-  formData: Datatype,
+  formData: SubmitProfileType,
   editData: ProfileType
 ) => {
   try {
@@ -158,7 +149,6 @@ export const __updateProfile = async (
       body: JSON.stringify(filldata),
     });
     const data = await res.json();
-    console.log("data", data);
     if (data.headers.success) {
       return true;
     } else {
@@ -170,10 +160,7 @@ export const __updateProfile = async (
   }
 };
 
-export const __logout = async (
-  setIsLoggedin: React.Dispatch<React.SetStateAction<boolean>>,
-  setUser: React.Dispatch<React.SetStateAction<UserType | null>>
-) => {
+export const __logout = async () => {
   try {
     const res = await fetch(`${BASE_URL}/api/v1/login/logout`, {
       method: "GET",
@@ -183,15 +170,12 @@ export const __logout = async (
     chrome.cookies.remove(
       { url: "https://api.vakya.ai", name: "connect.sid" },
       function (cookie) {
-        chrome.storage.sync.set({ isLoggedIn: false }, function () {
-          setIsLoggedin(false);
-          setUser(null);
-        });
+        console.log("cookie removed");
       }
     );
+    return true;
   } catch (err) {
     console.log("err", err);
-    setIsLoggedin(false);
-    setUser(null);
+    return false;
   }
 };
