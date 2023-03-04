@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import AddProfileModal from "./AddProfileModal";
-import toast, { Toaster } from "react-hot-toast";
-import { fetchProfiles, ProfileType, __logout, __deleteProfile } from "../api";
+import { Toaster } from "react-hot-toast";
+import { __logout, __deleteProfile } from "../api";
 import Login from "./Login";
 import Sidebar from "./Sidebar";
 import { useAuth } from "./AuthContext";
@@ -17,7 +17,16 @@ const Options = () => {
     setIsAddProfileModalOpen,
     loading,
     setEditData,
+    setIsLoggedin,
   } = useAuth();
+
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+      if (key === "isLoggedin") {
+        setIsLoggedin(newValue);
+      }
+    }
+  });
 
   return (
     <>
@@ -28,7 +37,7 @@ const Options = () => {
         position="top-center"
       />
       {!isLoggedin ? (
-        <Login />
+        <Login isContentScript={false} />
       ) : (
         <div className="flex h-screen md:px-0 px-4">
           <div

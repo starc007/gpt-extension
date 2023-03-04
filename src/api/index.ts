@@ -33,77 +33,77 @@ export interface ProfileType {
   userId: string;
 }
 
-export const fetchProfiles = async () => {
-  try {
-    const res = await fetch(
-      `${BASE_URL}/api/v1/user/getUserCustomTones?categoryID=${UPWORK_ID}`,
-      {
-        method: "GET",
-        credentials: "include",
-      }
-    );
-    const data = await res.json();
-    if (data.headers.success) {
-      return data.body;
-    } else {
-      return [];
-    }
-  } catch (err) {
-    console.log("err", err);
-    return [];
-  }
-};
+// export const fetchProfiles = async () => {
+//   try {
+//     const res = await fetch(
+//       `${BASE_URL}/api/v1/user/getUserCustomTones?categoryID=${UPWORK_ID}`,
+//       {
+//         method: "GET",
+//         credentials: "include",
+//       }
+//     );
+//     const data = await res.json();
+//     if (data.headers.success) {
+//       return data.body;
+//     } else {
+//       return [];
+//     }
+//   } catch (err) {
+//     console.log("err", err);
+//     return [];
+//   }
+// };
 
-export const fetchUser = async () => {
-  try {
-    const res = await fetch(`${BASE_URL}/api/v1/login/success`, {
-      method: "GET",
-      credentials: "include",
-    });
+// export const fetchUser = async () => {
+//   try {
+//     const res = await fetch(`${BASE_URL}/api/v1/login/success`, {
+//       method: "GET",
+//       credentials: "include",
+//     });
 
-    const data = await res.json();
-    if (data.headers.success === 1) {
-      const user = {
-        name: data?.body?.body?.displayName,
-        email: data?.body?.body?.email,
-        userId: data?.body?.userId,
-        picture: data?.body?.body?.picture,
-      };
-      return user;
-    } else {
-      return null;
-    }
-  } catch (err) {
-    console.log("err", err);
-    return null;
-  }
-};
+//     const data = await res.json();
+//     if (data.headers.success === 1) {
+//       const user = {
+//         name: data?.body?.body?.displayName,
+//         email: data?.body?.body?.email,
+//         userId: data?.body?.userId,
+//         picture: data?.body?.body?.picture,
+//       };
+//       return user;
+//     } else {
+//       return null;
+//     }
+//   } catch (err) {
+//     console.log("err", err);
+//     return null;
+//   }
+// };
 
-export const __addProfile = async (formData: SubmitProfileType) => {
-  try {
-    const filldata = {
-      toneDescription: formData,
-      categoryID: UPWORK_ID,
-    };
-    const res = await fetch(`${BASE_URL}/api/v1/user/createUserCustomeTones`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(filldata),
-    });
-    const data = await res.json();
-    if (data.headers.success) {
-      return data.body;
-    } else {
-      return [];
-    }
-  } catch (err) {
-    console.log(err);
-    return [];
-  }
-};
+// export const __addProfile = async (formData: SubmitProfileType) => {
+//   try {
+//     const filldata = {
+//       toneDescription: formData,
+//       categoryID: UPWORK_ID,
+//     };
+//     const res = await fetch(`${BASE_URL}/api/v1/user/createUserCustomeTones`, {
+//       method: "POST",
+//       credentials: "include",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(filldata),
+//     });
+//     const data = await res.json();
+//     if (data.headers.success) {
+//       return data.body;
+//     } else {
+//       return [];
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     return [];
+//   }
+// };
 
 export const __deleteProfile = async (id: string) => {
   try {

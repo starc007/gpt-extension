@@ -1,27 +1,49 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import toast from "react-hot-toast";
 import Loader from "./Loader";
-import { fetchUser } from "../api";
 import { useAuth } from "./AuthContext";
 
-const Login = () => {
+import "../assets/tailwind.css";
+
+interface Props {
+  isContentScript: boolean;
+}
+
+const Login: FC<Props> = ({ isContentScript }) => {
   const [loader, setLoader] = useState(false);
-  const { setIsLoggedin, setUser } = useAuth();
+  const { setIsLoggedin, setUser, setProfiles, setLoading } = useAuth();
+
   const handleLogin = async () => {
     setLoader(true);
     chrome.runtime
       .sendMessage({
         message: "googleLogin",
+        type: {
+          isContentScript,
+        },
       })
       .then((res) => {
-        if (res.message === "success") {
-          fetchUser().then((res) => {
-            if (res) {
-              toast.success("Login successful");
-              setUser(res);
-              setIsLoggedin(true);
-            }
-          });
+        if (res?.message === "success") {
+          chrome.runtime
+            .sendMessage({
+              type: "getUser",
+            })
+            .then((res) => {
+              if (res) {
+                setUser(res.data);
+                setIsLoggedin(true);
+                setLoading(true);
+                toast.success("Login successful");
+                chrome.runtime
+                  .sendMessage({
+                    type: "fetchProfiles",
+                  })
+                  .then((res) => {
+                    setProfiles(res.profiles);
+                    setLoading(false);
+                  });
+              }
+            });
         }
         setLoader(false);
       })
@@ -33,9 +55,17 @@ const Login = () => {
   };
   return (
     <>
-      <img src="logo.svg" alt="logo" className="w-40 m-5" />
+      <img
+        src={chrome.runtime.getURL("logo.svg")}
+        alt="logo"
+        className="w-40 m-5"
+      />
       <div className="flex flex-col items-center justify-center mt-32 px-6">
-        <img src="logo.svg" alt="logo" className="w-24 m-3" />
+        <img
+          src={chrome.runtime.getURL("logo.svg")}
+          alt="logo"
+          className="w-24 m-3"
+        />
         <h1 className="text-3xl font-bold text-gray-700">
           Log in to your account
         </h1>
@@ -51,7 +81,11 @@ const Login = () => {
               : "cursor-pointer"
           } `}
         >
-          <img src="google.svg" alt="google" className="w-5 h-5 mr-3" />
+          <img
+            src={chrome.runtime.getURL("google.svg")}
+            alt="google"
+            className="w-5 h-5 mr-3"
+          />
           Sign in with Google{" "}
           {loader && <Loader cls="w-5 h-5 ml-3 text-gray-800" />}
         </button>

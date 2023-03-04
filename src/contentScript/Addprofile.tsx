@@ -1,51 +1,20 @@
-import { Dialog, Transition } from "@headlessui/react";
-import React, { FC, Fragment, useEffect, useState } from "react";
+import React, { FC } from "react";
 import toast from "react-hot-toast";
 import CreatableSelect from "react-select/creatable";
-import { __updateProfile } from "../api";
-import { useAuth } from "./AuthContext";
-import Modal from "./Modal";
-import { skills } from "./skills";
+import { useAuth } from "../options/AuthContext";
+import { skills } from "../options/skills";
 
-// interface Props {
-//   editData?: ProfileType;
-// }
+interface Props {
+  isVisible: boolean;
+  setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 const cmnLabel = "text-gray-600 text-sm mb-1";
 const cmnClass =
   "border rounded px-2 h-10 transition duration-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent";
 
-const AddProfileModal = () => {
-  const {
-    isLoggedin,
-    AddProfile,
-    UpdateProfile,
-    isAddProfileModalOpen,
-    setIsAddProfileModalOpen,
-    formData,
-    setFormData,
-    editData,
-  } = useAuth();
-
-  useEffect(() => {
-    if (editData?.toneDescription) {
-      const skills = editData?.toneDescription.skills.map((skill) => ({
-        label: skill,
-        value: skill,
-      }));
-      setFormData({
-        title: editData?.toneDescription.title,
-        skills,
-        bio: editData?.toneDescription.bio,
-      });
-    } else {
-      setFormData({
-        title: "",
-        skills: [],
-        bio: "",
-      });
-    }
-  }, [editData]);
+const AddProfile: FC<Props> = ({ isVisible, setIsVisible }) => {
+  const { isLoggedin, AddProfile, formData, setFormData } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -53,40 +22,28 @@ const AddProfileModal = () => {
   };
 
   const HandleSubmit = async () => {
-    if (editData) {
-      toast.promise(UpdateProfile(formData, editData), {
-        loading: "Updating profile",
-        success: "Profile updated successfully",
-        error: "Something went wrong",
-      });
-    } else {
-      if (!isLoggedin) return toast.error("Please login to add profile");
-      if (!formData.title || !formData.skills || !formData.bio) {
-        return toast.error("Please fill all the fields");
-      }
-      toast.promise(AddProfile(formData), {
-        loading: "Adding profile",
-        success: "Profile added successfully",
-        error: "Something went wrong",
-      });
+    if (!isLoggedin) return toast.error("Please login to add profile");
+    if (!formData.title || !formData.skills || !formData.bio) {
+      return toast.error("Please fill all the fields");
     }
+    toast.promise(AddProfile(formData), {
+      loading: "Adding profile",
+      success: "Profile added successfully",
+      error: "Something went wrong",
+    });
   };
 
   return (
-    <Modal
-      isOpen={isAddProfileModalOpen}
-      closeModal={() => setIsAddProfileModalOpen(false)}
-      cls="max-w-lg container"
-    >
+    <div className="px-4 py-6">
       <div className="flex items-center">
-        <img src="user.svg" alt="user" className="w-12 h-12" />
+        <img
+          src={chrome.runtime.getURL("user.svg")}
+          alt="user"
+          className="w-12 h-12"
+        />
         <div className="flex flex-col ml-4">
-          <h1 className="text-base font-medium text-gray-700">
-            {editData ? "Edit Profile" : "Add Profile"}
-          </h1>
-          <p className="text-xs text-gray-500">
-            {editData ? "Edit your profile" : "Enter your profile details"}
-          </p>
+          <h1 className="text-base font-medium text-gray-700">Add Profile</h1>
+          <p className="text-xs text-gray-500">Enter your profile details</p>
         </div>
       </div>
       <div className="flex flex-col space-y-4 mt-4">
@@ -161,25 +118,24 @@ const AddProfileModal = () => {
           ></textarea>
         </div>
       </div>
-
-      <div className="mt-4 flex space-x-2 w-full">
+      <div className="flex px-4 space-x-2 w-full absolute bottom-2 left-0">
         <button
           type="button"
           className="flex items-center justify-center rounded-md bg-gray-100 px-4 w-1/2 h-11 text-sm font-medium text-gray-700"
-          onClick={() => setIsAddProfileModalOpen(false)}
+          onClick={() => setIsVisible(false)}
         >
           Cancel
         </button>
         <button
           type="button"
           onClick={HandleSubmit}
-          className="flex items-center justify-center rounded-md bg-primary px-4 w-1/2 h-11 text-sm font-medium text-white"
+          className="flex items-center justify-center rounded-md generate__btn69 px-4 w-1/2 h-11 text-sm font-medium text-white"
         >
-          {editData ? "Update" : "Add"} Profile
+          Add Profile
         </button>
       </div>
-    </Modal>
+    </div>
   );
 };
 
-export default AddProfileModal;
+export default AddProfile;

@@ -1,20 +1,24 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { HashRouter as Router } from "react-router-dom";
 import ContentScript from "./contentScript";
 import "../assets/styles.css";
+import { AuthProvider } from "../options/AuthContext";
 
 const TextAreaContainer = () => {
   const appContainer = document.createElement("div");
   appContainer.id = "little69";
 
+  const url = chrome.runtime.getURL("vakyaIcon.svg");
+
   appContainer.innerHTML =
-    '<button id="littleIcn69"><img style="width: 20px; height: 20px;" src="https://img.icons8.com/external-vitaliy-gorbachev-lineal-color-vitaly-gorbachev/60/null/external-astronaut-space-vitaliy-gorbachev-lineal-color-vitaly-gorbachev-4.png" /></button > ';
+    '<button id="littleIcn69"><img style="width: 20px; height: 20px;" src=" ' +
+    url +
+    '" /></button > ';
 
   const css = document.createElement("style");
   css.type = "text/css";
   css.innerHTML =
-    "#little69 { position: relative; } #littleIcn69 { position: absolute; bottom: 14px; left: 13px; width: 20px; height: 20px; border-radius: 50%; background-color: none; border: none; outline: none; cursor: pointer; z-index: 9999; }";
+    "#little69 { position: relative; } #littleIcn69 { position: absolute; bottom: 11px; right: 8px; background: none; border: none; outline: none; cursor: pointer; }";
 
   const textArea = document.querySelector(
     "[aria-labelledby='cover_letter_label']"
@@ -28,13 +32,14 @@ const TextAreaContainer = () => {
 
 const LabelAddContainer = () => {
   const appContainer = document.createElement("div");
-  appContainer.innerHTML = "<button id='ctOpen69'>Chat Gpt3</button>";
+  appContainer.innerHTML =
+    "<p id='ctOpen69'><span style='color:#7F56D9'>Use Vakya</span> for writing Cover letter through AI</p>";
   appContainer.id = "ctn69";
 
   const css = document.createElement("style");
   css.type = "text/css";
   css.innerHTML =
-    "#ctn69 { display: flex; justify-content: space-between; align-items: end; margin-bottom: 10px; } #ctOpen69 { background-color: #0D6EFD; color: #fff; border: none; border-radius: 8px; width: 120px; height: 38px; cursor: pointer; outline: none; }";
+    "#ctn69 { display: flex; justify-content: space-between; align-items: center; } #ctOpen69 { color: #000; margin:0; white-space: nowrap}";
 
   const label = document.getElementById("cover_letter_label");
   const parentEle = label?.parentElement;
@@ -58,9 +63,9 @@ function init() {
   }
   const root = createRoot(appDiv);
   root.render(
-    <Router>
+    <AuthProvider>
       <ContentScript />
-    </Router>
+    </AuthProvider>
   );
 }
 

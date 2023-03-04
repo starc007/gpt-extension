@@ -29,5 +29,19 @@
       "matches": ["https://www.upwork.com/ab/proposals/job/*"],
       "js": ["contentScript.js"]
     }
+  ],
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": [
+        "vakyaIcon.svg",
+        "logo.svg",
+        "google.svg",
+        "home2.svg",
+        "copy.svg",
+        "regenerate.svg",
+        "user.svg"
+      ]
+    }
   ]
 }

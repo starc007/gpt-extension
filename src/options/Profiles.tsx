@@ -63,7 +63,7 @@ const Profiles = () => {
             {filteredProfiles?.map((profile: ProfileType, i) => (
               <tr
                 key={profile.id}
-                className={`h-auto ${
+                className={`h-auto hover:bg-lightPurple ${
                   //dont add border bottom to last row
                   profiles.length - 1 === i ? "" : "border-b"
                 } `}

@@ -1,13 +1,10 @@
 import React, { useContext, useState, createContext, useEffect } from "react";
 import {
-  fetchProfiles,
-  fetchUser,
   ProfileType,
   UserType,
   Datatype,
   __logout,
   __deleteProfile,
-  __addProfile,
   __updateProfile,
 } from "../api";
 
@@ -67,20 +64,27 @@ export function AuthProvider({ children }) {
       if (res.isLoggedin) {
         setIsLoggedin(true);
         setLoading(true);
-        fetchUser().then((res) => {
-          if (res) {
-            setUser(res);
-            setIsLoggedin(true);
-            fetchProfiles().then((res) => {
-              setProfiles(res);
-              setLoading(false);
-            });
-          }
-          //   setLoading(false);
-        });
+        chrome.runtime
+          .sendMessage({
+            type: "getUser",
+          })
+          .then((res) => {
+            if (res) {
+              setUser(res.data);
+              setIsLoggedin(true);
+              chrome.runtime
+                .sendMessage({
+                  type: "fetchProfiles",
+                })
+                .then((res) => {
+                  setProfiles(res.profiles);
+                  setLoading(false);
+                });
+            }
+          });
       }
     });
-  }, []);
+  }, [isLoggedin]);
 
   const logout = async () => {
     const res = await __logout();
@@ -100,16 +104,32 @@ export function AuthProvider({ children }) {
       bio: data.bio,
     };
 
-    const res = await __addProfile(body);
-    if (res) {
-      setProfiles((prev) => [res, ...prev]);
-      setIsAddProfileModalOpen(false);
-      setFormData({
-        title: "",
-        skills: [],
-        bio: "",
+    // const res = await __addProfile(body);
+    // if (res) {
+    //   setProfiles((prev) => [res, ...prev]);
+    //   setIsAddProfileModalOpen(false);
+    //   setFormData({
+    //     title: "",
+    //     skills: [],
+    //     bio: "",
+    //   });
+    // }
+    chrome.runtime
+      .sendMessage({
+        type: "saveProfile",
+        profileData: body,
+      })
+      .then((res) => {
+        if (res) {
+          setProfiles((prev) => [res.data, ...prev]);
+          setIsAddProfileModalOpen(false);
+          setFormData({
+            title: "",
+            skills: [],
+            bio: "",
+          });
+        }
       });
-    }
   };
 
   const UpdateProfile = async (data: Datatype, editData: ProfileType) => {
@@ -121,10 +141,18 @@ export function AuthProvider({ children }) {
     };
     const res = await __updateProfile(body, editData);
     if (res) {
-      fetchProfiles().then((res) => {
-        setProfiles(res);
-        setIsAddProfileModalOpen(false);
-      });
+      // fetchProfiles().then((res) => {
+      //   setProfiles(res);
+      //   setIsAddProfileModalOpen(false);
+      // });
+      chrome.runtime
+        .sendMessage({
+          type: "fetchProfiles",
+        })
+        .then((res) => {
+          setProfiles(res.profiles);
+          setIsAddProfileModalOpen(false);
+        });
     }
   };
 
