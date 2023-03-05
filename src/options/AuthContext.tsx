@@ -68,9 +68,10 @@ export function AuthProvider({ children }) {
             type: "getUser",
           })
           .then((res) => {
-            if (res) {
+            if (res.message === "success") {
               setUser(res.data);
               setIsLoggedin(true);
+              chrome.storage.sync.set({ isLoggedin: true });
               chrome.runtime
                 .sendMessage({
                   type: "fetchProfiles",
@@ -79,11 +80,17 @@ export function AuthProvider({ children }) {
                   setProfiles(res.profiles);
                   setLoading(false);
                 });
+            } else {
+              setIsLoggedin(false);
+              chrome.storage.sync.set({ isLoggedin: false });
             }
           });
+      } else {
+        setIsLoggedin(false);
+        chrome.storage.sync.set({ isLoggedin: false });
       }
     });
-  }, [isLoggedin]);
+  }, []);
 
   const logout = async () => {
     const res = await __logout();

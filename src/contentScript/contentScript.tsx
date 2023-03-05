@@ -165,7 +165,7 @@ const contentScript = () => {
         {props.children}
         <button
           onClick={() => setIsVisible(true)}
-          className="text-primary w-full px-4 pt-2 pb-4 flex items-center"
+          className="text-primary w-full px-4 pt-2 pb-3 flex items-center"
         >
           <svg
             width="18"
@@ -482,8 +482,11 @@ const contentScript = () => {
               </div>
               <div className="flex absolute gap-2 bottom-2 bg-white w-11/12 border-t pt-3">
                 <button
-                  className="border text-gray-700 rounded-lg w-1/2 flex items-center justify-center h-11"
+                  className={`border text-gray-700 rounded-lg w-1/2 flex items-center justify-center h-11 ${
+                    isGenerating.loader ? "cursor-not-allowed" : ""
+                  }`}
                   onClick={ToggleSidebar}
+                  disabled={isGenerating.loader}
                 >
                   Cancel
                 </button>

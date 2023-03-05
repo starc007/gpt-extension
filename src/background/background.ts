@@ -79,7 +79,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.headers.success) {
+        console.log("data", data);
+        if (data.headers.success !== "0") {
           const user = {
             name: data?.body?.body?.displayName,
             email: data?.body?.body?.email,
@@ -93,7 +94,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       })
       .catch((err) => {
         console.log("err", err);
-        sendResponse({ message: "error", data: null });
+        sendResponse({ message: "fail", data: null });
       });
 
     return true;
