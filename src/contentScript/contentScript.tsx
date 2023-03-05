@@ -147,6 +147,15 @@ const contentScript = () => {
       if (key === "isLoggedin") {
         setIsLoggedin(newValue);
       }
+      if (key === "profiles") {
+        const options = newValue.map((profile: ProfileType) => {
+          return {
+            value: profile.id,
+            label: profile.toneDescription.title,
+          };
+        });
+        setAllProfiles(options);
+      }
     }
   });
 
@@ -156,7 +165,7 @@ const contentScript = () => {
         {props.children}
         <button
           onClick={() => setIsVisible(true)}
-          className="text-primary w-full px-4 py-2 flex items-center"
+          className="text-primary w-full px-4 pt-2 pb-4 flex items-center"
         >
           <svg
             width="18"
@@ -177,24 +186,25 @@ const contentScript = () => {
   };
 
   const fillDetails = () => {
-    console.log("filling details");
     const textArea = document.querySelector<HTMLElement>(
       "[aria-labelledby='cover_letter_label']"
     );
     textArea.innerText = generatedResponse;
+
+    toast.success("Cover letter filled successfully");
   };
 
   const handleSubmit = () => {
     if (!isLoggedin) {
-      setErrMsg("Please login to use this feature");
-      return;
+      return toast.error("Please login to use this feature");
     }
 
     if (profiles.length === 0) {
-      setErrMsg("Please create a profile to use this feature");
-      return;
+      return toast.error("Please create a profile to use this feature");
     }
-
+    if (!formData.customToneId) {
+      return toast.error("Please select a profile");
+    }
     setIsGenerating({
       success: false,
       loader: true,
@@ -203,7 +213,6 @@ const contentScript = () => {
     chrome.runtime.sendMessage(
       { type: "getPrompt", promptData: formData },
       (response) => {
-        console.log("response 69", response);
         if (response?.data?.length) {
           setGeneratedResponse(response.data[0]);
           setIsGenerating({
@@ -221,7 +230,6 @@ const contentScript = () => {
     );
   };
 
-  // get the tab id
   return (
     <>
       <Toaster position="top-center" />
@@ -237,14 +245,22 @@ const contentScript = () => {
                   alt="logo"
                   className="w-24"
                 />
-                <img
-                  src={chrome.runtime.getURL("home2.svg")}
-                  alt="logo"
-                  className="w-5"
-                />
+                <button
+                  onClick={() => {
+                    chrome.runtime.sendMessage({
+                      type: "openOptionsPage",
+                    });
+                  }}
+                >
+                  <img
+                    src={chrome.runtime.getURL("home2.svg")}
+                    alt="logo"
+                    className="w-5"
+                  />
+                </button>
               </div>
               <p className="mt-6 text-gray-700 font-medium text-base">
-                Smart AT Cover Letter Writer
+                Smart AI Cover Letter Writer
               </p>
 
               <div className="flex items-center border border-primary bg-lightPurple px-2 rounded-lg py-2 mt-3">
@@ -405,12 +421,13 @@ const contentScript = () => {
                   //   <div className="loading__div69"></div>
                   //   <div className="loading__div69"></div>
                   // </div>
-                  <div className="w-full flex justify-center">
+                  <div className="w-full flex flex-col items-center border p-4 rounded">
                     <Lottie
                       animationData={GenerateAnimation}
                       loop={true}
-                      className="w-56"
+                      className="w-44"
                     />
+                    <p className="text-primary">Generating</p>
                   </div>
                 ) : isGenerating.success ? (
                   <div>

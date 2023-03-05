@@ -18,12 +18,17 @@ const Options = () => {
     loading,
     setEditData,
     setIsLoggedin,
+    setProfiles,
   } = useAuth();
 
   chrome.storage.onChanged.addListener((changes, namespace) => {
     for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
       if (key === "isLoggedin") {
         setIsLoggedin(newValue);
+      }
+
+      if (key === "profiles") {
+        setProfiles(newValue);
       }
     }
   });

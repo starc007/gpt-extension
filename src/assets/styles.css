@@ -84,6 +84,7 @@
   @apply !text-white !bg-primary !rounded-full;
 }
 
-.css-wsp0cs-MultiValueGeneric {
+.css-wsp0cs-MultiValueGeneric,
+.css-9jq23d {
   @apply !text-white !pl-3;
 }

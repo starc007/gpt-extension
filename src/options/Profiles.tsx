@@ -12,7 +12,7 @@ const Profiles = () => {
     setIsAddProfileModalOpen,
   } = useAuth();
 
-  const [selectedId, setSelectedId] = React.useState<string | null>(null);
+  const [selectedId, setSelectedId] = React.useState<ProfileType | null>(null);
 
   const [filteredProfiles, setFilteredProfiles] = React.useState<
     ProfileType[] | []
@@ -68,7 +68,7 @@ const Profiles = () => {
                   profiles.length - 1 === i ? "" : "border-b"
                 } `}
               >
-                <td className="px-4 text-sm text-gray-600 font-medium py-6">
+                <td className="px-4 text-sm text-gray-600 font-medium py-6 w-60">
                   {profile.toneDescription.title}
                 </td>
                 <td className="md:w-80 w-64 py-4 text-gray-500">
@@ -76,18 +76,18 @@ const Profiles = () => {
                     {profile.toneDescription.bio}
                   </p>
                 </td>
-                <td className="text-gray-500">
+                <td className="text-gray-500 w-52">
                   {new Date(profile.updatedAt).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
                   })}
                 </td>
-                <td className="w-auto flex flex-wrap py-6">
+                <td className="w-96 flex flex-wrap py-6">
                   {profile.toneDescription.skills?.map((skill) => (
                     <span
                       key={skill}
-                      className="px-2 py-2 mx-1 text-xs bg-darkPurple text-white rounded-full"
+                      className="px-2 py-2 m-1 text-xs bg-darkPurple text-white rounded-full"
                     >
                       {skill}
                     </span>
@@ -106,7 +106,7 @@ const Profiles = () => {
                     </button>
                     <button
                       onClick={() => {
-                        setSelectedId(profile.id);
+                        setSelectedId(profile);
                         setIsDeleteProfileModalOpen(true);
                       }}
                       className="w-10"
@@ -121,7 +121,7 @@ const Profiles = () => {
         </table>
       </div>
 
-      {isDeleteProfileModalOpen && <DeleteModal selectedId={selectedId} />}
+      {isDeleteProfileModalOpen && <DeleteModal selectedProfile={selectedId} />}
     </div>
   );
 };

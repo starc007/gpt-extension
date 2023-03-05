@@ -31,7 +31,14 @@ const AddProfile: FC<Props> = ({ isVisible, setIsVisible }) => {
       success: "Profile added successfully",
       error: "Something went wrong",
     });
+    setIsVisible(false);
   };
+
+  const isButtonDisabled =
+    !formData.title ||
+    formData.skills.length > 5 ||
+    !formData.bio ||
+    formData.skills.length < 1;
 
   return (
     <div className="px-4 py-6">
@@ -109,8 +116,8 @@ const AddProfile: FC<Props> = ({ isVisible, setIsVisible }) => {
           <label className={cmnLabel}>Bio</label>
           <textarea
             name="bio"
-            rows={3}
-            className="border rounded p-2 transition duration-300 focus:outline-none focus:ring-1 focus:ring-primary"
+            rows={4}
+            className="border rounded p-2 transition duration-300 focus:outline-none focus:ring-1 focus:ring-primary resize-none"
             placeholder="e.g: I am a full stack developer."
             value={formData.bio}
             onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
@@ -129,7 +136,10 @@ const AddProfile: FC<Props> = ({ isVisible, setIsVisible }) => {
         <button
           type="button"
           onClick={HandleSubmit}
-          className="flex items-center justify-center rounded-md generate__btn69 px-4 w-1/2 h-11 text-sm font-medium text-white"
+          disabled={isButtonDisabled}
+          className={`flex items-center justify-center rounded-md generate__btn69 px-4 w-1/2 h-11 text-sm font-medium text-white ${
+            isButtonDisabled && "opacity-50 cursor-not-allowed"
+          }`}
         >
           Add Profile
         </button>

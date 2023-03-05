@@ -183,4 +183,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
     return true;
   }
+
+  if (request.type === "openOptionsPage") {
+    chrome.runtime.openOptionsPage();
+    return true;
+  }
 });

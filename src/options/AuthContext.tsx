@@ -47,7 +47,6 @@ export function AuthProvider({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [isAddProfileModalOpen, setIsAddProfileModalOpen] =
     useState<boolean>(false);
-
   const [isDeleteProfileModalOpen, setIsDeleteProfileModalOpen] =
     useState<boolean>(false);
 
@@ -103,17 +102,6 @@ export function AuthProvider({ children }) {
       skills: skills,
       bio: data.bio,
     };
-
-    // const res = await __addProfile(body);
-    // if (res) {
-    //   setProfiles((prev) => [res, ...prev]);
-    //   setIsAddProfileModalOpen(false);
-    //   setFormData({
-    //     title: "",
-    //     skills: [],
-    //     bio: "",
-    //   });
-    // }
     chrome.runtime
       .sendMessage({
         type: "saveProfile",
@@ -121,13 +109,14 @@ export function AuthProvider({ children }) {
       })
       .then((res) => {
         if (res) {
-          setProfiles((prev) => [res.data, ...prev]);
+          setProfiles((prev) => [...prev, res.data]);
           setIsAddProfileModalOpen(false);
           setFormData({
             title: "",
             skills: [],
             bio: "",
           });
+          chrome.storage.sync.set({ profiles: [...profiles, res.data] });
         }
       });
   };
@@ -141,10 +130,6 @@ export function AuthProvider({ children }) {
     };
     const res = await __updateProfile(body, editData);
     if (res) {
-      // fetchProfiles().then((res) => {
-      //   setProfiles(res);
-      //   setIsAddProfileModalOpen(false);
-      // });
       chrome.runtime
         .sendMessage({
           type: "fetchProfiles",
@@ -152,6 +137,7 @@ export function AuthProvider({ children }) {
         .then((res) => {
           setProfiles(res.profiles);
           setIsAddProfileModalOpen(false);
+          chrome.storage.sync.set({ profiles: res.profiles });
         });
     }
   };
@@ -162,7 +148,11 @@ export function AuthProvider({ children }) {
       setProfiles((prev) =>
         prev.filter((profile: ProfileType) => profile.id !== id)
       );
+
       setIsDeleteProfileModalOpen(false);
+      chrome.storage.sync.set({
+        profiles: profiles.filter((profile: ProfileType) => profile.id !== id),
+      });
     }
   };
 

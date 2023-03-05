@@ -1,15 +1,10 @@
-import { Dialog, Transition } from "@headlessui/react";
-import React, { FC, Fragment, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import toast from "react-hot-toast";
-import CreatableSelect from "react-select/creatable";
+import Select from "react-select";
 import { __updateProfile } from "../api";
 import { useAuth } from "./AuthContext";
 import Modal from "./Modal";
 import { skills } from "./skills";
-
-// interface Props {
-//   editData?: ProfileType;
-// }
 
 const cmnLabel = "text-gray-600 text-sm mb-1";
 const cmnClass =
@@ -72,6 +67,12 @@ const AddProfileModal = () => {
     }
   };
 
+  const isButtonDisabled =
+    !formData.title ||
+    formData.skills.length > 5 ||
+    !formData.bio ||
+    formData.skills.length < 1;
+
   return (
     <Modal
       isOpen={isAddProfileModalOpen}
@@ -105,7 +106,7 @@ const AddProfileModal = () => {
         </div>
         <div className="flex flex-col">
           <label className={cmnLabel}>Skills</label>
-          <CreatableSelect
+          <Select
             isMulti
             options={skills}
             className="h-11 w-full"
@@ -153,7 +154,7 @@ const AddProfileModal = () => {
           <textarea
             name="bio"
             rows={3}
-            className="border rounded p-2 transition duration-300 focus:outline-none focus:ring-1 focus:ring-primary"
+            className="border rounded p-2 transition duration-300 focus:outline-none focus:ring-1 focus:ring-primary resize-none"
             placeholder="e.g: I am a full stack developer."
             value={formData.bio}
             onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
@@ -173,7 +174,10 @@ const AddProfileModal = () => {
         <button
           type="button"
           onClick={HandleSubmit}
-          className="flex items-center justify-center rounded-md bg-primary px-4 w-1/2 h-11 text-sm font-medium text-white"
+          disabled={isButtonDisabled}
+          className={`flex items-center justify-center rounded-md bg-primary px-4 w-1/2 h-11 text-sm font-medium text-white ${
+            isButtonDisabled && "opacity-50 cursor-not-allowed"
+          }`}
         >
           {editData ? "Update" : "Add"} Profile
         </button>
