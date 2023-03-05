@@ -79,7 +79,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("data", data);
         if (data.headers.success !== "0") {
           const user = {
             name: data?.body?.body?.displayName,
@@ -152,10 +151,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.type === "saveProfile" && request.profileData) {
-    const filldata = {
-      toneDescription: request.profileData,
-      categoryID: UPWORK_ID,
-    };
+    var filldata = {};
+
+    if (request?.default === true) {
+      filldata = {
+        toneDescription: request.profileData,
+        categoryID: UPWORK_ID,
+        default: 1,
+      };
+    } else {
+      filldata = {
+        toneDescription: request.profileData,
+        categoryID: UPWORK_ID,
+      };
+    }
+
     fetch(`${HOST}/api/v1/user/createUserCustomeTones`, {
       method: "POST",
       credentials: "include",

@@ -32,6 +32,7 @@ const AddProfileModal = () => {
         title: editData?.toneDescription.title,
         skills,
         bio: editData?.toneDescription.bio,
+        default: editData?.default,
       });
     } else {
       setFormData({
@@ -73,6 +74,8 @@ const AddProfileModal = () => {
     !formData.bio ||
     formData.skills.length < 1;
 
+  console.log("isDefaultChecked", formData.default);
+
   return (
     <Modal
       isOpen={isAddProfileModalOpen}
@@ -108,7 +111,13 @@ const AddProfileModal = () => {
           <label className={cmnLabel}>Skills</label>
           <Select
             isMulti
-            options={skills}
+            options={
+              skills.filter((skill) =>
+                formData.skills.find((s) => s.value === skill.value)
+                  ? false
+                  : true
+              ) as any
+            }
             className="h-11 w-full"
             maxMenuHeight={150}
             styles={{
@@ -160,6 +169,21 @@ const AddProfileModal = () => {
             onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
             required
           ></textarea>
+        </div>
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            name="isDefault"
+            id="isDefault"
+            className="mr-2 accent-primary"
+            onChange={(e) =>
+              setFormData({ ...formData, default: e.target.checked })
+            }
+            checked={formData?.default || false}
+          />
+          <label htmlFor="isDefault" className="text-xs text-gray-500">
+            Set as Default Profile
+          </label>
         </div>
       </div>
 

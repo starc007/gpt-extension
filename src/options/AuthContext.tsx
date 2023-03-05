@@ -56,6 +56,7 @@ export function AuthProvider({ children }) {
     title: "",
     skills: [],
     bio: "",
+    default: false,
   });
 
   useEffect(() => {
@@ -113,6 +114,7 @@ export function AuthProvider({ children }) {
       .sendMessage({
         type: "saveProfile",
         profileData: body,
+        default: data.default,
       })
       .then((res) => {
         if (res) {
@@ -135,7 +137,7 @@ export function AuthProvider({ children }) {
       skills: skills,
       bio: data.bio,
     };
-    const res = await __updateProfile(body, editData);
+    const res = await __updateProfile(body, editData, data.default);
     if (res) {
       chrome.runtime
         .sendMessage({

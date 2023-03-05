@@ -64,12 +64,20 @@ const Profiles = () => {
               <tr
                 key={profile.id}
                 className={`h-auto hover:bg-lightPurple ${
-                  //dont add border bottom to last row
                   profiles.length - 1 === i ? "" : "border-b"
                 } `}
               >
-                <td className="px-4 text-sm text-gray-600 font-medium py-6 w-60">
-                  {profile.toneDescription.title}
+                <td className="px-4  py-6 w-64">
+                  <div className="flex flex-col">
+                    <p className="text-sm text-gray-600 font-medium">
+                      {profile.toneDescription.title}
+                    </p>
+                    {profile?.default && (
+                      <p className="w-16 h-7 mt-1 text-primary text-xs flex items-center justify-center border border-primary/40 bg-primary/20 rounded-lg">
+                        Default
+                      </p>
+                    )}
+                  </div>
                 </td>
                 <td className="md:w-80 w-64 py-4 text-gray-500">
                   <p className="break-words whitespace-normal">

@@ -65,6 +65,11 @@ const wordOptions = [
   },
 ];
 
+interface TempProfileType {
+  label: string;
+  value: string;
+}
+
 const contentScript = () => {
   const [jdText, setJdText] = useState<string | undefined>(undefined);
   const [isOpen, setIsopen] = useState(false);
@@ -77,13 +82,7 @@ const contentScript = () => {
     success: false,
     loader: false,
   });
-  const [allProfiles, setAllProfiles] = useState<
-    | {
-        label: string;
-        value: string;
-      }[]
-    | []
-  >([]);
+  const [allProfiles, setAllProfiles] = useState<TempProfileType[] | []>([]);
   const { isLoggedin, setIsLoggedin, profiles } = useAuth();
   const [generatedResponse, setGeneratedResponse] = useState<string | null>(
     null
@@ -230,6 +229,10 @@ const contentScript = () => {
     );
   };
 
+  const defaultProfile =
+    profiles.length > 0 &&
+    profiles.find((profile: ProfileType) => profile.default === true);
+
   return (
     <>
       <Toaster position="top-center" />
@@ -282,6 +285,15 @@ const contentScript = () => {
                   <Select
                     className="mt-1"
                     options={allProfiles}
+                    value={
+                      allProfiles.length > 0 &&
+                      defaultProfile &&
+                      allProfiles?.map((profile) => {
+                        if (profile.value === defaultProfile?.id) {
+                          return profile;
+                        }
+                      })
+                    }
                     placeholder="Select Profile"
                     maxMenuHeight={150}
                     components={{
