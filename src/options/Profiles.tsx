@@ -36,8 +36,10 @@ const Profiles = () => {
     setFilteredProfiles(profiles);
   }, [profiles]);
 
+  // console.log("profiles", profiles);
+
   return (
-    <div className="">
+    <>
       <div className="border rounded-lg my-10 ">
         <div className="flex items-center border border-gray-300 rounded-lg  mx-4 mt-4 w-[450px] h-12">
           <img src="search.svg" alt="search" className="w-5 h-5 ml-3" />
@@ -84,8 +86,10 @@ const Profiles = () => {
                       </div>
                     </td>
                     <td className="md:w-80 w-64 py-4 text-gray-500">
-                      <p className="break-words whitespace-normal">
-                        {profile.toneDescription.bio}
+                      <p className="break-all pr-4">
+                        {profile.toneDescription.bio.length > 300
+                          ? profile.toneDescription.bio.slice(0, 300) + "..."
+                          : profile.toneDescription.bio}
                       </p>
                     </td>
                     <td className="text-gray-500 w-52">
@@ -132,10 +136,15 @@ const Profiles = () => {
             )}
           </tbody>
         </table>
+        {filteredProfiles.length === 0 && (
+          <div className=" w-full text-center text-base text-gray-600 my-4 ">
+            No profiles found
+          </div>
+        )}
       </div>
 
       {isDeleteProfileModalOpen && <DeleteModal selectedProfile={selectedId} />}
-    </div>
+    </>
   );
 };
 

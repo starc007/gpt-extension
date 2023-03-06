@@ -195,6 +195,39 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 
+  if (request.type === "makeDefaultProfile" && request.profile) {
+    const filldata = {
+      categoryID: request.profile.categoryid,
+      id: request.profile.id,
+      default: 1,
+    };
+    fetch(`${HOST}/api/v1/user/updateUserCustomTones`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(filldata),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.headers.success) {
+          sendResponse({
+            message: "success",
+          });
+        } else {
+          sendResponse({
+            message: "fail",
+          });
+        }
+      })
+      .catch((err) => {
+        console.log("err", err);
+        sendResponse({ message: "fail" });
+      });
+    return true;
+  }
+
   if (request.type === "openOptionsPage") {
     chrome.runtime.openOptionsPage();
     return true;

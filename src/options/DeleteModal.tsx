@@ -35,13 +35,18 @@ const DeleteModal = ({ selectedProfile }: { selectedProfile: ProfileType }) => {
           </p>
           <div className="flex items-center flex-wrap gap-2 mt-2">
             {selectedProfile.toneDescription.skills.map((skill) => (
-              <p className="bg-primary text-white px-3 py-1 rounded-full text-xs">
+              <p
+                key={skill}
+                className="bg-primary text-white px-3 py-1 rounded-full text-xs"
+              >
                 {skill}
               </p>
             ))}
           </div>
           <p className="text-gray-500 mt-2">
-            {selectedProfile.toneDescription.bio}
+            {selectedProfile.toneDescription.bio.length > 300
+              ? selectedProfile.toneDescription.bio.slice(0, 300) + "..."
+              : selectedProfile.toneDescription.bio}
           </p>
           <div className="flex items-center mt-2">
             <svg
@@ -85,7 +90,7 @@ const DeleteModal = ({ selectedProfile }: { selectedProfile: ProfileType }) => {
           type="button"
           onClick={() => {
             if (!selectedProfile.id) return toast.error("No profile selected");
-            toast.promise(DeleteProfile(selectedProfile.id), {
+            toast.promise(DeleteProfile(selectedProfile), {
               loading: "Deleting Profile",
               success: "Profile Deleted",
               error: "Something went wrong",

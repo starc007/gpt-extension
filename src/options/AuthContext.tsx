@@ -28,7 +28,7 @@ interface AuthContextType {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   isDeleteProfileModalOpen: boolean;
   setIsDeleteProfileModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  DeleteProfile: (id: string) => Promise<void>;
+  DeleteProfile: (profileToDelete: ProfileType) => Promise<void>;
   editData: ProfileType | null;
   setEditData: React.Dispatch<React.SetStateAction<ProfileType | null>>;
 }
@@ -114,7 +114,7 @@ export function AuthProvider({ children }) {
       .sendMessage({
         type: "saveProfile",
         profileData: body,
-        default: data.default,
+        default: profiles.length === 0 ? true : data.default,
       })
       .then((res) => {
         if (res) {
@@ -151,16 +151,52 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const DeleteProfile = async (id: string) => {
-    const res = await __deleteProfile(id);
+  const MakeDefault = async (id: string, categoryid: string) => {
+    chrome.runtime
+      .sendMessage({
+        type: "makeDefaultProfile",
+        profile: {
+          id: id,
+          categoryid: categoryid,
+        },
+      })
+      .then((res) => {
+        console.log("defaily", res);
+        if (res.message === "success") {
+          chrome.runtime
+            .sendMessage({
+              type: "fetchProfiles",
+            })
+            .then((res) => {
+              setProfiles(res.profiles);
+              setIsAddProfileModalOpen(false);
+              chrome.storage.sync.set({ profiles: res.profiles });
+            });
+        }
+      });
+  };
+
+  const DeleteProfile = async (profileToDelete: ProfileType) => {
+    const res = await __deleteProfile(profileToDelete.id);
     if (res) {
       setProfiles((prev) =>
-        prev.filter((profile: ProfileType) => profile.id !== id)
+        prev.filter((profile: ProfileType) => profile.id !== profileToDelete.id)
       );
+      if (profileToDelete.default && profiles.length > 1) {
+        const newDefaultProfile = profiles.filter(
+          (profile: ProfileType) => profile.id !== profileToDelete.id
+        );
+        await MakeDefault(
+          newDefaultProfile[0].id,
+          newDefaultProfile[0].categoryInfoId
+        );
+      }
 
       setIsDeleteProfileModalOpen(false);
       chrome.storage.sync.set({
-        profiles: profiles.filter((profile: ProfileType) => profile.id !== id),
+        profiles: profiles.filter(
+          (profile: ProfileType) => profile.id !== profileToDelete.id
+        ),
       });
     }
   };

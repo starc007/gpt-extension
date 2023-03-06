@@ -74,8 +74,6 @@ const AddProfileModal = () => {
     !formData.bio ||
     formData.skills.length < 1;
 
-  console.log("isDefaultChecked", formData.default);
-
   return (
     <Modal
       isOpen={isAddProfileModalOpen}

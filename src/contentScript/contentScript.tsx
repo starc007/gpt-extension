@@ -239,6 +239,12 @@ const contentScript = () => {
     profiles.length > 0 &&
     profiles.find((profile: ProfileType) => profile.default === true);
 
+  useEffect(() => {
+    if (defaultProfile) {
+      setFormData((prev) => ({ ...prev, customToneId: defaultProfile.id }));
+    }
+  }, [defaultProfile]);
+
   return (
     <>
       <Toaster position="top-center" />
