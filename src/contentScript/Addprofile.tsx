@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import toast from "react-hot-toast";
-import CreatableSelect from "react-select/creatable";
+import Select from "react-select";
 import { useAuth } from "../options/AuthContext";
 import { skills } from "../options/skills";
 
@@ -69,7 +69,7 @@ const AddProfile: FC<Props> = ({ isVisible, setIsVisible }) => {
         </div>
         <div className="flex flex-col">
           <label className={cmnLabel}>Skills</label>
-          <CreatableSelect
+          <Select
             isMulti
             options={skills}
             className="h-11 w-full"

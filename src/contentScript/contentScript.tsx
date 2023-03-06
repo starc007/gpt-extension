@@ -106,13 +106,19 @@ const contentScript = () => {
     const JDText = JD?.innerText;
     setJdText(JDText);
     setFormData({ ...formData, prompt: JDText });
+    const btn1 = document.getElementById("ctOpen69");
     const btn2 = document.getElementById("littleIcn69");
+
+    btn1?.addEventListener("click", () => {
+      setIsopen(true);
+    });
 
     btn2?.addEventListener("click", () => {
       setIsopen(true);
     });
 
     return () => {
+      btn1?.removeEventListener("click", () => {});
       btn2?.removeEventListener("click", () => {});
     };
   }, []);

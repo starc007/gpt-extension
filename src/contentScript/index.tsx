@@ -33,7 +33,7 @@ const TextAreaContainer = () => {
 const LabelAddContainer = () => {
   const appContainer = document.createElement("div");
   appContainer.innerHTML =
-    "<p id='ctOpen69'><span style='color:#7F56D9'>Use Vakya</span> for writing Cover letter through AI</p>";
+    "<button id='ctOpen69'><span style='color:#7F56D9'>Use Vakya</span> for writing Cover letter through AI</button>";
   appContainer.id = "ctn69";
 
   const css = document.createElement("style");

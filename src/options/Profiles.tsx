@@ -60,71 +60,76 @@ const Profiles = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredProfiles?.map((profile: ProfileType, i) => (
-              <tr
-                key={profile.id}
-                className={`h-auto hover:bg-lightPurple ${
-                  profiles.length - 1 === i ? "" : "border-b"
-                } `}
-              >
-                <td className="px-4  py-6 w-64">
-                  <div className="flex flex-col">
-                    <p className="text-sm text-gray-600 font-medium">
-                      {profile.toneDescription.title}
-                    </p>
-                    {profile?.default && (
-                      <p className="w-16 h-7 mt-1 text-primary text-xs flex items-center justify-center border border-primary/40 bg-primary/20 rounded-lg">
-                        Default
+            {filteredProfiles?.map(
+              (profile: ProfileType, i) =>
+                profile?.toneDescription?.bio &&
+                profile?.toneDescription?.title &&
+                profile?.toneDescription?.skills && (
+                  <tr
+                    key={profile.id}
+                    className={`h-auto hover:bg-lightPurple ${
+                      profiles.length - 1 === i ? "" : "border-b"
+                    } `}
+                  >
+                    <td className="px-4  py-6 w-64">
+                      <div className="flex flex-col">
+                        <p className="text-sm text-gray-600 font-medium">
+                          {profile.toneDescription.title}
+                        </p>
+                        {profile?.default && (
+                          <p className="w-16 h-7 mt-1 text-primary text-xs flex items-center justify-center border border-primary/40 bg-primary/20 rounded-lg">
+                            Default
+                          </p>
+                        )}
+                      </div>
+                    </td>
+                    <td className="md:w-80 w-64 py-4 text-gray-500">
+                      <p className="break-words whitespace-normal">
+                        {profile.toneDescription.bio}
                       </p>
-                    )}
-                  </div>
-                </td>
-                <td className="md:w-80 w-64 py-4 text-gray-500">
-                  <p className="break-words whitespace-normal">
-                    {profile.toneDescription.bio}
-                  </p>
-                </td>
-                <td className="text-gray-500 w-52">
-                  {new Date(profile.updatedAt).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </td>
-                <td className="w-96 flex flex-wrap py-6">
-                  {profile.toneDescription.skills?.map((skill) => (
-                    <span
-                      key={skill}
-                      className="px-2 py-2 m-1 text-xs bg-darkPurple text-white rounded-full"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </td>
-                <td className="w-28 ">
-                  <div className="flex items-center">
-                    <button
-                      onClick={() => {
-                        setEditData(profile);
-                        setIsAddProfileModalOpen(true);
-                      }}
-                      className="w-10"
-                    >
-                      <img src="edit.svg" alt="edit" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        setSelectedId(profile);
-                        setIsDeleteProfileModalOpen(true);
-                      }}
-                      className="w-10"
-                    >
-                      <img src="delete.svg" alt="edit" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                    </td>
+                    <td className="text-gray-500 w-52">
+                      {new Date(profile.updatedAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </td>
+                    <td className="w-96 flex flex-wrap py-6">
+                      {profile.toneDescription.skills?.map((skill) => (
+                        <span
+                          key={skill}
+                          className="px-2 py-2 m-1 text-xs bg-darkPurple text-white rounded-full"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </td>
+                    <td className="w-28 ">
+                      <div className="flex items-center">
+                        <button
+                          onClick={() => {
+                            setEditData(profile);
+                            setIsAddProfileModalOpen(true);
+                          }}
+                          className="w-10"
+                        >
+                          <img src="edit.svg" alt="edit" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedId(profile);
+                            setIsDeleteProfileModalOpen(true);
+                          }}
+                          className="w-10"
+                        >
+                          <img src="delete.svg" alt="edit" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+            )}
           </tbody>
         </table>
       </div>

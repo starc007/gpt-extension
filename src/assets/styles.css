@@ -88,3 +88,8 @@
 .css-9jq23d {
   @apply !text-white !pl-3;
 }
+
+.css-12a83d4-MultiValueRemove:hover {
+  background: none !important;
+  color: #fff !important;
+}
