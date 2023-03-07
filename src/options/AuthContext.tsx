@@ -110,6 +110,7 @@ export function AuthProvider({ children }) {
       setUser(null);
       setProfiles([]);
       chrome.storage.sync.set({ isLoggedin: false });
+      chrome.storage.sync.set({ profiles: [] });
     }
   };
 
@@ -124,7 +125,8 @@ export function AuthProvider({ children }) {
       .sendMessage({
         type: "saveProfile",
         profileData: body,
-        default: profiles.length === 0 ? true : data.default,
+        default:
+          profiles.length === 0 ? true : data.default ? data.default : false,
       })
       .then((res) => {
         if (res) {

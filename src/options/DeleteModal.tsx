@@ -11,7 +11,6 @@ const DeleteModal = ({ selectedProfile }: { selectedProfile: ProfileType }) => {
     DeleteProfile,
   } = useAuth();
 
-  // console.log(selectedId, "selectedId");
   return (
     <Modal
       isOpen={isDeleteProfileModalOpen}
@@ -30,7 +29,7 @@ const DeleteModal = ({ selectedProfile }: { selectedProfile: ProfileType }) => {
           </p>
         </div>
         <div className="border border-primary p-4 bg-primary/5 mt-4 rounded-lg">
-          <p className="text-lg font-medium text-gray-700">
+          <p className="text-lg font-medium text-gray-700 truncate">
             {selectedProfile.toneDescription.title}
           </p>
           <div className="flex items-center flex-wrap gap-2 mt-2">

@@ -58,7 +58,9 @@ const Sidebar = () => {
           <>
             <div className="flex flex-col pt-[2px]">
               <p className="text-sm font-medium text-white">{user?.name}</p>
-              <p className="text-xs text-gray-200">{user?.email}</p>
+              <p className="text-xs text-gray-200 w-40 truncate">
+                {user?.email}
+              </p>
             </div>
             <button onClick={() => setIsOpen(true)} className="w-12 h-12">
               <img

@@ -83,8 +83,14 @@ const contentScript = () => {
     loader: false,
   });
   const [allProfiles, setAllProfiles] = useState<TempProfileType[] | []>([]);
-  const { isLoggedin, setIsLoggedin, profiles, addedProfile, setAddedProfile } =
-    useAuth();
+  const {
+    isLoggedin,
+    setIsLoggedin,
+    profiles,
+    addedProfile,
+    setAddedProfile,
+    setProfiles,
+  } = useAuth();
   const [generatedResponse, setGeneratedResponse] = useState<string | null>(
     null
   );
@@ -152,8 +158,17 @@ const contentScript = () => {
     for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
       if (key === "isLoggedin") {
         setIsLoggedin(newValue);
+        if (newValue === false) {
+          setAllProfiles([]);
+          setFormData({
+            ...formData,
+            customToneId: "",
+            selectedProfile: undefined,
+          });
+        }
       }
       if (key === "profiles") {
+        setProfiles(newValue);
         const options = newValue.map((profile: ProfileType) => {
           return {
             value: profile.id,
@@ -165,6 +180,15 @@ const contentScript = () => {
     }
   });
 
+  const onMouseEnter = (e) => {
+    e.stopPropagation();
+    const previousEle = document.getElementById(
+      `react-select-3-option-${allProfiles.length - 1}`
+    );
+    previousEle?.classList.remove("css-w19mzl-option");
+    previousEle?.classList.add("css-10wo9uf-option");
+  };
+
   const SelectMenuButton = (props) => {
     return (
       <components.MenuList {...props}>
@@ -172,6 +196,7 @@ const contentScript = () => {
         <button
           onClick={() => setIsVisible(true)}
           className="text-primary w-full px-4 pt-2 pb-3 flex items-center"
+          onMouseOver={onMouseEnter}
         >
           <svg
             width="18"
@@ -194,11 +219,12 @@ const contentScript = () => {
   const fillDetails = () => {
     const textArea = document.querySelector<HTMLElement>(".up-textarea");
     console.log("textArea", textArea, textArea?.innerText);
-    // set value of text area
     textArea.innerText = generatedResponse;
+    toast.success("Cover letter filled");
   };
 
   const handleSubmit = () => {
+    setAddedProfile(null);
     if (!isLoggedin) {
       return toast.error("Please login to use this feature");
     }
@@ -254,8 +280,9 @@ const contentScript = () => {
         customToneId: addedProfile?.value,
         selectedProfile: addedProfile,
       }));
-      setAddedProfile(null);
-    } else {
+      // setAddedProfile(null);
+    }
+    if (!addedProfile && defaultProfile) {
       setFormData((prev) => ({
         ...prev,
         customToneId: defaultProfile?.id,
@@ -264,7 +291,7 @@ const contentScript = () => {
         )[0],
       }));
     }
-  }, [addedProfile, allProfiles]);
+  }, [addedProfile, allProfiles, defaultProfile]);
 
   return (
     <>
@@ -358,6 +385,7 @@ const contentScript = () => {
                         customToneId: e.value,
                       })
                     }
+                    // don't hover on last option
                   />
                 </div>
                 <div className="flex gap-4 w-full">
@@ -563,3 +591,49 @@ const contentScript = () => {
 };
 
 export default contentScript;
+
+{
+  /* <div class=" css-1nmdiq5-menu" id="react-select-12-listbox">
+  <div class=" css-lvhtuy-MenuList">
+    <div
+      class=" css-c8semb-option"
+      aria-disabled="false"
+      id="react-select-12-option-0"
+      tabindex="-1"
+    >
+      hey teh
+    </div>
+    <div
+      class=" css-10wo9uf-option"
+      aria-disabled="false"
+      id="react-select-12-option-1"
+      tabindex="-1"
+    >
+      Full Stack Developer
+    </div>
+    <div
+      class=" css-10wo9uf-option"
+      aria-disabled="false"
+      id="react-select-12-option-2"
+      tabindex="-1"
+    >
+      Frontend Developer
+    </div>
+    <button class="text-primary w-full px-4 pt-2 pb-3 flex items-center">
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 18 18"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M11.9233 11.2922C12.3487 11.0637 12.8356 10.9336 13.3541 10.9336H13.3559C13.4086 10.9336 13.4332 10.8703 13.3946 10.8352C12.8553 10.3512 12.2393 9.96031 11.5717 9.67852C11.5647 9.675 11.5577 9.67324 11.5506 9.66973C12.6422 8.87695 13.3524 7.58848 13.3524 6.13477C13.3524 3.72656 11.4047 1.77539 9.0018 1.77539C6.59887 1.77539 4.65297 3.72656 4.65297 6.13477C4.65297 7.58848 5.36313 8.87695 6.45649 9.66973C6.44946 9.67324 6.44243 9.675 6.4354 9.67852C5.64965 10.0107 4.94477 10.4871 4.33833 11.0953C3.73538 11.6972 3.25536 12.4106 2.92504 13.1959C2.60005 13.9649 2.42465 14.7888 2.40825 15.6234C2.40778 15.6422 2.41107 15.6609 2.41793 15.6783C2.42478 15.6958 2.43507 15.7117 2.44817 15.7252C2.46128 15.7386 2.47694 15.7493 2.49423 15.7565C2.51153 15.7638 2.53011 15.7676 2.54887 15.7676H3.6018C3.67739 15.7676 3.74067 15.7061 3.74243 15.6305C3.77758 14.2734 4.32075 13.0025 5.28227 12.0393C6.27543 11.0426 7.59731 10.4941 9.00356 10.4941C10.0002 10.4941 10.9565 10.7701 11.7809 11.2869C11.8021 11.3002 11.8264 11.3077 11.8514 11.3086C11.8764 11.3096 11.9012 11.3039 11.9233 11.2922V11.2922ZM9.00356 9.1582C8.19848 9.1582 7.44086 8.84355 6.86958 8.27227C6.58849 7.99191 6.36566 7.65871 6.21391 7.29186C6.06216 6.92501 5.9845 6.53176 5.9854 6.13477C5.9854 5.32793 6.30004 4.56855 6.86958 3.99727C7.43911 3.42598 8.19672 3.11133 9.00356 3.11133C9.8104 3.11133 10.5663 3.42598 11.1375 3.99727C11.4186 4.27762 11.6415 4.61082 11.7932 4.97767C11.945 5.34452 12.0226 5.73777 12.0217 6.13477C12.0217 6.9416 11.7071 7.70098 11.1375 8.27227C10.5663 8.84355 9.80864 9.1582 9.00356 9.1582ZM15.4688 13.3418H13.9922V11.8652C13.9922 11.7879 13.929 11.7246 13.8516 11.7246H12.8672C12.7899 11.7246 12.7266 11.7879 12.7266 11.8652V13.3418H11.25C11.1727 13.3418 11.1094 13.4051 11.1094 13.4824V14.4668C11.1094 14.5441 11.1727 14.6074 11.25 14.6074H12.7266V16.084C12.7266 16.1613 12.7899 16.2246 12.8672 16.2246H13.8516C13.929 16.2246 13.9922 16.1613 13.9922 16.084V14.6074H15.4688C15.5461 14.6074 15.6094 14.5441 15.6094 14.4668V13.4824C15.6094 13.4051 15.5461 13.3418 15.4688 13.3418Z"
+          fill="#7F56D9"
+        ></path>
+      </svg>
+      <span class="pt-[2px] ml-1">Create New Profile</span>
+    </button>
+  </div>
+</div>; */
+}
