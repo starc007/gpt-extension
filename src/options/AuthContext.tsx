@@ -18,7 +18,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isSidebarOpen: boolean;
-  AddProfile: (data: Datatype) => Promise<void>;
+  AddProfile: (data: Datatype, isContentScript?: boolean) => Promise<void>;
   UpdateProfile: (data: Datatype, editData: ProfileType) => Promise<void>;
   isAddProfileModalOpen: boolean;
   setIsAddProfileModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -31,6 +31,10 @@ interface AuthContextType {
   DeleteProfile: (profileToDelete: ProfileType) => Promise<void>;
   editData: ProfileType | null;
   setEditData: React.Dispatch<React.SetStateAction<ProfileType | null>>;
+  addedProfile: { label: string; value: string } | null;
+  setAddedProfile: React.Dispatch<
+    React.SetStateAction<{ label: string; value: string } | null>
+  >;
 }
 
 const AuthContext = createContext({} as AuthContextType);
@@ -59,6 +63,11 @@ export function AuthProvider({ children }) {
     default: false,
   });
 
+  const [addedProfile, setAddedProfile] = useState<{
+    label: string;
+    value: string;
+  } | null>(null);
+
   useEffect(() => {
     chrome.storage.sync.get("isLoggedin", async (res) => {
       if (res.isLoggedin) {
@@ -80,6 +89,7 @@ export function AuthProvider({ children }) {
                 .then((res) => {
                   setProfiles(res.profiles);
                   setLoading(false);
+                  chrome.storage.sync.set({ profiles: res.profiles });
                 });
             } else {
               setIsLoggedin(false);
@@ -91,7 +101,7 @@ export function AuthProvider({ children }) {
         chrome.storage.sync.set({ isLoggedin: false });
       }
     });
-  }, []);
+  }, [isLoggedin]);
 
   const logout = async () => {
     const res = await __logout();
@@ -103,7 +113,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const AddProfile = async (data: Datatype) => {
+  const AddProfile = async (data: Datatype, isContentScript) => {
     const skills = data.skills.map((skill) => skill.label);
     const body = {
       title: data.title,
@@ -125,6 +135,12 @@ export function AuthProvider({ children }) {
             skills: [],
             bio: "",
           });
+          if (isContentScript) {
+            setAddedProfile({
+              label: res.data.toneDescription?.title,
+              value: res.data.id,
+            });
+          }
           chrome.storage.sync.set({ profiles: [...profiles, res.data] });
         }
       });
@@ -224,6 +240,8 @@ export function AuthProvider({ children }) {
     DeleteProfile,
     editData,
     setEditData,
+    addedProfile,
+    setAddedProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

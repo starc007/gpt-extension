@@ -75,7 +75,7 @@ const Profiles = () => {
                   >
                     <td className="px-4  py-6 w-64">
                       <div className="flex flex-col">
-                        <p className="text-sm text-gray-600 font-medium">
+                        <p className="text-sm text-gray-600 font-medium truncate w-64">
                           {profile.toneDescription.title}
                         </p>
                         {profile?.default && (

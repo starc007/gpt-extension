@@ -72,14 +72,6 @@
   height: calc(100vh - 7rem);
 }
 
-.loading_parent69 {
-  @apply space-y-2 mt-4;
-}
-
-.loading__div69 {
-  @apply bg-gray-100 animate-pulse h-10 w-full px-4 py-2 rounded-md text-white rounded-tl-none;
-}
-
 .css-1p3m7a8-multiValue {
   @apply !text-white !bg-primary !rounded-full;
 }

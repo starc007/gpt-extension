@@ -83,7 +83,8 @@ const contentScript = () => {
     loader: false,
   });
   const [allProfiles, setAllProfiles] = useState<TempProfileType[] | []>([]);
-  const { isLoggedin, setIsLoggedin, profiles } = useAuth();
+  const { isLoggedin, setIsLoggedin, profiles, addedProfile, setAddedProfile } =
+    useAuth();
   const [generatedResponse, setGeneratedResponse] = useState<string | null>(
     null
   );
@@ -96,6 +97,7 @@ const contentScript = () => {
     categoryInfoId: 1,
     customToneId: "", //profileid
     additionalInfo: "",
+    selectedProfile: allProfiles[0],
   });
 
   useEffect(() => {
@@ -124,29 +126,28 @@ const contentScript = () => {
   }, []);
 
   useEffect(() => {
-    if (isOpen) {
-      chrome.storage.sync.get("isLoggedin", (result) => {
-        setIsLoggedin(result.isLoggedin);
-        if (result.isLoggedin) {
-          if (profiles?.length) {
-            const options = profiles.map((profile: ProfileType) => {
-              return {
-                value: profile.id,
-                label: profile.toneDescription.title,
-              };
-            });
-            setAllProfiles(options);
-          }
+    chrome.storage.sync.get("isLoggedin", (result) => {
+      setIsLoggedin(result.isLoggedin);
+      if (result.isLoggedin) {
+        if (profiles?.length) {
+          const options = profiles.map((profile: ProfileType) => {
+            return {
+              value: profile.id,
+              label: profile.toneDescription.title,
+            };
+          });
+          setAllProfiles(options);
         }
-      });
-    }
-  }, [isOpen, isLoggedin, profiles]);
+      } else {
+        setAllProfiles([]);
+      }
+    });
+  }, [isLoggedin, profiles]);
 
   const ToggleSidebar = () => {
     isOpen === true ? setIsopen(false) : setIsopen(true);
   };
 
-  // console.log("isLoggedin", isLoggedin);
   chrome.storage.onChanged.addListener((changes, namespace) => {
     for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
       if (key === "isLoggedin") {
@@ -191,12 +192,10 @@ const contentScript = () => {
   };
 
   const fillDetails = () => {
-    const textArea = document.querySelector<HTMLElement>(
-      "[aria-labelledby='cover_letter_label']"
-    );
+    const textArea = document.querySelector<HTMLElement>(".up-textarea");
+    console.log("textArea", textArea, textArea?.innerText);
+    // set value of text area
     textArea.innerText = generatedResponse;
-
-    toast.success("Cover letter filled successfully");
   };
 
   const handleSubmit = () => {
@@ -215,8 +214,17 @@ const contentScript = () => {
       loader: true,
     });
     setErrMsg("");
+    const promptData = {
+      prompt: formData.prompt,
+      maxTokens: formData.maxTokens,
+      numResponses: formData.numResponses,
+      toneId: formData.toneId,
+      categoryInfoId: formData.categoryInfoId,
+      customToneId: formData.customToneId, //profileid
+      additionalInfo: formData.additionalInfo,
+    };
     chrome.runtime.sendMessage(
-      { type: "getPrompt", promptData: formData },
+      { type: "getPrompt", promptData: promptData },
       (response) => {
         if (response?.data?.length) {
           setGeneratedResponse(response.data[0]);
@@ -225,7 +233,7 @@ const contentScript = () => {
             loader: false,
           });
         } else {
-          toast.error("Something went wrong");
+          toast.error("Something went wrong please try again");
           setIsGenerating({
             success: false,
             loader: false,
@@ -236,14 +244,27 @@ const contentScript = () => {
   };
 
   const defaultProfile =
-    profiles.length > 0 &&
-    profiles.find((profile: ProfileType) => profile.default === true);
+    profiles?.length > 0 &&
+    profiles.find((profile: ProfileType) => profile?.default === true);
 
   useEffect(() => {
-    if (defaultProfile) {
-      setFormData((prev) => ({ ...prev, customToneId: defaultProfile.id }));
+    if (addedProfile) {
+      setFormData((prev) => ({
+        ...prev,
+        customToneId: addedProfile?.value,
+        selectedProfile: addedProfile,
+      }));
+      setAddedProfile(null);
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        customToneId: defaultProfile?.id,
+        selectedProfile: allProfiles?.filter(
+          (profile: { value: string }) => profile?.value === defaultProfile?.id
+        )[0],
+      }));
     }
-  }, [defaultProfile]);
+  }, [addedProfile, allProfiles]);
 
   return (
     <>
@@ -252,11 +273,11 @@ const contentScript = () => {
         <div className={`sidebar ${isOpen == true ? "active" : ""}`}>
           {!isLoggedin ? (
             <Login isContentScript={true} />
-          ) : !isVisible ? (
+          ) : !isVisible && isOpen ? (
             <div className="p-4">
               <div className="flex items-center justify-between ">
                 <img
-                  src={chrome.runtime.getURL("logo.svg")}
+                  src={chrome.runtime.getURL("logoDark.svg")}
                   alt="logo"
                   className="w-24"
                 />
@@ -297,15 +318,7 @@ const contentScript = () => {
                   <Select
                     className="mt-1"
                     options={allProfiles}
-                    value={
-                      allProfiles.length > 0 &&
-                      defaultProfile &&
-                      allProfiles?.map((profile) => {
-                        if (profile.value === defaultProfile?.id) {
-                          return profile;
-                        }
-                      })
-                    }
+                    value={formData.selectedProfile}
                     placeholder="Select Profile"
                     maxMenuHeight={150}
                     components={{
@@ -339,7 +352,11 @@ const contentScript = () => {
                       };
                     }}
                     onChange={(e) =>
-                      setFormData({ ...formData, customToneId: e.value })
+                      setFormData({
+                        ...formData,
+                        selectedProfile: e,
+                        customToneId: e.value,
+                      })
                     }
                   />
                 </div>
@@ -440,11 +457,6 @@ const contentScript = () => {
                 ></textarea>
 
                 {isGenerating.loader ? (
-                  // <div className="loading_parent69">
-                  //   <div className="loading__div69"></div>
-                  //   <div className="loading__div69"></div>
-                  //   <div className="loading__div69"></div>
-                  // </div>
                   <div className="w-full flex flex-col items-center border p-4 rounded">
                     <Lottie
                       animationData={GenerateAnimation}
@@ -534,7 +546,7 @@ const contentScript = () => {
               </div>
             </div>
           ) : (
-            <AddProfile isVisible={isVisible} setIsVisible={setIsVisible} />
+            <AddProfile setIsVisible={setIsVisible} />
           )}
         </div>
         <div

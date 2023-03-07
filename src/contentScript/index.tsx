@@ -8,7 +8,7 @@ const TextAreaContainer = () => {
   const appContainer = document.createElement("div");
   appContainer.id = "little69";
 
-  const url = chrome.runtime.getURL("vakyaIcon.svg");
+  const url = chrome.runtime.getURL("icon.png");
 
   appContainer.innerHTML =
     '<button id="littleIcn69"><img style="width: 20px; height: 20px;" src=" ' +
@@ -18,7 +18,7 @@ const TextAreaContainer = () => {
   const css = document.createElement("style");
   css.type = "text/css";
   css.innerHTML =
-    "#little69 { position: relative; } #littleIcn69 { position: absolute; bottom: 11px; right: 8px; background: none; border: none; outline: none; cursor: pointer; }";
+    "#little69 { position: relative; } #littleIcn69 { position: absolute; bottom: 11px; left: 11px; background: none; border: none; outline: none; cursor: pointer; }";
 
   const textArea = document.querySelector(
     "[aria-labelledby='cover_letter_label']"

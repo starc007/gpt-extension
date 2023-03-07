@@ -20,6 +20,7 @@ const AddProfileModal = () => {
     formData,
     setFormData,
     editData,
+    profiles,
   } = useAuth();
 
   useEffect(() => {
@@ -145,7 +146,7 @@ const AddProfileModal = () => {
                 },
               };
             }}
-            placeholder="e.g: React, Node, Express"
+            placeholder="e.g: Product Design, Writing, Web Development, etc."
             value={formData.skills}
             onChange={(e) => {
               if (e.length > 5) {
@@ -168,21 +169,23 @@ const AddProfileModal = () => {
             required
           ></textarea>
         </div>
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            name="isDefault"
-            id="isDefault"
-            className="mr-2 accent-primary"
-            onChange={(e) =>
-              setFormData({ ...formData, default: e.target.checked })
-            }
-            checked={formData?.default || false}
-          />
-          <label htmlFor="isDefault" className="text-xs text-gray-500">
-            Set as Default Profile
-          </label>
-        </div>
+        {profiles.length > 1 && (
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              name="isDefault"
+              id="isDefault"
+              className="mr-2 accent-primary"
+              onChange={(e) =>
+                setFormData({ ...formData, default: e.target.checked })
+              }
+              checked={formData?.default || false}
+            />
+            <label htmlFor="isDefault" className="text-xs text-gray-500">
+              Set as Default Profile
+            </label>
+          </div>
+        )}
       </div>
 
       <div className="mt-4 flex space-x-2 w-full">

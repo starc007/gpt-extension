@@ -5,7 +5,6 @@ import { useAuth } from "../options/AuthContext";
 import { skills } from "../options/skills";
 
 interface Props {
-  isVisible: boolean;
   setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -13,7 +12,7 @@ const cmnLabel = "text-gray-600 text-sm mb-1";
 const cmnClass =
   "border rounded px-2 h-10 transition duration-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent";
 
-const AddProfile: FC<Props> = ({ isVisible, setIsVisible }) => {
+const AddProfile: FC<Props> = ({ setIsVisible }) => {
   const { isLoggedin, AddProfile, formData, setFormData } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +25,7 @@ const AddProfile: FC<Props> = ({ isVisible, setIsVisible }) => {
     if (!formData.title || !formData.skills || !formData.bio) {
       return toast.error("Please fill all the fields");
     }
-    toast.promise(AddProfile(formData), {
+    toast.promise(AddProfile(formData, true), {
       loading: "Adding profile",
       success: "Profile added successfully",
       error: "Something went wrong",
@@ -101,7 +100,7 @@ const AddProfile: FC<Props> = ({ isVisible, setIsVisible }) => {
                 },
               };
             }}
-            placeholder="e.g: React, Node, Express"
+            placeholder="e.g: Product Design, Writing, Web Development, etc."
             value={formData.skills}
             onChange={(e) => {
               if (e.length > 5) {

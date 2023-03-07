@@ -43,7 +43,7 @@ const DeleteModal = ({ selectedProfile }: { selectedProfile: ProfileType }) => {
               </p>
             ))}
           </div>
-          <p className="text-gray-500 mt-2">
+          <p className="text-gray-500 mt-2 break-all">
             {selectedProfile.toneDescription.bio.length > 300
               ? selectedProfile.toneDescription.bio.slice(0, 300) + "..."
               : selectedProfile.toneDescription.bio}

@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Gpt3 Chrome Extension",
-  "description": "react-boilerplate for chrome extension",
+  "name": "Vakya: Your AI Assistant",
+  "description": "Vakya is an AI assistant that helps you",
   "version": "1.0.0",
   "action": {
-    "default_title": "Gpt3 Chrome Extension"
+    "default_title": "Vakya"
   },
 
   "permissions": ["bookmarks", "storage", "identity", "tabs", "cookies"],
@@ -35,12 +35,13 @@
       "matches": ["<all_urls>"],
       "resources": [
         "vakyaIcon.svg",
-        "logo.svg",
+        "logoDark.svg",
         "google.svg",
         "home2.svg",
         "copy.svg",
         "regenerate.svg",
-        "user.svg"
+        "user.svg",
+        "icon.png"
       ]
     }
   ]

@@ -55,16 +55,16 @@ const Login: FC<Props> = ({ isContentScript }) => {
   };
   return (
     <>
-      <img
-        src={chrome.runtime.getURL("logo.svg")}
+      {/* <img
+        src={chrome.runtime.getURL("logoDark.svg")}
         alt="logo"
         className="w-40 m-5"
-      />
-      <div className="flex flex-col items-center justify-center mt-32 px-6">
+      /> */}
+      <div className="flex flex-col items-center justify-center h-screen px-6">
         <img
-          src={chrome.runtime.getURL("logo.svg")}
+          src={chrome.runtime.getURL("logoDark.svg")}
           alt="logo"
-          className="w-24 m-3"
+          className="w-32 m-3"
         />
         <h1 className="text-3xl font-bold text-gray-700">
           Log in to your account

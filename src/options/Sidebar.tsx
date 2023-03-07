@@ -9,19 +9,6 @@ const Sidebar = () => {
 
   const handleOpen = () => {
     setIsSidebarOpen(!isSidebarOpen);
-    // if (!isSidebarOpen) {
-    //   setIsSidebarOpen(true);
-    //   const id = document.getElementById("left_drawer");
-    //   id.classList.add("slide-in");
-    // } else {
-    //   const id = document.getElementById("left_drawer");
-    //   id.classList.remove("slide-in");
-    //   id.classList.add("slide-out");
-    //   setTimeout(() => {
-    //     setIsSidebarOpen(false);
-    //     id.classList.remove("slide-out");
-    //   }, 400);
-    // }
   };
 
   return (
@@ -29,9 +16,15 @@ const Sidebar = () => {
       className="flex flex-col pt-4 bg-secondary h-screen relative"
       id="left_drawer"
     >
-      <div className="px-4">
-        <img src="logo.svg" alt="logo" className="w-36 " />
-        <div className="flex flex-col space-y-4 mt-6">
+      <div className={isSidebarOpen ? "px-4" : ""}>
+        {isSidebarOpen ? (
+          <img src="logoLight.svg" alt="logo" className="w-32 pt-2" />
+        ) : (
+          <img src="logoIcon.svg" alt="logo" className="w- pt-2" />
+        )}
+        <div
+          className={`flex flex-col space-y-4 mt-6 ${!isSidebarOpen && "px-4"}`}
+        >
           <button
             className={`flex items-center space-x-4 text-white text-sm font-medium bg-primary h-10 rounded ${
               isSidebarOpen ? "px-4" : "px-3"
