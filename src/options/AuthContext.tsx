@@ -87,7 +87,19 @@ export function AuthProvider({ children }) {
                   type: "fetchProfiles",
                 })
                 .then((res) => {
-                  setProfiles(res.profiles);
+                  setProfiles(
+                    res.profiles?.length > 0
+                      ? res.profiles.map((profile) => {
+                          if (
+                            profile?.toneDescription?.title &&
+                            profile?.toneDescription?.bio &&
+                            profile?.toneDescription?.skills
+                          ) {
+                            return profile;
+                          }
+                        })
+                      : []
+                  );
                   setLoading(false);
                   chrome.storage.sync.set({ profiles: res.profiles });
                 });
@@ -104,14 +116,13 @@ export function AuthProvider({ children }) {
   }, [isLoggedin]);
 
   const logout = async () => {
-    const res = await __logout();
-    if (res) {
-      setIsLoggedin(false);
-      setUser(null);
-      setProfiles([]);
-      chrome.storage.sync.set({ isLoggedin: false });
-      chrome.storage.sync.set({ profiles: [] });
-    }
+    await __logout();
+    setIsLoggedin(false);
+    setUser(null);
+    setProfiles([]);
+    setAddedProfile(null);
+    chrome.storage.sync.set({ isLoggedin: false });
+    chrome.storage.sync.set({ profiles: [] });
   };
 
   const AddProfile = async (data: Datatype, isContentScript) => {
@@ -130,20 +141,39 @@ export function AuthProvider({ children }) {
       })
       .then((res) => {
         if (res) {
-          setProfiles((prev) => [...prev, res.data]);
-          setIsAddProfileModalOpen(false);
-          setFormData({
-            title: "",
-            skills: [],
-            bio: "",
-          });
+          chrome.runtime
+            .sendMessage({
+              type: "fetchProfiles",
+            })
+            .then((res) => {
+              setProfiles(
+                res.profiles?.length > 0
+                  ? res.profiles.map((profile) => {
+                      if (
+                        profile?.toneDescription?.title &&
+                        profile?.toneDescription?.bio &&
+                        profile?.toneDescription?.skills
+                      ) {
+                        return profile;
+                      }
+                    })
+                  : []
+              );
+              setFormData({
+                title: "",
+                skills: [],
+                bio: "",
+              });
+              setIsAddProfileModalOpen(false);
+              chrome.storage.sync.set({ profiles: res.profiles });
+            });
+
           if (isContentScript) {
             setAddedProfile({
               label: res.data.toneDescription?.title,
               value: res.data.id,
             });
           }
-          chrome.storage.sync.set({ profiles: [...profiles, res.data] });
         }
       });
   };
@@ -162,7 +192,19 @@ export function AuthProvider({ children }) {
           type: "fetchProfiles",
         })
         .then((res) => {
-          setProfiles(res.profiles);
+          setProfiles(
+            res.profiles?.length > 0
+              ? res.profiles.map((profile) => {
+                  if (
+                    profile?.toneDescription?.title &&
+                    profile?.toneDescription?.bio &&
+                    profile?.toneDescription?.skills
+                  ) {
+                    return profile;
+                  }
+                })
+              : []
+          );
           setIsAddProfileModalOpen(false);
           chrome.storage.sync.set({ profiles: res.profiles });
         });
@@ -186,7 +228,19 @@ export function AuthProvider({ children }) {
               type: "fetchProfiles",
             })
             .then((res) => {
-              setProfiles(res.profiles);
+              setProfiles(
+                res.profiles?.length > 0
+                  ? res.profiles.map((profile) => {
+                      if (
+                        profile?.toneDescription?.title &&
+                        profile?.toneDescription?.bio &&
+                        profile?.toneDescription?.skills
+                      ) {
+                        return profile;
+                      }
+                    })
+                  : []
+              );
               setIsAddProfileModalOpen(false);
               chrome.storage.sync.set({ profiles: res.profiles });
             });

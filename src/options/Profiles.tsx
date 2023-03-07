@@ -36,8 +36,6 @@ const Profiles = () => {
     setFilteredProfiles(profiles);
   }, [profiles]);
 
-  // console.log("profiles", profiles);
-
   return (
     <>
       <div className="border rounded-lg my-10 ">

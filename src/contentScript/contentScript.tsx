@@ -157,13 +157,20 @@ const contentScript = () => {
   chrome.storage.onChanged.addListener((changes, namespace) => {
     for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
       if (key === "isLoggedin") {
+        console.log("isLoggedin", newValue);
         setIsLoggedin(newValue);
         if (newValue === false) {
+          setAddedProfile(null);
           setAllProfiles([]);
           setFormData({
-            ...formData,
-            customToneId: "",
-            selectedProfile: undefined,
+            prompt: "",
+            maxTokens: wordOptions[0].value,
+            numResponses: 1,
+            toneId: toneOptions[1].value,
+            categoryInfoId: 1,
+            customToneId: "", //profileid
+            additionalInfo: "",
+            selectedProfile: { label: "", value: "" },
           });
         }
       }
@@ -291,7 +298,7 @@ const contentScript = () => {
         )[0],
       }));
     }
-  }, [addedProfile, allProfiles, defaultProfile]);
+  }, [addedProfile, allProfiles, defaultProfile, isLoggedin]);
 
   return (
     <>

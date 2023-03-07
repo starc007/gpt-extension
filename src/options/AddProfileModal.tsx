@@ -169,7 +169,7 @@ const AddProfileModal = () => {
             required
           ></textarea>
         </div>
-        {profiles.length > 1 && (
+        {profiles.length >= 1 && (
           <div className="flex items-center">
             <input
               type="checkbox"

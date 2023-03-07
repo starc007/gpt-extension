@@ -81,7 +81,8 @@
   @apply !text-white !pl-3;
 }
 
-.css-12a83d4-MultiValueRemove:hover {
+.css-12a83d4-MultiValueRemove:hover,
+css-v7duua:hover {
   background: none !important;
   color: #fff !important;
 }
