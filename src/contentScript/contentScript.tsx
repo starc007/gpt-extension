@@ -110,10 +110,33 @@ const contentScript = () => {
     const title = document.querySelector<HTMLElement>(".content");
     const titleText = title?.firstChild?.textContent;
     setJobTitle(titleText);
+
     const JD = document.getElementById("up-truncation-1");
-    const JDText = JD?.innerText;
-    setJdText(JDText);
-    setFormData({ ...formData, prompt: JDText });
+    const sibling = JD?.nextElementSibling;
+    const siblingStyle = window.getComputedStyle(sibling);
+    const siblingDisplay = siblingStyle.getPropertyValue("display");
+
+    if (siblingDisplay === "none") {
+      const JDText = JD?.innerText;
+      setJdText(JDText);
+      setFormData({ ...formData, prompt: JDText });
+    }
+
+    const siblingBtn = sibling?.querySelector("button");
+    //click the button
+    siblingBtn?.click();
+    const parent = document.querySelector<HTMLElement>(".up-truncation");
+
+    const interval = setInterval(() => {
+      if (parent?.classList.contains("is-expanded")) {
+        const JDText = JD?.innerText;
+        setJdText(JDText);
+        setFormData({ ...formData, prompt: JDText });
+        clearInterval(interval);
+      }
+    }, 300);
+
+    // add event listener to open button
     const btn1 = document.getElementById("ctOpen69");
     const btn2 = document.getElementById("littleIcn69");
 
@@ -299,6 +322,8 @@ const contentScript = () => {
       }));
     }
   }, [addedProfile, allProfiles, defaultProfile, isLoggedin]);
+
+  console.log("formData", jdText);
 
   return (
     <>
