@@ -7,7 +7,7 @@
     "default_title": "Vakya"
   },
 
-  "permissions": ["bookmarks", "storage", "identity", "tabs", "cookies"],
+  "permissions": ["storage", "tabs", "cookies"],
   "host_permissions": [
     "*://*.google.com/*",
     "*://*.upwork.com/*",
