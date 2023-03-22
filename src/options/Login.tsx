@@ -5,6 +5,9 @@ import { useAuth } from "./AuthContext";
 
 import "../assets/tailwind.css";
 
+import { UPWORK_ID, FREELANCER_ID } from "../contentScript/config";
+const hostName = window.location.hostname;
+
 interface Props {
   isContentScript: boolean;
 }
@@ -14,6 +17,13 @@ const Login: FC<Props> = ({ isContentScript }) => {
   const { setIsLoggedin, setUser, setProfiles, setLoading } = useAuth();
 
   const handleLogin = async () => {
+    const CATEGORY_ID =
+      hostName === "www.upwork.com"
+        ? UPWORK_ID
+        : hostName === "www.freelancer.com"
+        ? FREELANCER_ID
+        : null;
+
     setLoader(true);
     chrome.runtime
       .sendMessage({
@@ -37,6 +47,7 @@ const Login: FC<Props> = ({ isContentScript }) => {
                 chrome.runtime
                   .sendMessage({
                     type: "fetchProfiles",
+                    categoryID: CATEGORY_ID,
                   })
                   .then((res) => {
                     setProfiles(res.profiles);

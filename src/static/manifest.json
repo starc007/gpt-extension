@@ -7,10 +7,11 @@
     "default_title": "Vakya"
   },
 
-  "permissions": ["storage", "tabs", "cookies"],
+  "permissions": ["storage", "tabs", "cookies", "scripting"],
   "host_permissions": [
     "*://*.google.com/*",
     "*://*.upwork.com/*",
+    "*://*.freelancer.com/*",
     "http://vakya.ai/*",
     "https://api.vakya.ai/*",
     "http://api.vakya.ai/*"
@@ -26,7 +27,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.upwork.com/ab/proposals/job/*"],
+      "matches": [
+        "https://www.upwork.com/ab/proposals/job/*",
+        "https://www.freelancer.com/projects/*"
+      ],
       "js": ["contentScript.js"]
     }
   ],

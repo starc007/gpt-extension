@@ -1,5 +1,4 @@
 const BASE_URL = "https://api.vakya.ai";
-const UPWORK_ID = 1;
 
 export interface UserType {
   email: string;

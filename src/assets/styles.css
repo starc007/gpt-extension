@@ -21,18 +21,6 @@
   right: 0;
 }
 
-/* .sb__header69 {
-  display: flex;
-  justify-content: space-between;
-  padding: 2rem 1rem 0.2rem 1rem;
-} */
-
-/* .sb__content69 {
-  display: flex;
-  flex-direction: column;
-  padding: 0 1rem;
-} */
-
 .sidebar-overlay {
   position: fixed;
   top: 0;
@@ -64,14 +52,6 @@
   @apply bg-primary;
 }
 
-.select__width69 {
-  width: 50%;
-}
-
-.options__sd__height69 {
-  height: calc(100vh - 7rem);
-}
-
 .css-1p3m7a8-multiValue {
   @apply !text-white !bg-primary !rounded-full;
 }
@@ -85,4 +65,8 @@
 css-v7duua:hover {
   background: none !important;
   color: #fff !important;
+}
+
+.up-btn-primary {
+  background-color: var(--btn-primary-bg) !important;
 }

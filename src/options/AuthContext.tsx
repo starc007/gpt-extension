@@ -8,6 +8,8 @@ import {
   __updateProfile,
 } from "../api";
 
+import { UPWORK_ID, FREELANCER_ID } from "../contentScript/config";
+
 interface AuthContextType {
   isLoggedin: boolean;
   setIsLoggedin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -67,6 +69,15 @@ export function AuthProvider({ children }) {
     label: string;
     value: string;
   } | null>(null);
+
+  // const CATEGORY_ID =
+  //   hostName === "www.upwork.com"
+  //     ? UPWORK_ID
+  //     : hostName === "www.freelancer.com"
+  //     ? FREELANCER_ID
+  //     : null;
+
+  // console.log("CATEGORY_ID", CATEGORY_ID, hostName);
 
   useEffect(() => {
     chrome.storage.sync.get("isLoggedin", async (res) => {
@@ -138,6 +149,7 @@ export function AuthProvider({ children }) {
         profileData: body,
         default:
           profiles.length === 0 ? true : data.default ? data.default : false,
+        categoryID: UPWORK_ID,
       })
       .then((res) => {
         if (res) {
@@ -190,6 +202,7 @@ export function AuthProvider({ children }) {
       chrome.runtime
         .sendMessage({
           type: "fetchProfiles",
+          // categoryID: CATEGORY_ID,
         })
         .then((res) => {
           setProfiles(
@@ -221,11 +234,11 @@ export function AuthProvider({ children }) {
         },
       })
       .then((res) => {
-        console.log("defaily", res);
         if (res.message === "success") {
           chrome.runtime
             .sendMessage({
               type: "fetchProfiles",
+              // categoryID: CATEGORY_ID,
             })
             .then((res) => {
               setProfiles(

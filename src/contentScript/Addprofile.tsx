@@ -10,7 +10,7 @@ interface Props {
 
 const cmnLabel = "text-gray-600 text-sm mb-1";
 const cmnClass =
-  "border rounded px-2 h-10 transition duration-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent";
+  "border rounded px-2 h-10 text-sm placeholder:text-sm transition duration-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent";
 
 const AddProfile: FC<Props> = ({ setIsVisible }) => {
   const { isLoggedin, AddProfile, formData, setFormData } = useAuth();
@@ -86,6 +86,7 @@ const AddProfile: FC<Props> = ({ setIsVisible }) => {
                 },
                 // height: "42px",
                 minHeight: "42px",
+                fontSize: "14px",
               }),
               indicatorSeparator: (state) => ({
                 display: "none",

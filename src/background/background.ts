@@ -1,3 +1,4 @@
+import { SUCCESS_URL, UPWORK_ID } from "../contentScript/config";
 chrome.runtime.onInstalled.addListener(() => {
   console.log("onInstalled");
 });
@@ -9,23 +10,10 @@ chrome.action.onClicked.addListener(() => {
 });
 
 const HOST = "https://api.vakya.ai";
-const UPWORK_ID = 1;
-const SUCCESS_URL = [
-  "https://api.vakya.ai/api/v1/login/success",
-  "http://api.vakya.ai/api/v1/login/success",
-];
 
 var contentTabId = null;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  // get the current tab url
-  // if (request.type === "getTabUrl") {
-  //   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-  //     console.log("tabs", tabs);
-  //   });
-  //   return true;
-  // }
-
   if (request.message === "googleLogin") {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       contentTabId = tabs[0].id;
@@ -150,7 +138,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 
-  if (request.type === "saveProfile" && request.profileData) {
+  if (
+    request.type === "saveProfile" &&
+    request.profileData
+    // request.categoryID
+  ) {
     var filldata = {};
 
     if (request?.default === true) {
@@ -231,5 +223,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === "openOptionsPage") {
     chrome.runtime.openOptionsPage();
     return true;
+  }
+});
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.url) {
+    const isTrue = changeInfo.url.includes("https://www.freelancer.com/");
+    const checkUrl =
+      changeInfo.url.split("/")[changeInfo.url.split("/").length - 1];
+    if (checkUrl === "details" && isTrue) {
+      chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        files: ["contentScript.js"],
+      });
+    }
   }
 });
