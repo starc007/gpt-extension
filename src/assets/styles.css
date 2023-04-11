@@ -70,3 +70,10 @@ css-v7duua:hover {
 .up-btn-primary {
   background-color: var(--btn-primary-bg) !important;
 }
+
+.Typewriter {
+  font-size: 14px;
+  padding: 10px;
+  max-height: 175px;
+  overflow-y: auto;
+}

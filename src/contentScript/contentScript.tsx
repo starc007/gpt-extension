@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import Select, { components } from "react-select";
 import Lottie from "lottie-react";
+import Typewriter from "typewriter-effect";
+import { SSE } from "sse";
+
 import { ProfileType } from "../api";
 import Login from "../options/Login";
 
@@ -285,22 +288,68 @@ const contentScript = () => {
     chrome.runtime.sendMessage(
       { type: "getPrompt", promptData: promptData },
       (response) => {
-        if (response?.data?.length) {
-          setGeneratedResponse(response.data[0]);
-          setIsGenerating({
-            success: true,
-            loader: false,
-          });
-        } else {
-          toast.error("Something went wrong please try again");
-          setIsGenerating({
-            success: false,
-            loader: false,
-          });
-        }
+        console.log("response", response.data);
+        // if (response?.data?.length) {
+        //   const resText = response.data[0];
+        //   console.log("res text", resText);
+        //   setGeneratedResponse(response.data[0]);
+        //   setIsGenerating({
+        //     success: true,
+        //     loader: false,
+        //   });
+        // } else {
+        //   toast.error("Something went wrong please try again");
+        //   setIsGenerating({
+        //     success: false,
+        //     loader: false,
+        //   });
+        // }
       }
     );
   };
+
+  // const StreamResponse = () => {
+  //   setIsGenerating({
+  //     success: false,
+  //     loader: true,
+  //   });
+  //   setErrMsg("");
+  //   const url = "https://api.vakya.ai/api/v1/prompts/getPromptsStream";
+  //   const promptData = {
+  //     prompt: formData.prompt,
+  //     maxTokens: formData.maxTokens,
+  //     numResponses: formData.numResponses,
+  //     toneId: formData.toneId,
+  //     categoryInfoId: formData.categoryInfoId,
+  //     customToneId: formData.customToneId, //profileid
+  //     additionalInfo: formData.additionalInfo,
+  //   };
+
+  //   const source = new SSE(url, {
+  //     withCredentials: true,
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(promptData),
+  //   });
+  //   source.addEventListener("message", (event) => {
+  //     console.log("event", event);
+  //     if (event.data !== "[DONE]") {
+  //       let payload = JSON.parse(event.data);
+  //       console.log("payload", payload);
+  //     } else {
+  //       source.close();
+  //     }
+  //   });
+
+  //   source.addEventListener("readystatechange", (event) => {
+  //     if (event.readyState >= 2) {
+  //       source.close();
+  //     }
+  //   });
+  //   source.stream();
+  // };
 
   const defaultProfile =
     profiles?.length > 0 &&
@@ -544,7 +593,7 @@ const contentScript = () => {
                   <div>
                     <p className="text-primary">Cover Letter Generated</p>
                     <div className="border border-gray-200 rounded">
-                      <textarea
+                      {/* <textarea
                         className="w-full p-2 focus:outline-none resize-none text-sm"
                         rows={7}
                         value={
@@ -552,7 +601,22 @@ const contentScript = () => {
                           generatedResponse?.replace(/(\r\n|\n|\r)/gm, " ")
                         }
                         onChange={(e) => setGeneratedResponse(e.target.value)}
-                      ></textarea>
+                      ></textarea> */}
+                      <Typewriter
+                        options={{
+                          cursor: "",
+                          delay: 50,
+                        }}
+                        onInit={(typewriter) => {
+                          typewriter
+                            .typeString(
+                              generatedResponse?.replace(/(\r\n|\n|\r)/gm, " ")
+                            )
+                            .deleteChars(1)
+
+                            .start();
+                        }}
+                      />
                       <div className="flex justify-between p-2">
                         <button
                           onClick={() => {

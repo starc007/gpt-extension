@@ -1,4 +1,5 @@
 import { SUCCESS_URL, UPWORK_ID } from "../contentScript/config";
+
 chrome.runtime.onInstalled.addListener(() => {
   console.log("onInstalled");
 });
@@ -88,7 +89,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.type === "getPrompt" && request.promptData) {
-    fetch(`${HOST}/api/v1/prompts/getPrompts`, {
+    fetch(`${HOST}/api/v1/prompts/getPromptsStream`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -96,21 +97,97 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       },
       body: JSON.stringify(request.promptData),
     })
-      .then((res) => res.json())
+      .then((res) => res.body)
       .then((data) => {
-        if (data.headers.success) {
-          sendResponse({ message: "success", data: data.body.choices });
-        } else {
-          sendResponse({ message: "fail", data: [] });
-        }
+        // console.log("data69", data);
+        // sendResponse({ message: "success", data: data.body });
+        // let newData = data.split("data: ").map((item) => item.trim());
+        // newData = newData.filter((item) => item !== "");
+        // console.log("newData", newData);
+        // newData = newData.filter((item) => item !== "");
+
+        // const dataObj = newData.map((item) => {
+        //   return JSON.parse(item);
+        // });
+        // console.log("dataObj", dataObj);
+
+        // console.log("newData", newData);
+        const reader = data.getReader();
+        // let charsReceived = 0;
+        // reader.read().then(function processText({ done, value }) {
+        //   // Result objects contain two properties:
+        //   // done  - true if the stream has already given you all its data.
+        //   // value - some data. Always undefined when done is true.
+        //   if (done) {
+        //     console.log("Stream complete");
+
+        //     return;
+        //   }
+
+        //   // value for fetch streams is a Uint8Array
+        //   charsReceived += value.length;
+        //   const chunk = value;
+        //   console.log("chunk", chunk);
+
+        //   // Read some more, and call this function again
+        //   return reader.read().then(processText);
+        // });
+        const decoder = new TextDecoder("utf-8");
+        reader.read().then(function processText({ done, value }) {
+          const chunk = decoder.decode(value);
+          console.log("chunk", chunk);
+          // const result = chunk.split("data: ").filter((item) => item !== "");
+          // console.log("result", result);
+          // const dataObj = result.map((item) => {
+          //   return JSON.parse(item);
+          // });
+          // console.log("dataObj", dataObj);
+        });
+        // const decoder = new TextDecoder();
+        // let done = false;
+        // while (!done) {
+        //   reader.read().then(({ value, done: doneReading }) => {
+        //     done = doneReading;
+        //     const chunkValue = decoder.decode(value);
+        //     console.log("chunkValue", chunkValue);
+        //   });
+        // }
       })
       .catch((err) => {
-        console.log("err", err);
+        console.log("err69", err);
         sendResponse({ message: "error", data: [] });
       });
 
     return true;
   }
+
+  // if (request.type === "getPrompt" && request.promptData) {
+  //   fetch(`${HOST}/api/v1/prompts/getPromptsStream`, {
+  //     method: "POST",
+  //     credentials: "include",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(request.promptData),
+  //   })
+  //     // .then((res) =>
+
+  //     // )
+  //     .then((data) => {
+  //       console.log("data69", data);
+  //       // if (data.headers.success) {
+  //       //   sendResponse({ message: "success", data: data.body.choices });
+  //       // } else {
+  //       //   sendResponse({ message: "fail", data: [] });
+  //       // }
+  //     })
+  //     .catch((err) => {
+  //       console.log("err69", err);
+  //       sendResponse({ message: "error", data: [] });
+  //     });
+
+  //   return true;
+  // }
 
   if (request.type === "fetchProfiles") {
     fetch(`${HOST}/api/v1/user/getUserCustomTones?categoryID=${UPWORK_ID}`, {
