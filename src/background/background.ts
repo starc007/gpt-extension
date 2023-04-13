@@ -14,6 +14,12 @@ const HOST = "https://api.vakya.ai";
 
 var contentTabId = null;
 
+chrome.runtime.onConnect.addListener(function (port) {
+  port.onMessage.addListener(function (request, sender) {
+    return true;
+    // }
+  });
+});
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message === "googleLogin") {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -99,58 +105,75 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     })
       .then((res) => res.body)
       .then((data) => {
-        // console.log("data69", data);
-        // sendResponse({ message: "success", data: data.body });
-        // let newData = data.split("data: ").map((item) => item.trim());
-        // newData = newData.filter((item) => item !== "");
-        // console.log("newData", newData);
-        // newData = newData.filter((item) => item !== "");
-
-        // const dataObj = newData.map((item) => {
-        //   return JSON.parse(item);
-        // });
-        // console.log("dataObj", dataObj);
-
-        // console.log("newData", newData);
         const reader = data.getReader();
-        // let charsReceived = 0;
-        // reader.read().then(function processText({ done, value }) {
-        //   // Result objects contain two properties:
-        //   // done  - true if the stream has already given you all its data.
-        //   // value - some data. Always undefined when done is true.
-        //   if (done) {
-        //     console.log("Stream complete");
-
-        //     return;
-        //   }
-
-        //   // value for fetch streams is a Uint8Array
-        //   charsReceived += value.length;
-        //   const chunk = value;
-        //   console.log("chunk", chunk);
-
-        //   // Read some more, and call this function again
-        //   return reader.read().then(processText);
-        // });
-        const decoder = new TextDecoder("utf-8");
+        const decoder = new TextDecoder();
+        let finalResult = [];
         reader.read().then(function processText({ done, value }) {
-          const chunk = decoder.decode(value);
-          console.log("chunk", chunk);
-          // const result = chunk.split("data: ").filter((item) => item !== "");
-          // console.log("result", result);
-          // const dataObj = result.map((item) => {
-          //   return JSON.parse(item);
+          // Result objects contain two properties:
+          // done  - true if the stream has already given you all its data.
+          // value - some data. Always undefined when done is true.
+          if (done) {
+            console.log("Stream complete");
+
+            return;
+          }
+          const chunk = value;
+          const decodedResult = decoder.decode(chunk || new Uint8Array(), {
+            stream: !done,
+          });
+          // console.log("chunk", decodedResult);
+
+          const result = decodedResult.split("data: ");
+
+          const dataObj = result.map((item) => {
+            try {
+              return JSON.parse(item);
+            } catch (error) {
+              return null;
+            }
+          });
+
+          const newData = dataObj.filter((item) => item !== null);
+          finalResult = [...finalResult, ...newData];
+          // newData.forEach((item) => {
+          //   const data = item.choices?.[0]?.delta?.content;
+          //   // console.log("data", data);
+          //   if (data) {
+          //     // console.log("data", data);
+          //     sendResponse({ message: "success", data: data });
+          //   }
           // });
-          // console.log("dataObj", dataObj);
+
+          // const interval = setInterval(() => {
+          //  for (let i = 0; i < newData.length; i++) {
+          //    const data = newData[i].choices?.[0]?.delta?.content;
+          //    if (data) {
+          //      sendResponse({ message: "success", data: data });
+          //    }
+          //  }
+
+          //   if(done) clearInterval(interval )
+
+          // }, 100);
+
+          return reader.read().then(processText);
         });
-        // const decoder = new TextDecoder();
-        // let done = false;
-        // while (!done) {
-        //   reader.read().then(({ value, done: doneReading }) => {
-        //     done = doneReading;
-        //     const chunkValue = decoder.decode(value);
-        //     console.log("chunkValue", chunkValue);
-        //   });
+
+        const interval = setInterval(() => {
+          for (let i = 0; i < finalResult.length; i++) {
+            const data = finalResult[i].choices?.[0]?.delta?.content;
+            if (data) {
+              sendResponse({ message: "success", data: data });
+            }
+          }
+
+          clearInterval(interval);
+        }, 100);
+        // for (let i = 0; i < finalResult.length; i++) {
+        //   const data = finalResult[i].choices?.[0]?.delta?.content;
+        //   if (data) {
+        //     sendResponse({ message: "success", data: data });
+        //   }
         // }
       })
       .catch((err) => {

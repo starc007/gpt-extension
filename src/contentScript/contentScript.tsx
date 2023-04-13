@@ -292,11 +292,11 @@ const contentScript = () => {
         // if (response?.data?.length) {
         //   const resText = response.data[0];
         //   console.log("res text", resText);
-        //   setGeneratedResponse(response.data[0]);
-        //   setIsGenerating({
-        //     success: true,
-        //     loader: false,
-        //   });
+        setGeneratedResponse(response.data);
+        setIsGenerating({
+          success: true,
+          loader: false,
+        });
         // } else {
         //   toast.error("Something went wrong please try again");
         //   setIsGenerating({
@@ -593,7 +593,7 @@ const contentScript = () => {
                   <div>
                     <p className="text-primary">Cover Letter Generated</p>
                     <div className="border border-gray-200 rounded">
-                      {/* <textarea
+                      <textarea
                         className="w-full p-2 focus:outline-none resize-none text-sm"
                         rows={7}
                         value={
@@ -601,8 +601,8 @@ const contentScript = () => {
                           generatedResponse?.replace(/(\r\n|\n|\r)/gm, " ")
                         }
                         onChange={(e) => setGeneratedResponse(e.target.value)}
-                      ></textarea> */}
-                      <Typewriter
+                      ></textarea>
+                      {/* <Typewriter
                         options={{
                           cursor: "",
                           delay: 50,
@@ -616,7 +616,7 @@ const contentScript = () => {
 
                             .start();
                         }}
-                      />
+                      /> */}
                       <div className="flex justify-between p-2">
                         <button
                           onClick={() => {
