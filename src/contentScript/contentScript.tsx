@@ -285,28 +285,53 @@ const contentScript = () => {
       additionalInfo: formData.additionalInfo,
     };
 
-    chrome.runtime.sendMessage(
-      { type: "getPrompt", promptData: promptData },
-      (response) => {
-        console.log("response", response.data);
-        // if (response?.data?.length) {
-        //   const resText = response.data[0];
-        //   console.log("res text", resText);
-        setGeneratedResponse(response.data);
+    var port = chrome.runtime.connect({ name: "vakya" });
+    port.postMessage({ type: "getPrompt", promptData: promptData });
+    port.onMessage.addListener((msg) => {
+      if (msg.data) {
+        console.log("msg", msg.data);
+        setGeneratedResponse((prev) => prev + msg.data);
         setIsGenerating({
           success: true,
           loader: false,
         });
-        // } else {
-        //   toast.error("Something went wrong please try again");
-        //   setIsGenerating({
-        //     success: false,
-        //     loader: false,
-        //   });
-        // }
       }
-    );
+      // if (msg.message === "done") {
+      // }
+    });
+
+    // chrome.runtime.sendMessage(
+    //   { type: "getPrompt", promptData: promptData },
+    //   (response) => {
+    //     console.log("response", response.data);
+    //     // if (response?.data?.length) {
+    //     //   const resText = response.data[0];
+    //     //   console.log("res text", resText);
+    //     setGeneratedResponse(response.data);
+    //     setIsGenerating({
+    //       success: true,
+    //       loader: false,
+    //     });
+    //     // } else {
+    //     //   toast.error("Something went wrong please try again");
+    //     //   setIsGenerating({
+    //     //     success: false,
+    //     //     loader: false,
+    //     //   });
+    //     // }
+    //   }
+    // );
   };
+
+  // chrome.runtime.onConnect.addListener((port) => {
+  //   console.log("Connected .....");
+  //   port.onMessage.addListener((msg) => {
+  //     console.log("message recieved " + msg);
+  //     if (msg.data) {
+  //       port.postMessage({ message: "more" });
+  //     }
+  //   });
+  // });
 
   // const StreamResponse = () => {
   //   setIsGenerating({
