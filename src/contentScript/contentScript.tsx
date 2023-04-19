@@ -627,7 +627,7 @@ const contentScript = () => {
                   <div>
                     <p className="text-primary">Cover Letter Generated</p>
                     <div className="border border-gray-200 rounded">
-                      <textarea
+                      {/* <textarea
                         className="w-full p-2 focus:outline-none resize-none text-sm"
                         rows={7}
                         value={
@@ -635,11 +635,11 @@ const contentScript = () => {
                           generatedResponse?.replace(/(\r\n|\n|\r)/gm, " ")
                         }
                         onChange={(e) => setGeneratedResponse(e.target.value)}
-                      ></textarea>
-                      {/* <Typewriter
+                      ></textarea> */}
+                      <Typewriter
                         options={{
                           cursor: "",
-                          delay: 50,
+                          delay: 20,
                         }}
                         onInit={(typewriter) => {
                           typewriter
@@ -650,7 +650,7 @@ const contentScript = () => {
 
                             .start();
                         }}
-                      /> */}
+                      />
                       <div className="flex justify-between p-2">
                         <button
                           onClick={() => {
