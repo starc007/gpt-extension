@@ -70,15 +70,6 @@ export function AuthProvider({ children }) {
     value: string;
   } | null>(null);
 
-  // const CATEGORY_ID =
-  //   hostName === "www.upwork.com"
-  //     ? UPWORK_ID
-  //     : hostName === "www.freelancer.com"
-  //     ? FREELANCER_ID
-  //     : null;
-
-  // console.log("CATEGORY_ID", CATEGORY_ID, hostName);
-
   useEffect(() => {
     chrome.storage.sync.get("isLoggedin", async (res) => {
       if (res.isLoggedin) {

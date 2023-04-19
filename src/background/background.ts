@@ -81,33 +81,40 @@ chrome.runtime.onConnect.addListener((port) => {
             // done  - true if the stream has already given you all its data.
             // value - some data. Always undefined when done is true.
             if (done) {
-              console.log("Stream complete");
               port.postMessage({ message: "done" });
               return;
             }
             const chunk = value;
-            console.log("chunk", chunk);
             const decodedResult = decoder.decode(chunk || new Uint8Array(), {
               stream: !done,
             });
             // console.log("chunk", decodedResult);
 
             const result = decodedResult.split("data: ");
+            // console.log("result", result);
 
-            const dataObj = result.map((item) => {
+            const dataObj = result.map((item, i) => {
               try {
+                if (item == "[DONE]") return;
                 return JSON.parse(item);
               } catch (error) {
+                if (!item.endsWith("}")) {
+                  const res1 = item + result[i + 1];
+                  try {
+                    return JSON.parse(res1);
+                  } catch (error) {
+                    return null;
+                  }
+                }
                 return null;
               }
             });
 
             const newData = dataObj.filter((item) => item !== null);
-            // console.log("newData", newData);
             finalResult = [...finalResult, ...newData];
             newData.forEach((item) => {
               const data = item.choices?.[0]?.delta?.content;
-              if (data) {
+              if (data !== undefined || data !== null) {
                 port.postMessage({ message: "success", data: data });
               }
             });

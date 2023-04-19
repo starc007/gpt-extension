@@ -283,14 +283,23 @@ const contentScript = () => {
       categoryInfoId: formData.categoryInfoId,
       customToneId: formData.customToneId, //profileid
       additionalInfo: formData.additionalInfo,
+      meta: {
+        source: "1",
+        description: jobTitle,
+      },
     };
 
     var port = chrome.runtime.connect({ name: "vakya" });
     port.postMessage({ type: "getPrompt", promptData: promptData });
     port.onMessage.addListener((msg) => {
       if (msg.data) {
-        console.log("msg", msg.data);
-        setGeneratedResponse((prev) => prev + msg.data);
+        setGeneratedResponse((prev) => {
+          if (prev) {
+            return prev + msg.data;
+          } else {
+            return msg.data;
+          }
+        });
         setIsGenerating({
           success: true,
           loader: false,
