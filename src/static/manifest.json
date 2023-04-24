@@ -12,6 +12,8 @@
     "*://*.google.com/*",
     "*://*.upwork.com/*",
     "*://*.freelancer.com/*",
+    "*://*.twitter.com/*",
+    "*://*.linkedin.com/*",
     "http://vakya.ai/*",
     "https://api.vakya.ai/*",
     "http://api.vakya.ai/*"
@@ -29,7 +31,9 @@
     {
       "matches": [
         "https://www.upwork.com/ab/proposals/job/*",
-        "https://www.freelancer.com/projects/*"
+        "https://www.freelancer.com/projects/*",
+        "https://www.linkedin.com/*",
+        "https://twitter.com/*"
       ],
       "js": ["contentScript.js"]
     }
@@ -45,7 +49,11 @@
         "copy.svg",
         "regenerate.svg",
         "user.svg",
-        "icon.png"
+        "icon.png",
+        "downArrow.png",
+        "select.png",
+        "usercheck.png",
+        "userplus.png"
       ]
     }
   ]

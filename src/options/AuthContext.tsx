@@ -95,7 +95,8 @@ export function AuthProvider({ children }) {
                           if (
                             profile?.toneDescription?.title &&
                             profile?.toneDescription?.bio &&
-                            profile?.toneDescription?.skills
+                            (profile?.toneDescription?.skills ||
+                              profile?.toneDescription?.tone)
                           ) {
                             return profile;
                           }

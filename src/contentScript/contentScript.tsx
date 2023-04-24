@@ -3,7 +3,6 @@ import { toast, Toaster } from "react-hot-toast";
 import Select, { components } from "react-select";
 import Lottie from "lottie-react";
 import Typewriter from "typewriter-effect";
-import { SSE } from "sse";
 
 import { ProfileType } from "../api";
 import Login from "../options/Login";

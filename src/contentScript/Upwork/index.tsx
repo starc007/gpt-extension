@@ -1,5 +1,3 @@
-import { FC } from "react";
-
 export const TextAreaContainer = () => {
   const textArea = document.querySelector(
     "[aria-labelledby='cover_letter_label']"

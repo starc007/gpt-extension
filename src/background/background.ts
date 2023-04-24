@@ -290,7 +290,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // }
 
   if (request.type === "fetchProfiles") {
-    fetch(`${HOST}/api/v1/user/getUserCustomTones?categoryID=${UPWORK_ID}`, {
+    // ${HOST}/api/v1/user/getUserCustomTones?categoryID=${UPWORK_ID}`
+    fetch(`${HOST}/api/v1/user/getUserCustomTones`, {
       method: "GET",
       credentials: "include",
     })

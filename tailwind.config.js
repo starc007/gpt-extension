@@ -7,6 +7,8 @@ module.exports = {
         secondary: "#42307D",
         lightPurple: "#ECE3FF",
         darkPurple: "#73609C",
+        dark: "#1D1D1D",
+        lightPurple2: "#EDE0FF",
       },
     },
   },
