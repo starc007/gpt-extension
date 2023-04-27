@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
-import Select from "react-select";
 import "../../assets/tailwind.css";
 import { useAuth } from "../../options/AuthContext";
+import { PLATFORMS, TONE_IDS } from "../config";
 
 const Linkedin = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const {
-    isLoggedin,
-    setIsLoggedin,
-    profiles,
-    addedProfile,
-    setAddedProfile,
-    setProfiles,
-  } = useAuth();
+  const { isLoggedin, profiles } = useAuth();
+  const [formData, setFormData] = useState({
+    prompt: "",
+    toneId: "",
+    categoryInfoId: "",
+    customToneId: "",
+  });
 
   const moreBtnId = document.getElementById("moreBtn69");
+  const funnyBtn69 = document.getElementById("funnyBtn69");
+
   useEffect(() => {
     moreBtnId?.addEventListener("mouseover", () => {
       setIsDropdownOpen(true);
@@ -22,23 +23,57 @@ const Linkedin = () => {
 
     const body = document.querySelector("body");
 
-    body.addEventListener("mouseover", (e) => {
-      if (
-        !(e.target as HTMLElement).closest("#moreBtn69") &&
-        !(e.target as HTMLElement).closest("#twitterVakya69")
-      ) {
-        setIsDropdownOpen(false);
-      }
-    });
+    // body.addEventListener("mouseover", (e) => {
+    //   if (
+    //     !(e.target as HTMLElement).closest("#moreBtn69") &&
+    //     !(e.target as HTMLElement).closest("#twitterVakya69")
+    //   ) {
+    //     setIsDropdownOpen(false);
+    //   }
+    // });
 
     return () => {
       moreBtnId?.removeEventListener("mouseover", () => {});
-      moreBtnId?.removeEventListener("mouseout", () => {});
-      //   dropVakya69?.removeEventListener("mouseover", () => {});
     };
   }, []);
+  const qlEditor = document?.querySelector(".ql-editor");
+  const handleSubmit = (prompt: string, toneId: string) => {
+    const PromptData = {
+      prompt: prompt,
+      toneId: toneId,
+      maxTokens: 100,
+      numResponses: 1,
+      categoryInfoId: PLATFORMS.LINKEDIN,
+      meta: {
+        source: PLATFORMS.LINKEDIN,
+        description: "Created post on linkedin",
+      },
+    };
 
-  console.log("isLoggedin", isLoggedin, "profiles", profiles);
+    var port = chrome.runtime.connect({ name: "vakya" });
+    port.postMessage({ type: "getPrompt", promptData: PromptData });
+    port.onMessage.addListener((msg) => {
+      if (msg.data) {
+        console.log("msg.data", msg.data);
+        // if (msg.message === "done") {
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (isLoggedin) {
+      funnyBtn69.addEventListener("click", () => {
+        const qlEditorValue = qlEditor?.textContent;
+        console.log("funnyBtn69 clicked");
+        // console.log("qlEditorValue", qlEditorValue);
+        handleSubmit(qlEditorValue, TONE_IDS.FUNNY);
+      });
+    }
+  }, [isLoggedin]);
+
+  if (!isLoggedin) return null;
+
+  // get the value of ql editor
 
   return isDropdownOpen ? (
     <div className="w-[30rem] rounded-lg bg-dark flex flex-col space-y-6 p-4 border border-primary">
@@ -62,9 +97,11 @@ const Linkedin = () => {
             Results will be generated based on your profile selection
           </p>
           <select className="selectLinkedin69">
-            <option value="volvo">Volvo</option>
-            <option value="saab">Saab</option>
-            <option value="mercedes">Mercedes</option>
+            {profiles?.map((profile) => (
+              <option value={profile._id}>
+                {profile?.toneDescription?.title}
+              </option>
+            ))}
           </select>
         </div>
       </div>

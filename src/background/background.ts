@@ -63,6 +63,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 chrome.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((request) => {
     if (request.type == "getPrompt") {
+      console.log("request", request);
       fetch(`${HOST}/api/v1/prompts/getPromptsStream`, {
         method: "POST",
         credentials: "include",
@@ -91,7 +92,6 @@ chrome.runtime.onConnect.addListener((port) => {
             // console.log("chunk", decodedResult);
 
             const result = decodedResult.split("data: ");
-            // console.log("result", result);
 
             const dataObj = result.map((item, i) => {
               try {
