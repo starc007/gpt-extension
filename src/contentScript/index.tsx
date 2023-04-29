@@ -22,6 +22,7 @@ import {
   EmbedLinkedinButtons,
 } from "./Linkedin";
 import Linkedin from "./Linkedin/Linkedin";
+import LinkedinComment from "./Linkedin/LinkedinComment";
 
 const hostName = window.location.hostname;
 
@@ -71,8 +72,47 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
   }
 });
 
+function CommentInit() {
+  const isCommentEmbeded = document.getElementById("vakyaCommentContainer69");
+  if (isCommentEmbeded) return;
+
+  const commentDiv = document.createElement("div");
+  commentDiv.id = "vakyaCommentContainer69";
+
+  let isDarkMode = false;
+
+  if (
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  ) {
+    // dark mode
+    isDarkMode = true;
+  }
+
+  if (isLinkedin) {
+    if (loggedIn) {
+      EmbedButtonsInCommentBox();
+    } else {
+      EmbedEmptyMessageBtn(isDarkMode);
+    }
+    commentDiv.setAttribute(
+      "style",
+      "position: absolute; top: 34px; right: 119px; z-index: 999;"
+    );
+  }
+
+  const commentButtons = document.getElementById("vakyaCommentBtn69");
+  commentButtons.appendChild(commentDiv);
+  const commentRoot = createRoot(commentDiv);
+
+  commentRoot.render(
+    <AuthProvider>{isLinkedin ? <LinkedinComment /> : null}</AuthProvider>
+  );
+}
+
 function SocialInit() {
-  const isEmbeded = document.getElementById("twitterVakya69");
+  const isEmbeded = document.getElementById("containerVakya69");
+
   if (isEmbeded) return;
 
   let isDarkMode = false;
@@ -86,7 +126,9 @@ function SocialInit() {
   }
 
   const appDiv = document.createElement("div");
-  appDiv.id = "twitterVakya69";
+
+  appDiv.id = "containerVakya69";
+
   if (isTwitter) {
     EmbedTwitterButtons();
     appDiv.setAttribute(
@@ -108,10 +150,11 @@ function SocialInit() {
   }
 
   const btnVakya = document.getElementById("vakyaBtn69");
-  // document.getElementById("vakyaCommentBtn69");
-  // const shadow = btnVakya.attachShadow({ mode: "open" });
+
+  if (!btnVakya) return;
   btnVakya.appendChild(appDiv);
   const root = createRoot(appDiv);
+
   root.render(
     <AuthProvider>
       {isTwitter ? <Twitter /> : isLinkedin ? <Linkedin /> : null}
@@ -128,6 +171,10 @@ const interval = setInterval(() => {
   const linkedinCheck = document.getElementsByClassName(
     "share-creation-state__additional-toolbar"
   );
+
+  const commentButtons = document.querySelectorAll(
+    "form.comments-comment-box__form"
+  );
   const conditionCheck =
     hostName === "www.upwork.com"
       ? upworkCheck
@@ -135,7 +182,12 @@ const interval = setInterval(() => {
       ? freelancerCheck
       : false;
 
-  if ((isTwitter && twitterCheck) || (isLinkedin && linkedinCheck)) {
+  if (commentButtons.length > 0) CommentInit();
+
+  if (
+    (isTwitter && twitterCheck) ||
+    (isLinkedin && (linkedinCheck || commentButtons.length > 0))
+  ) {
     SocialInit();
     // clearInterval(interval);
   } else if (conditionCheck) {

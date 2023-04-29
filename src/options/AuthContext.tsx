@@ -112,8 +112,45 @@ export function AuthProvider({ children }) {
             }
           });
       } else {
-        setIsLoggedin(false);
-        chrome.storage.sync.set({ isLoggedin: false });
+        // setIsLoggedin(false);
+        // chrome.storage.sync.set({ isLoggedin: false });
+        chrome.runtime
+          .sendMessage({
+            type: "getUser",
+          })
+          .then((res) => {
+            console.log("user", res);
+            if (res.message === "success") {
+              setUser(res.data);
+              setIsLoggedin(true);
+              chrome.storage.sync.set({ isLoggedin: true });
+              chrome.runtime
+                .sendMessage({
+                  type: "fetchProfiles",
+                })
+                .then((res) => {
+                  setProfiles(
+                    res.profiles?.length > 0
+                      ? res.profiles.map((profile) => {
+                          if (
+                            profile?.toneDescription?.title &&
+                            profile?.toneDescription?.bio &&
+                            (profile?.toneDescription?.skills ||
+                              profile?.toneDescription?.tone)
+                          ) {
+                            return profile;
+                          }
+                        })
+                      : []
+                  );
+                  setLoading(false);
+                  chrome.storage.sync.set({ profiles: res.profiles });
+                });
+            } else {
+              setIsLoggedin(false);
+              chrome.storage.sync.set({ isLoggedin: false });
+            }
+          });
       }
     });
   }, [isLoggedin]);

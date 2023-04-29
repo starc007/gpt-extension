@@ -78,9 +78,6 @@ chrome.runtime.onConnect.addListener((port) => {
           const decoder = new TextDecoder();
           let finalResult = [];
           reader.read().then(function processText({ done, value }) {
-            // Result objects contain two properties:
-            // done  - true if the stream has already given you all its data.
-            // value - some data. Always undefined when done is true.
             if (done) {
               port.postMessage({ message: "done" });
               return;
@@ -89,8 +86,6 @@ chrome.runtime.onConnect.addListener((port) => {
             const decodedResult = decoder.decode(chunk || new Uint8Array(), {
               stream: !done,
             });
-            // console.log("chunk", decodedResult);
-
             const result = decodedResult.split("data: ");
 
             const dataObj = result.map((item, i) => {
@@ -121,13 +116,6 @@ chrome.runtime.onConnect.addListener((port) => {
 
             return reader.read().then(processText);
           });
-
-          // finalResult.forEach((item) => {
-          //   const data = item.choices?.[0]?.delta?.content;
-          //   if (data) {
-          //     port.postMessage({ message: "success", data: data });
-          //   }
-          // });
         });
     }
   });

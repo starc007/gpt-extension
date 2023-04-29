@@ -3,8 +3,7 @@ export const EmbedLinkedinButtons = () => {
   if (isButtonsEmbeded) {
     return;
   }
-  //   const toolbar = document.querySelector("[class");
-  // select class share-creation-state__msg-wrapper
+
   const toolbar = document.getElementsByClassName(
     "share-creation-state__additional-toolbar"
   );
@@ -12,14 +11,14 @@ export const EmbedLinkedinButtons = () => {
   const isBox = document.getElementsByClassName(
     "share-box"
   ) as HTMLCollectionOf<HTMLElement>;
-  //check if display is none
+
   if (isBox.length > 0) {
     const funnyBtn = document.createElement("button");
     funnyBtn.innerHTML = "😂 Funny";
     funnyBtn.id = "funnyBtn69";
     funnyBtn.setAttribute(
       "style",
-      "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; border-radius: 9999px; padding: 4px 8px; font-size: 12px; font-weight: 700; width:87px"
+      "cursor: pointer; color: #7F56D9; border: 1px solid #7F56D9; background: transparent; border-radius: 9999px; padding: 4px 8px; font-size: 12px; font-weight: 700; width:87px"
     );
 
     const interestingBtn = document.createElement("button");
@@ -27,14 +26,24 @@ export const EmbedLinkedinButtons = () => {
     interestingBtn.id = "interestingBtn69";
     interestingBtn.setAttribute(
       "style",
-      "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; font-weight: 700; border-radius: 9999px; padding: 4px 8px; font-size: 12px; margin-left: 8px; width:110px"
+      "cursor: pointer; color: #7F56D9; border: 1px solid #7F56D9; background: transparent; font-weight: 700; border-radius: 9999px; padding: 4px 8px; font-size: 12px; margin-left: 8px; width:110px"
     );
     const qaBtn = document.createElement("button");
     qaBtn.innerHTML = "🤓 Q/A";
     qaBtn.id = "qaBtn69";
     qaBtn.setAttribute(
       "style",
-      "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; border-radius: 9999px; padding: 4px 8px; font-size: 12px; font-weight: 700;  margin-left: 8px; width: 60px"
+      "cursor: pointer; color: #7F56D9; border: 1px solid #7F56D9; background: transparent; border-radius: 9999px; padding: 4px 8px; font-size: 12px; font-weight: 700;  margin-left: 8px; width: 60px"
+    );
+    const regenerate = document.createElement("button");
+    regenerate.id = "regenerateBtn69";
+    const img1 = document.createElement("img");
+    img1.src = chrome.runtime.getURL("generatePrimary.png");
+    img1.setAttribute("style", "width: 17px; height: 17px;");
+    regenerate.appendChild(img1);
+    regenerate.setAttribute(
+      "style",
+      "cursor: pointer; border: 1px solid #7F56D9; background: transparent; border-radius: 9999px; padding: 4px 8px;  margin-left: 8px; width: 36px"
     );
 
     const moreBtn = document.createElement("button");
@@ -59,15 +68,9 @@ export const EmbedLinkedinButtons = () => {
     buttons.appendChild(funnyBtn);
     buttons.appendChild(interestingBtn);
     buttons.appendChild(qaBtn);
+    buttons.appendChild(regenerate);
     buttons.appendChild(moreBtn);
     toolbar[0].appendChild(buttons);
-    // insert button in toolbar after first child
-    //   const firstChild = toolbar[0].firstChild;
-    // remove first child
-    // toolbar[0].removeChild(firstChild);
-    // toolbar[0].insertBefore(buttons, toolbar[0].firstChild);
-    // append first child
-    // toolbar[0].insertAdjacentElement("beforeend", buttons);
   }
 };
 
@@ -83,7 +86,7 @@ export const EmbedButtonsInCommentBox = () => {
 
     const agreeBtn = document.createElement("button");
     agreeBtn.innerHTML = "👍";
-    agreeBtn.id = "agreeBtnBtn69";
+    agreeBtn.id = "agreeBtn69";
     agreeBtn.setAttribute(
       "style",
       "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; border-radius: 9999px; padding: 4px 8px; font-size: 12px; font-weight: 700; width:45px"
@@ -91,7 +94,7 @@ export const EmbedButtonsInCommentBox = () => {
 
     const disagreeBtn = document.createElement("button");
     disagreeBtn.innerHTML = "👎";
-    disagreeBtn.id = "disagreeBtnBtn69";
+    disagreeBtn.id = "disagreeBtn69";
     disagreeBtn.setAttribute(
       "style",
       "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; border-radius: 9999px; padding: 4px 8px; font-size: 12px; font-weight: 700;  margin-left: 8px; width:45px"
@@ -99,7 +102,7 @@ export const EmbedButtonsInCommentBox = () => {
 
     const funnyBtn = document.createElement("button");
     funnyBtn.innerHTML = "😂 Joke";
-    funnyBtn.id = "funnyBtn69";
+    funnyBtn.id = "funnyCommentBtn69";
     funnyBtn.setAttribute(
       "style",
       "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; border-radius: 9999px; padding: 4px 8px; font-size: 12px; font-weight: 700; margin-left: 8px; width:87px"
@@ -113,9 +116,20 @@ export const EmbedButtonsInCommentBox = () => {
       "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; font-weight: 700; border-radius: 9999px; padding: 4px 8px; font-size: 12px; margin-left: 8px; width:110px"
     );
 
+    const regenerate = document.createElement("button");
+    regenerate.id = "regenerateBtn69";
+    const img1 = document.createElement("img");
+    img1.src = chrome.runtime.getURL("generatePrimary.png");
+    img1.setAttribute("style", "width: 17px; height: 17px;");
+    regenerate.appendChild(img1);
+    regenerate.setAttribute(
+      "style",
+      "cursor: pointer; border: 1px solid #7F56D9; background: transparent; border-radius: 9999px; padding: 4px 8px;  margin-left: 8px; width: 36px"
+    );
+
     const moreBtn = document.createElement("button");
     moreBtn.innerHTML = "More";
-    moreBtn.id = "moreBtn69";
+    moreBtn.id = "moreCommentBtn69";
     const img = document.createElement("img");
     img.src = chrome.runtime.getURL("downArrow.png");
     img.setAttribute("style", "width: 10px; height: 7px; margin-left: 4px;");
@@ -132,6 +146,7 @@ export const EmbedButtonsInCommentBox = () => {
     buttons.appendChild(disagreeBtn);
     buttons.appendChild(funnyBtn);
     buttons.appendChild(questionBtn);
+    buttons.appendChild(regenerate);
     buttons.appendChild(moreBtn);
 
     buttons.setAttribute(

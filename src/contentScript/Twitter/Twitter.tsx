@@ -13,7 +13,7 @@ const Twitter = () => {
     body.addEventListener("mouseover", (e) => {
       if (
         !(e.target as HTMLElement).closest("#moreBtn69") &&
-        !(e.target as HTMLElement).closest("#twitterVakya69")
+        !(e.target as HTMLElement).closest("#containerVakya69")
       ) {
         setIsDropdownOpen(false);
       }

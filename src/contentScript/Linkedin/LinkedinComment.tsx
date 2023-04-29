@@ -4,7 +4,17 @@ import { useAuth } from "../../options/AuthContext";
 import { PLATFORMS, TONE_IDS } from "../config";
 import { toast } from "react-hot-toast";
 
-const Linkedin = () => {
+function getLinkedInText(elem: any) {
+  const text = elem
+    .closest(".feed-shared-update-v2")
+    .querySelector(".feed-shared-update-v2__description")
+    .textContent.trim()
+    .replaceAll("\n", "")
+    .replaceAll("…see more", "");
+  return text;
+}
+
+const LinkedinComment = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { isLoggedin, profiles } = useAuth();
   const [isGenerating, setIsGenerating] = useState(false);
@@ -15,14 +25,16 @@ const Linkedin = () => {
     toneId: "",
   });
 
-  const moreBtnId = document.getElementById("moreBtn69");
-  const funnyBtn69 = document.getElementById("funnyBtn69");
-  const interestingBtn69 = document.getElementById("interestingBtn69");
-  const qaBtn69 = document.getElementById("qaBtn69");
+  const moreBtnId = document.getElementById("moreCommentBtn69");
+  const funnyBtn69 = document.getElementById("funnyCommentBtn69");
+  const agreeBtn69 = document.getElementById("agreeBtnBtn69");
+  const disagreeBtn69 = document.getElementById("disagreeBtn69");
+  //   const interestingBtn69 = document.getElementById("interestingBtn69");
+  const qaBtn69 = document.getElementById("questionBtn69");
   const regenerateBtn69 = document.getElementById("regenerateBtn69");
   useEffect(() => {
     moreBtnId?.addEventListener("click", () => {
-      console.log("clicked", isDropdownOpen);
+      console.log("clicked comment", isDropdownOpen);
       setIsDropdownOpen(!isDropdownOpen);
     });
 
@@ -72,34 +84,45 @@ const Linkedin = () => {
   useEffect(() => {
     if (isLoggedin) {
       funnyBtn69.addEventListener("click", () => {
-        const qlEditorValue = qlEditor?.textContent;
-        setFormData({
-          ...formData,
-          prompt: qlEditorValue,
-          toneId: TONE_IDS.FUNNY,
-        });
-        handleSubmit(qlEditorValue, TONE_IDS.FUNNY);
+        const text = getLinkedInText(qlEditor);
+        // setFormData({
+        //   ...formData,
+        //   prompt: text,
+        //   toneId: TONE_IDS.FUNNY,
+        // });
+        // handleSubmit(qlEditorValue, TONE_IDS.FUNNY);
+        console.log("funnyBtn69");
       });
 
-      interestingBtn69.addEventListener("click", () => {
-        const qlEditorValue = qlEditor?.textContent;
-        setFormData({
-          ...formData,
-          prompt: qlEditorValue,
-          toneId: TONE_IDS.INTERESTING,
-        });
-        handleSubmit(qlEditorValue, TONE_IDS.INTERESTING);
-      });
+      //   agreeBtn69.addEventListener("click", () => {
+      //     const qlEditorValue = qlEditor?.textContent;
+      //     setFormData({
+      //       ...formData,
+      //       prompt: qlEditorValue,
+      //       toneId: TONE_IDS.LIKE,
+      //     });
+      //     handleSubmit(qlEditorValue, TONE_IDS.LIKE);
+      //   });
 
-      qaBtn69.addEventListener("click", () => {
-        const qlEditorValue = qlEditor?.textContent;
-        setFormData({
-          ...formData,
-          prompt: qlEditorValue,
-          toneId: TONE_IDS.QUESTION,
-        });
-        handleSubmit(qlEditorValue, TONE_IDS.QUESTION);
-      });
+      //   disagreeBtn69.addEventListener("click", () => {
+      //     const qlEditorValue = qlEditor?.textContent;
+      //     setFormData({
+      //       ...formData,
+      //       prompt: qlEditorValue,
+      //       toneId: TONE_IDS.DISLIKE,
+      //     });
+      //     handleSubmit(qlEditorValue, TONE_IDS.DISLIKE);
+      //   });
+
+      //   qaBtn69.addEventListener("click", () => {
+      //     const qlEditorValue = qlEditor?.textContent;
+      //     setFormData({
+      //       ...formData,
+      //       prompt: qlEditorValue,
+      //       toneId: TONE_IDS.QUESTION,
+      //     });
+      //     handleSubmit(qlEditorValue, TONE_IDS.QUESTION);
+      //   });
 
       regenerateBtn69.addEventListener("click", () => {
         handleSubmit(formData.prompt, formData.toneId);
@@ -111,8 +134,10 @@ const Linkedin = () => {
     if (isGenerating) {
       funnyBtn69?.setAttribute("disabled", "true");
       funnyBtn69?.style.setProperty("cursor", "not-allowed");
-      interestingBtn69?.setAttribute("disabled", "true");
-      interestingBtn69?.style.setProperty("cursor", "not-allowed");
+      agreeBtn69?.setAttribute("disabled", "true");
+      agreeBtn69?.style.setProperty("cursor", "not-allowed");
+      disagreeBtn69?.setAttribute("disabled", "true");
+      disagreeBtn69?.style.setProperty("cursor", "not-allowed");
       qaBtn69?.setAttribute("disabled", "true");
       qaBtn69?.style.setProperty("cursor", "not-allowed");
       moreBtnId?.setAttribute("disabled", "true");
@@ -121,8 +146,10 @@ const Linkedin = () => {
     } else {
       funnyBtn69?.removeAttribute("disabled");
       funnyBtn69?.style.setProperty("cursor", "pointer");
-      interestingBtn69?.removeAttribute("disabled");
-      interestingBtn69?.style.setProperty("cursor", "pointer");
+      agreeBtn69?.removeAttribute("disabled");
+      agreeBtn69?.style.setProperty("cursor", "pointer");
+      disagreeBtn69?.removeAttribute("disabled");
+      disagreeBtn69?.style.setProperty("cursor", "pointer");
       qaBtn69?.removeAttribute("disabled");
       qaBtn69?.style.setProperty("cursor", "pointer");
       moreBtnId?.removeAttribute("disabled");
@@ -235,6 +262,8 @@ const Linkedin = () => {
     });
   };
 
+  console.log("isGenerating", isGenerating);
+
   return isDropdownOpen ? (
     <div className="w-[30rem] rounded-lg bg-dark flex flex-col space-y-6 p-4 border border-primary">
       <div className="flex items-start space-x-4">
@@ -332,4 +361,4 @@ const Linkedin = () => {
   ) : null;
 };
 
-export default Linkedin;
+export default LinkedinComment;
