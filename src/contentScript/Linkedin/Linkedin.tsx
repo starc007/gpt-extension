@@ -13,6 +13,8 @@ const Linkedin = () => {
   const [formData, setFormData] = useState({
     prompt: "",
     toneId: "",
+    profileId: "",
+    additionalInfo: "",
   });
 
   const moreBtnId = document.getElementById("moreBtn69");
@@ -22,7 +24,6 @@ const Linkedin = () => {
   const regenerateBtn69 = document.getElementById("regenerateBtn69");
   useEffect(() => {
     moreBtnId?.addEventListener("click", () => {
-      console.log("clicked", isDropdownOpen);
       setIsDropdownOpen(!isDropdownOpen);
     });
 
@@ -31,7 +32,9 @@ const Linkedin = () => {
     };
   }, [isDropdownOpen]);
   const qlEditor = document?.querySelector(".ql-editor");
+
   const handleSubmit = (prompt: string, toneId: string) => {
+    setFormData({ prompt, toneId, profileId: "", additionalInfo: "" });
     const PromptData = {
       prompt: prompt,
       toneId: toneId,
@@ -54,6 +57,7 @@ const Linkedin = () => {
         return;
       } else if (msg.message === "success") {
         const { data } = msg;
+        console.log("data", data);
         let prevText = qlEditor?.textContent;
         if (prevText === text) prevText = "";
         if (prevText?.includes("undefined")) {
@@ -63,8 +67,11 @@ const Linkedin = () => {
           prevText = data?.replace("undefined", " ");
         }
         if (prevText === "Writing......") prevText = " ";
-        qlEditor.textContent = prevText + data;
-        setText(prevText + data);
+        let txt = prevText + data;
+        txt = txt.replace("undefined", " ");
+        qlEditor.textContent = txt;
+        // qlEditor.textContent = prevText + data;
+        setText(txt);
       }
     });
   };
@@ -73,31 +80,16 @@ const Linkedin = () => {
     if (isLoggedin) {
       funnyBtn69.addEventListener("click", () => {
         const qlEditorValue = qlEditor?.textContent;
-        setFormData({
-          ...formData,
-          prompt: qlEditorValue,
-          toneId: TONE_IDS.FUNNY,
-        });
         handleSubmit(qlEditorValue, TONE_IDS.FUNNY);
       });
 
       interestingBtn69.addEventListener("click", () => {
         const qlEditorValue = qlEditor?.textContent;
-        setFormData({
-          ...formData,
-          prompt: qlEditorValue,
-          toneId: TONE_IDS.INTERESTING,
-        });
         handleSubmit(qlEditorValue, TONE_IDS.INTERESTING);
       });
 
       qaBtn69.addEventListener("click", () => {
         const qlEditorValue = qlEditor?.textContent;
-        setFormData({
-          ...formData,
-          prompt: qlEditorValue,
-          toneId: TONE_IDS.QUESTION,
-        });
         handleSubmit(qlEditorValue, TONE_IDS.QUESTION);
       });
 
@@ -105,7 +97,7 @@ const Linkedin = () => {
         handleSubmit(formData.prompt, formData.toneId);
       });
     }
-  }, [isLoggedin]);
+  }, [isLoggedin, formData]);
 
   const handleGenerate = () => {
     if (isGenerating) {
@@ -148,8 +140,9 @@ const Linkedin = () => {
   if (!isLoggedin) return null;
 
   const handleSubmitProfile = (profileId: string) => {
+    setFormData({ prompt: "", toneId: "", profileId, additionalInfo: "" });
     const PromptData = {
-      prompt: prompt,
+      prompt: "",
       toneId: "",
       maxTokens: 100,
       numResponses: 1,
@@ -179,8 +172,11 @@ const Linkedin = () => {
           prevText = data?.replace("undefined", " ");
         }
         if (prevText === "Writing......") prevText = " ";
-        qlEditor.textContent = prevText + data;
-        setText(prevText + data);
+        let txt = prevText + data;
+        txt = txt.replace("undefined", " ");
+        qlEditor.textContent = txt;
+        // qlEditor.textContent = prevText + data;
+        setText(txt);
       }
     });
   };
@@ -195,6 +191,12 @@ const Linkedin = () => {
 
   const SubmitGenerateThirdPerson = () => {
     // if (!name) return toast.error("Please enter ");
+    setFormData({
+      prompt: "",
+      toneId: "",
+      profileId: "",
+      additionalInfo: name,
+    });
     const PromptData = {
       prompt: "",
       toneId: "",
@@ -229,8 +231,11 @@ const Linkedin = () => {
           prevText = data?.replace("undefined", " ");
         }
         if (prevText === "Writing......") prevText = " ";
-        qlEditor.textContent = prevText + data;
-        setText(prevText + data);
+        //   qlEditor.textContent = prevText + data;
+        let txt = prevText + data;
+        txt = txt.replace("undefined", " ");
+        qlEditor.textContent = txt;
+        setText(txt);
       }
     });
   };

@@ -1,3 +1,52 @@
+import { PLATFORMS } from "../config";
+
+function textNodesUnder(node) {
+  var all = [];
+  for (node = node.firstChild; node; node = node.nextSibling) {
+    if (node.nodeType == 3) all.push(node);
+    else all = all.concat(textNodesUnder(node));
+  }
+
+  return all;
+}
+
+export function findCurrentTweetText() {
+  let modalText = document.querySelector('[aria-labelledby="modal-header"]');
+  modalText = modalText
+    ? modalText.querySelector('[data-testid="tweetText"]') ||
+      modalText.querySelector('[data-testid="tweet"]')
+    : document.querySelector('[data-testid="tweetText"]');
+  // const modalText = document.querySelector('[data-testid="tweetText"]');
+  let textRaw = null;
+
+  if (modalText) {
+    textRaw = textNodesUnder(modalText);
+  } else {
+    //select twit text (there could be a lot of them if its a thread)
+    const tweetTextNodeList = document.querySelectorAll(
+      '[data-testid="tweetText"]'
+    );
+    // check if it's active tweet (node has font size 14px)
+    const tweetTextNode = Array.from(tweetTextNodeList).filter((node) => {
+      const styles = getComputedStyle(node);
+      return parseInt(styles.fontSize) > 20;
+    });
+
+    if (tweetTextNode.length > 0) {
+      textRaw = textNodesUnder(tweetTextNode[0]);
+    }
+  }
+  // get text from text object
+  const text = textRaw
+    ? textRaw
+        .map((node) => node.data)
+        .join(" ")
+        .trim()
+    : "";
+
+  return text;
+}
+
 export const EmbedTwitterButtons = () => {
   const isButtonsEmbeded = document.getElementById("vakyaBtn69");
   if (isButtonsEmbeded) {
@@ -11,7 +60,7 @@ export const EmbedTwitterButtons = () => {
     return;
   }
 
-  const funnyBtn = document.createElement("button");
+  const funnyBtn = document.createElement("div");
   funnyBtn.innerHTML = "😂 Funny";
   funnyBtn.id = "funnyBtn69";
   funnyBtn.setAttribute(
@@ -19,14 +68,14 @@ export const EmbedTwitterButtons = () => {
     "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; border-radius: 9999px; padding: 3px 8px; font-size: 12px; font-weight: 700"
   );
 
-  const interestingBtn = document.createElement("button");
+  const interestingBtn = document.createElement("div");
   interestingBtn.innerHTML = "😲 Interesting";
   interestingBtn.id = "interestingBtn69";
   interestingBtn.setAttribute(
     "style",
     "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; font-weight: 700; border-radius: 9999px; padding: 3px 8px; font-size: 12px; margin-left: 8px;"
   );
-  const qaBtn = document.createElement("button");
+  const qaBtn = document.createElement("div");
   qaBtn.innerHTML = "🤓 Q/A";
   qaBtn.id = "qaBtn69";
   qaBtn.setAttribute(
@@ -34,7 +83,7 @@ export const EmbedTwitterButtons = () => {
     "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; border-radius: 9999px; padding: 3px 8px; font-size: 12px; font-weight: 700;  margin-left: 8px;"
   );
 
-  const moreBtn = document.createElement("button");
+  const moreBtn = document.createElement("div");
   moreBtn.innerHTML = "More";
   moreBtn.id = "moreBtn69";
   const img = document.createElement("img");
@@ -62,3 +111,24 @@ export const EmbedTwitterButtons = () => {
   toolbar.lastElementChild.setAttribute("style", "margin-top: 9px;");
   toolbar.parentNode.prepend(buttons);
 };
+
+// export const updateInput = (newText) => {
+//   // if (linkedinElem) {
+//   //   linkedinElem.innerHTML = "<p>" + newText + "</p>";
+//   //   return;
+//   // }
+
+//   const input = document.querySelector('[data-testid="tweetTextarea_0"]');
+
+//   const data = new DataTransfer();
+//   data.setData("text/plain", newText);
+//   input.dispatchEvent(
+//     new ClipboardEvent("paste", {
+//       dataType: "text/plain",
+//       data: newText,
+//       bubbles: true,
+//       clipboardData: data,
+//       cancelable: true,
+//     })
+//   );
+// };
