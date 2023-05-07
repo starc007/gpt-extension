@@ -72,6 +72,17 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
   }
 });
 
+function getTheme() {
+  if (
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme:dark)").matches
+  ) {
+    return "dark";
+  } else {
+    return "light";
+  }
+}
+
 function CommentInit() {
   const isCommentEmbeded = document.getElementById("vakyaCommentContainer69");
   if (isCommentEmbeded) return;
@@ -79,15 +90,8 @@ function CommentInit() {
   const commentDiv = document.createElement("div");
   commentDiv.id = "vakyaCommentContainer69";
 
-  let isDarkMode = false;
-
-  if (
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  ) {
-    // dark mode
-    isDarkMode = true;
-  }
+  const theme = getTheme();
+  let isDarkMode = theme === "dark" ? true : false;
 
   if (isLinkedin) {
     if (loggedIn) {
@@ -102,7 +106,7 @@ function CommentInit() {
   }
 
   const commentButtons = document.getElementById("vakyaCommentBtn69");
-  commentButtons.appendChild(commentDiv);
+  commentButtons?.appendChild(commentDiv);
   const commentRoot = createRoot(commentDiv);
 
   commentRoot.render(
@@ -115,15 +119,9 @@ function SocialInit() {
 
   if (isEmbeded) return;
 
-  let isDarkMode = false;
+  const theme = getTheme();
 
-  if (
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  ) {
-    // dark mode
-    isDarkMode = true;
-  }
+  let isDarkMode = theme === "dark" ? true : false;
 
   const appDiv = document.createElement("div");
 
@@ -133,7 +131,7 @@ function SocialInit() {
     EmbedTwitterButtons();
     appDiv.setAttribute(
       "style",
-      "position: absolute; top: 26px; right: -103px; z-index: 999;"
+      "position: absolute; top: 31px; right: -103px; z-index: 999;"
     );
   }
   if (isLinkedin) {
@@ -152,7 +150,7 @@ function SocialInit() {
   const btnVakya = document.getElementById("vakyaBtn69");
 
   if (!btnVakya) return;
-  btnVakya.appendChild(appDiv);
+  btnVakya?.appendChild(appDiv);
   const root = createRoot(appDiv);
 
   root.render(
@@ -184,10 +182,7 @@ const interval = setInterval(() => {
 
   if (commentButtons.length > 0) CommentInit();
 
-  if (
-    (isTwitter && twitterCheck) ||
-    (isLinkedin && (linkedinCheck || commentButtons.length > 0))
-  ) {
+  if (isTwitter || (isLinkedin && linkedinCheck)) {
     SocialInit();
     // clearInterval(interval);
   } else if (conditionCheck) {

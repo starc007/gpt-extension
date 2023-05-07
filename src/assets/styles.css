@@ -79,13 +79,12 @@ css-v7duua:hover {
 }
 /* w-full h-10 px-3 text-base placeholder-gray-600 border rounded-lg appearance-none focus:shadow-outline */
 .selectLinkedin69 {
-  @apply rounded-lg appearance-none focus:outline-none focus:ring-0 bg-transparent mt-2;
+  @apply rounded-lg appearance-none focus:outline-none focus:ring-0 bg-transparent mt-2 dark:text-white text-black;
   width: 100%;
   height: 35px;
-  padding: 0 0.5rem;
+  padding: 0 1rem;
   font-size: 12px;
-  color: #fff;
-  background-color: transparent;
+  background-color: transparent !important;
   border: none;
   outline: none;
 }
@@ -103,12 +102,11 @@ css-v7duua:hover {
 }
 .divLinkedin__moreBtn69 > input {
   /* @apply w-max h-10 px-2 text-sm text-white bg-transparent border-none focus:outline-none; */
-  @apply border-none border-transparent focus:outline-none;
+  @apply border-none border-transparent focus:outline-none dark:text-white text-black placeholder-white;
   width: 100%;
   height: 35px;
   padding: 0 0.5rem;
   font-size: 12px;
-  color: #fff;
   background-color: transparent;
   border: none;
   outline: none;

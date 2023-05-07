@@ -17,28 +17,28 @@ const Twitter = () => {
   });
 
   const moreBtnId = document.getElementById("moreBtn69");
-  const funnyBtn69 = document.getElementById("funnyBtn69");
-  const interestingBtn69 = document.getElementById("interestingBtn69");
-  const qaBtn69 = document.getElementById("qaBtn69");
-  const regenerateBtn69 = document.getElementById("regenerateBtn69");
+  // const funnyBtn69 = document.getElementById("funnyBtn69");
+  // const interestingBtn69 = document.getElementById("interestingBtn69");
+  // const qaBtn69 = document.getElementById("qaBtn69");
+  // const regenerateBtn69 = document.getElementById("regenerateBtn69");
   useEffect(() => {
-    moreBtnId?.addEventListener("mouseover", () => {
-      setIsDropdownOpen(true);
+    moreBtnId?.addEventListener("click", () => {
+      setIsDropdownOpen(!isDropdownOpen);
     });
-    const body = document.querySelector("body");
-    body.addEventListener("mouseover", (e) => {
-      if (
-        !(e.target as HTMLElement).closest("#moreBtn69") &&
-        !(e.target as HTMLElement).closest("#containerVakya69")
-      ) {
-        setIsDropdownOpen(false);
-      }
-    });
+    // const body = document.querySelector("body");
+    // body.addEventListener("mouseover", (e) => {
+    //   if (
+    //     !(e.target as HTMLElement).closest("#moreBtn69") &&
+    //     !(e.target as HTMLElement).closest("#containerVakya69")
+    //   ) {
+    //     setIsDropdownOpen(false);
+    //   }
+    // });
 
     return () => {
       moreBtnId?.removeEventListener("mouseover", () => {});
     };
-  }, []);
+  }, [isDropdownOpen]);
 
   const twitterTextArea = document.querySelector(
     '[data-testid="tweetTextarea_0"]'
@@ -47,71 +47,82 @@ const Twitter = () => {
     twitterTextArea.click();
   }, []);
 
-  const handleSubmit = (prompt: string, toneId: string) => {
-    const text = twitterTextArea.innerText;
-    console.log("text", text);
+  // const handleSubmit = (prompt: string, toneId: string) => {
+  //   const text = twitterTextArea.innerText;
+  //   console.log("text", text);
 
-    const PromptData = {
-      prompt: text ? text : prompt,
-      toneId: toneId,
-      maxTokens: 100,
-      numResponses: 1,
-      categoryInfoId: PLATFORMS.TWITTER,
-      meta: {
-        source: PLATFORMS.TWITTER,
-        description: text ? "replied to a tweet" : "Created post on twitter",
-      },
-    };
-    setIsGenerating(true);
-    var port = chrome.runtime.connect({ name: "vakya" });
-    // twitterTextArea.innerText = "Writing......";
-    port.postMessage({ type: "getPrompt", promptData: PromptData });
-    port.onMessage.addListener((msg) => {
-      if (msg.message === "done") {
-        setIsGenerating(false);
-        return;
-      } else if (msg.message === "success") {
-        const { data } = msg;
-        let prevText = twitterTextArea.innerText;
-        if (prevText === allText) prevText = "";
-        if (prevText?.includes("undefined")) {
-          prevText = prevText?.replace("undefined", " ");
-        }
-        if (data?.includes("undefined")) {
-          prevText = data?.replace("undefined", " ");
-        }
-        if (prevText === "Writing......") prevText = "";
-        let txt = prevText + data;
-        txt = txt.replace("undefined", " ");
+  //   const PromptData = {
+  //     prompt: text ? text : prompt,
+  //     toneId: toneId,
+  //     maxTokens: 100,
+  //     numResponses: 1,
+  //     categoryInfoId: PLATFORMS.TWITTER,
+  //     meta: {
+  //       source: PLATFORMS.TWITTER,
+  //       description: prompt ? "replied to a tweet" : "Created post on twitter",
+  //     },
+  //   };
+  //   setIsGenerating(true);
+  //   var port = chrome.runtime.connect({ name: "vakya" });
+  //   // twitterTextArea.innerText = "Writing......";
+  //   port.postMessage({ type: "getPrompt", promptData: PromptData });
+  //   port.onMessage.addListener((msg) => {
+  //     if (msg.message === "done") {
+  //       setIsGenerating(false);
+  //       return;
+  //     } else if (msg.message === "success") {
+  //       const { data } = msg;
+  //       let prevText = twitterTextArea.innerText;
+  //       if (prevText === allText) prevText = "";
+  //       if (prevText?.includes("undefined")) {
+  //         prevText = prevText?.replace("undefined", " ");
+  //       }
+  //       if (data?.includes("undefined")) {
+  //         prevText = data?.replace("undefined", " ");
+  //       }
+  //       if (prevText === "Writing......") prevText = "";
+  //       let txt = prevText + data;
+  //       txt = txt.replace("undefined", " ");
 
-        twitterTextArea.innerText = txt;
+  //       // twitterTextArea.innerText = txt;
+  //       //add text to the text area
+  //       // twitterTextArea.value = txt;
+  //       // twitterTextArea.innerText = txt;
+  //       // twitterTextArea.dispatchEvent(new Event("input", { bubbles: true }));
+  //       const input = document.querySelector('[data-testid="tweetTextarea_0"]');
+  //       const dataTo = new DataTransfer();
+  //       dataTo.setData("text/plain", txt);
+  //       input.dispatchEvent(
+  //         new ClipboardEvent("paste", {
+  //           clipboardData: dataTo,
+  //           bubbles: true,
+  //           cancelable: true,
+  //         } as ClipboardEventInit)
+  //       );
 
-        setAllText(txt);
-      }
-    });
-  };
+  //       setAllText(txt);
+  //     }
+  //   });
+  // };
 
   useEffect(() => {
-    if (isLoggedin) {
-      funnyBtn69?.addEventListener("click", () => {
-        const text = findCurrentTweetText();
-        handleSubmit(text, TONE_IDS.FUNNY);
-      });
-
-      interestingBtn69?.addEventListener("click", () => {
-        const text = findCurrentTweetText();
-        handleSubmit(text, TONE_IDS.INTERESTING);
-      });
-
-      qaBtn69?.addEventListener("click", () => {
-        const text = findCurrentTweetText();
-        handleSubmit(text, TONE_IDS.QUESTION);
-      });
-
-      regenerateBtn69?.addEventListener("click", () => {
-        handleSubmit(formData.prompt, formData.toneId);
-      });
-    }
+    // if (isLoggedin) {
+    //   funnyBtn69?.addEventListener("click", () => {
+    //     const text = findCurrentTweetText();
+    //     handleSubmit(text, TONE_IDS.FUNNY);
+    //   });
+    //   interestingBtn69?.addEventListener("click", () => {
+    //     const text = findCurrentTweetText();
+    //     handleSubmit(text, TONE_IDS.INTERESTING);
+    //   });
+    //   qaBtn69?.addEventListener("click", () => {
+    //     const text = findCurrentTweetText();
+    //     handleSubmit(text, TONE_IDS.QUESTION);
+    //   });
+    //   regenerateBtn69?.addEventListener("click", () => {
+    //     handleSubmit(formData.prompt, formData.toneId);
+    //   });
+    // }
   }, [isLoggedin, formData]);
 
   return isDropdownOpen ? (

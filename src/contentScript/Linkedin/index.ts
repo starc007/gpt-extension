@@ -1,3 +1,4 @@
+import { addLoading, removeLoading } from "../common";
 import { PLATFORMS, TONE_IDS } from "../config";
 
 let isLinkedIn = window.location.origin.includes("linkedin.com");
@@ -88,54 +89,6 @@ function getLinkedInText(elem: any) {
   return text;
 }
 
-function addLoading() {
-  const func = (buttons) => {
-    if (!buttons) {
-      return null;
-    }
-
-    buttons.style.opacity = 0.6;
-    buttons.style.pointerEvents = "none";
-  };
-
-  if (isLinkedIn) {
-    const commentButtons = document.querySelectorAll(
-      "form.comments-comment-box__form"
-    );
-    commentButtons.forEach((commentButton) => {
-      const buttons = commentButton.querySelector(".vakyaCommentBtn69");
-      func(buttons);
-    });
-  } else {
-    const buttons = document.getElementById("vakyaCommentBtn69");
-    func(buttons);
-  }
-}
-
-function removeLoading() {
-  const func = (buttons) => {
-    if (!buttons) {
-      return null;
-    }
-
-    buttons.style.opacity = 1;
-    buttons.style.pointerEvents = "auto";
-  };
-
-  if (isLinkedIn) {
-    const commentButtons = document.querySelectorAll(
-      "form.comments-comment-box__form"
-    );
-    commentButtons.forEach((commentButton) => {
-      const buttons = commentButton.querySelector(".vakyaCommentBtn69");
-      func(buttons);
-    });
-  } else {
-    const buttons = document.getElementById("vakyaCommentBtn69");
-    func(buttons);
-  }
-}
-
 function sendServerRequest(toneId: string, text: string, linkElem: any) {
   const PromptData = {
     prompt: text,
@@ -152,10 +105,10 @@ function sendServerRequest(toneId: string, text: string, linkElem: any) {
   var port = chrome.runtime.connect({ name: "vakya" });
   linkElem.textContent = "Writing......";
   port.postMessage({ type: "getPrompt", promptData: PromptData });
-  addLoading();
+  addLoading(isLinkedIn);
   port.onMessage.addListener((msg) => {
     if (msg.message === "done") {
-      removeLoading();
+      removeLoading(isLinkedIn);
       return;
     } else if (msg.message === "success") {
       const { data } = msg;
@@ -190,7 +143,7 @@ export const EmbedButtonsInCommentBox = () => {
     agreeBtn.id = "agreeBtn69";
     agreeBtn.setAttribute(
       "style",
-      "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; border-radius: 9999px; padding: 4px 14px; font-size: 12px; font-weight: 700;"
+      "cursor: pointer; color: #7F56D9; border: 1px solid #7F56D9; background: transparent; border-radius: 9999px; padding: 4px 14px; font-size: 12px; font-weight: 700;"
     );
     agreeBtn.addEventListener("click", (e) => {
       const text = getLinkedInText(e.target);
@@ -203,7 +156,7 @@ export const EmbedButtonsInCommentBox = () => {
     disagreeBtn.id = "disagreeBtn69";
     disagreeBtn.setAttribute(
       "style",
-      "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; border-radius: 9999px; padding: 4px 14px; font-size: 12px; font-weight: 700;  margin-left: 8px;"
+      "cursor: pointer; color: #7F56D9; border: 1px solid #7F56D9; background: transparent; border-radius: 9999px; padding: 4px 14px; font-size: 12px; font-weight: 700;  margin-left: 8px;"
     );
 
     disagreeBtn.addEventListener("click", (e) => {
@@ -217,7 +170,7 @@ export const EmbedButtonsInCommentBox = () => {
     supportBtn.id = "supportBtn69";
     supportBtn.setAttribute(
       "style",
-      "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; border-radius: 9999px; padding: 4px 14px; font-size: 12px; font-weight: 700;  margin-left: 8px;"
+      "cursor: pointer; color: #7F56D9; border: 1px solid #7F56D9; background: transparent; border-radius: 9999px; padding: 4px 14px; font-size: 12px; font-weight: 700;  margin-left: 8px;"
     );
 
     supportBtn.addEventListener("click", (e) => {
@@ -231,7 +184,7 @@ export const EmbedButtonsInCommentBox = () => {
     funnyBtn.id = "funnyCommentBtn69";
     funnyBtn.setAttribute(
       "style",
-      "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; border-radius: 9999px; padding: 4px 8px; font-size: 12px; font-weight: 700; margin-left: 8px;"
+      "cursor: pointer; color: #7F56D9; border: 1px solid #7F56D9; background: transparent; border-radius: 9999px; padding: 4px 8px; font-size: 12px; font-weight: 700; margin-left: 8px;"
     );
 
     funnyBtn.addEventListener("click", (e) => {
@@ -245,7 +198,7 @@ export const EmbedButtonsInCommentBox = () => {
     questionBtn.id = "questionBtn69";
     questionBtn.setAttribute(
       "style",
-      "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; font-weight: 700; border-radius: 9999px; padding: 4px 8px; font-size: 12px; margin-left: 8px;"
+      "cursor: pointer; color: #7F56D9; border: 1px solid #7F56D9; background: transparent; font-weight: 700; border-radius: 9999px; padding: 4px 8px; font-size: 12px; margin-left: 8px;"
     );
     questionBtn.addEventListener("click", (e) => {
       const text = getLinkedInText(e.target);
@@ -253,17 +206,17 @@ export const EmbedButtonsInCommentBox = () => {
       sendServerRequest(TONE_IDS.QUESTION, text, elem);
     });
 
-    // const moreBtn = document.createElement("div");
-    // moreBtn.innerHTML = "More";
-    // moreBtn.id = "moreCommentBtn69";
-    // const img = document.createElement("img");
-    // img.src = chrome.runtime.getURL("downArrow.png");
-    // img.setAttribute("style", "width: 10px; height: 7px; margin-left: 4px;");
-    // moreBtn.appendChild(img);
-    // moreBtn.setAttribute(
-    //   "style",
-    //   "cursor:pointer; background: #F9F5FF; border: none; color: #7F56D9; font-size: 12px; font-weight: 600; border-radius:9999px; padding: 4px 10px; margin-left: 8px; display: flex; align-items: center;"
-    // );
+    const moreBtn = document.createElement("div");
+    moreBtn.innerHTML = "More";
+    moreBtn.id = "moreCommentBtn69";
+    const img = document.createElement("img");
+    img.src = chrome.runtime.getURL("downArrow.png");
+    img.setAttribute("style", "width: 10px; height: 7px; margin-left: 4px;");
+    moreBtn.appendChild(img);
+    moreBtn.setAttribute(
+      "style",
+      "cursor:pointer; background: #F9F5FF; border: none; color: #7F56D9; font-size: 12px; font-weight: 600; border-radius:9999px; padding: 4px 10px; margin-left: 8px; display: flex; align-items: center;"
+    );
 
     const buttons = document.createElement("div");
     buttons.id = "vakyaCommentBtn69";
@@ -272,8 +225,9 @@ export const EmbedButtonsInCommentBox = () => {
     buttons.appendChild(disagreeBtn);
     buttons.appendChild(funnyBtn);
     buttons.appendChild(questionBtn);
+    buttons.appendChild(supportBtn);
     // buttons.appendChild(regenerate);
-    // buttons.appendChild(moreBtn);
+    buttons.appendChild(moreBtn);
 
     buttons.setAttribute(
       "style",
@@ -285,6 +239,7 @@ export const EmbedButtonsInCommentBox = () => {
 };
 
 export const EmbedEmptyMessageBtn = (isDarkMode: boolean) => {
+  console.log("EmbedEmptyMessageBtn", isDarkMode);
   // Use Vakya for creating posts through AI
   const isButtonsEmbeded = document.getElementById("vakyaBtn69");
   if (isButtonsEmbeded) {
@@ -311,7 +266,7 @@ export const EmbedEmptyMessageBtn = (isDarkMode: boolean) => {
     NologinBtn.setAttribute(
       "style",
       `cursor: pointer; color: ${
-        isDarkMode ? "#fff" : "#000"
+        isDarkMode ? "#7F56D9" : "#7F56D9"
       }; background: transparent; padding: 4px 8px; font-size: 13px; font-size: 13px; width:303px ;display:flex;`
     );
     const img = document.createElement("img");

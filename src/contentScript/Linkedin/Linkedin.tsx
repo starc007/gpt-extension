@@ -3,6 +3,7 @@ import "../../assets/tailwind.css";
 import { useAuth } from "../../options/AuthContext";
 import { PLATFORMS, TONE_IDS } from "../config";
 import { toast } from "react-hot-toast";
+import { ProfileType } from "../../api";
 
 const Linkedin = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -80,20 +81,24 @@ const Linkedin = () => {
     if (isLoggedin) {
       funnyBtn69.addEventListener("click", () => {
         const qlEditorValue = qlEditor?.textContent;
+        setIsDropdownOpen(false);
         handleSubmit(qlEditorValue, TONE_IDS.FUNNY);
       });
 
       interestingBtn69.addEventListener("click", () => {
         const qlEditorValue = qlEditor?.textContent;
+        setIsDropdownOpen(false);
         handleSubmit(qlEditorValue, TONE_IDS.INTERESTING);
       });
 
       qaBtn69.addEventListener("click", () => {
         const qlEditorValue = qlEditor?.textContent;
+        setIsDropdownOpen(false);
         handleSubmit(qlEditorValue, TONE_IDS.QUESTION);
       });
 
       regenerateBtn69.addEventListener("click", () => {
+        if (!formData.toneId) return;
         handleSubmit(formData.prompt, formData.toneId);
       });
     }
@@ -240,6 +245,11 @@ const Linkedin = () => {
     });
   };
 
+  // console.log("profiles", profiles);
+  const linkedinProfiles = profiles?.filter(
+    (profile: ProfileType) => profile?.categoryInfoId == PLATFORMS.LINKEDIN
+  );
+
   return isDropdownOpen ? (
     <div className="w-[30rem] rounded-lg bg-dark flex flex-col space-y-6 p-4 border border-primary">
       <div className="flex items-start space-x-4">
@@ -267,7 +277,7 @@ const Linkedin = () => {
             onChange={handleSelectChange}
           >
             <option value="0">Select Profile</option>
-            {profiles?.map((profile) => (
+            {linkedinProfiles.map((profile) => (
               <option key={profile.id} value={profile.id}>
                 {profile?.toneDescription?.title}
               </option>
@@ -300,7 +310,7 @@ const Linkedin = () => {
         <img src={chrome.runtime.getURL("usercheck.png")} className="w-6" />
         <div className="flex flex-col -mt-[2px]">
           <p
-            className="font-medium text-white"
+            className="font-medium dark:text-white text-black"
             style={{
               fontSize: "14px",
             }}

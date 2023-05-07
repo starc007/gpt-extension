@@ -1,4 +1,5 @@
-import { PLATFORMS } from "../config";
+import { addLoading, removeLoading } from "../common";
+import { PLATFORMS, TONE_IDS } from "../config";
 
 function textNodesUnder(node) {
   var all = [];
@@ -47,6 +48,71 @@ export function findCurrentTweetText() {
   return text;
 }
 
+let isLinkedIn = window.location.origin.includes("linkedin.com");
+
+function sendServerRequest(toneId: string, prompt: string) {
+  const twitterTextArea = document.querySelector(
+    '[data-testid="tweetTextarea_0"]'
+  ) as any;
+  const text = twitterTextArea.innerText;
+  const PromptData = {
+    prompt: text ? text : prompt,
+    toneId: toneId,
+    maxTokens: 100,
+    numResponses: 1,
+    categoryInfoId: PLATFORMS.TWITTER,
+    meta: {
+      source: PLATFORMS.TWITTER,
+      description: prompt ? "replied to a tweet" : "Created post on twitter",
+    },
+  };
+
+  // const txt =
+  //   "loreum ipsum dolor sit amet djahd kjdhjs dkdh jksd kjad jdj hd dkh adsakdhds";
+
+  // const dataTo = new DataTransfer();
+  // dataTo.setData("text/plain", txt);
+  // twitterTextArea.dispatchEvent(
+  //   new ClipboardEvent("paste", {
+  //     clipboardData: dataTo,
+  //     bubbles: true,
+  //     cancelable: true,
+  //   } as ClipboardEventInit)
+  // );
+  var port = chrome.runtime.connect({ name: "vakya" });
+  // twitterTextArea.innerText = "Writing......";
+  addLoading(isLinkedIn);
+  port.postMessage({ type: "getPrompt", promptData: PromptData });
+  port.onMessage.addListener((msg) => {
+    if (msg.message === "done") {
+      removeLoading(isLinkedIn);
+      return;
+    } else if (msg.message === "success") {
+      const { data } = msg;
+      let prevText = twitterTextArea.innerText;
+      if (prevText?.includes("undefined")) {
+        prevText = prevText?.replace("undefined", " ");
+      }
+      if (data?.includes("undefined")) {
+        prevText = data?.replace("undefined", " ");
+      }
+      if (prevText === "Writing......") prevText = "";
+      let txt = prevText + data;
+      txt = txt.replace("undefined", " ");
+
+      const dataTo = new DataTransfer();
+      dataTo.setData("text/plain", txt);
+      twitterTextArea.dispatchEvent(
+        new ClipboardEvent("paste", {
+          clipboardData: dataTo,
+          bubbles: true,
+          cancelable: true,
+        } as ClipboardEventInit)
+      );
+    }
+  });
+}
+
 export const EmbedTwitterButtons = () => {
   const isButtonsEmbeded = document.getElementById("vakyaBtn69");
   if (isButtonsEmbeded) {
@@ -65,23 +131,39 @@ export const EmbedTwitterButtons = () => {
   funnyBtn.id = "funnyBtn69";
   funnyBtn.setAttribute(
     "style",
-    "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; border-radius: 9999px; padding: 3px 8px; font-size: 12px; font-weight: 700"
+    "cursor: pointer; color: #7F56D9; border: 1px solid #7F56D9; background: transparent; border-radius: 9999px; padding: 3px 8px; font-size: 12px; font-weight: 700"
   );
+
+  funnyBtn.addEventListener("click", () => {
+    const text = findCurrentTweetText();
+    sendServerRequest(TONE_IDS.FUNNY, text);
+  });
 
   const interestingBtn = document.createElement("div");
   interestingBtn.innerHTML = "😲 Interesting";
   interestingBtn.id = "interestingBtn69";
   interestingBtn.setAttribute(
     "style",
-    "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; font-weight: 700; border-radius: 9999px; padding: 3px 8px; font-size: 12px; margin-left: 8px;"
+    "cursor: pointer; color: #7F56D9; border: 1px solid #7F56D9; background: transparent; font-weight: 700; border-radius: 9999px; padding: 3px 8px; font-size: 12px; margin-left: 8px;"
   );
+
+  interestingBtn.addEventListener("click", () => {
+    const text = findCurrentTweetText();
+    sendServerRequest(TONE_IDS.INTERESTING, text);
+  });
+
   const qaBtn = document.createElement("div");
   qaBtn.innerHTML = "🤓 Q/A";
   qaBtn.id = "qaBtn69";
   qaBtn.setAttribute(
     "style",
-    "cursor: pointer; color: #1d9bf0; border: 1px solid #1d9bf0; background: transparent; border-radius: 9999px; padding: 3px 8px; font-size: 12px; font-weight: 700;  margin-left: 8px;"
+    "cursor: pointer; color: #7F56D9; border: 1px solid #7F56D9; background: transparent; border-radius: 9999px; padding: 3px 8px; font-size: 12px; font-weight: 700;  margin-left: 8px;"
   );
+
+  qaBtn.addEventListener("click", () => {
+    const text = findCurrentTweetText();
+    sendServerRequest(TONE_IDS.QUESTION, text);
+  });
 
   const moreBtn = document.createElement("div");
   moreBtn.innerHTML = "More";
@@ -111,24 +193,3 @@ export const EmbedTwitterButtons = () => {
   toolbar.lastElementChild.setAttribute("style", "margin-top: 9px;");
   toolbar.parentNode.prepend(buttons);
 };
-
-// export const updateInput = (newText) => {
-//   // if (linkedinElem) {
-//   //   linkedinElem.innerHTML = "<p>" + newText + "</p>";
-//   //   return;
-//   // }
-
-//   const input = document.querySelector('[data-testid="tweetTextarea_0"]');
-
-//   const data = new DataTransfer();
-//   data.setData("text/plain", newText);
-//   input.dispatchEvent(
-//     new ClipboardEvent("paste", {
-//       dataType: "text/plain",
-//       data: newText,
-//       bubbles: true,
-//       clipboardData: data,
-//       cancelable: true,
-//     })
-//   );
-// };
