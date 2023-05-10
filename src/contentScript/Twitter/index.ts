@@ -50,6 +50,18 @@ export function findCurrentTweetText() {
 
 let isLinkedIn = window.location.origin.includes("linkedin.com");
 
+export const updateInput = (input: any, value: string) => {
+  const dataTo = new DataTransfer();
+  dataTo.setData("text/plain", value);
+  input.dispatchEvent(
+    new ClipboardEvent("paste", {
+      clipboardData: dataTo,
+      bubbles: true,
+      cancelable: true,
+    } as ClipboardEventInit)
+  );
+};
+
 function sendServerRequest(toneId: string, prompt: string) {
   const twitterTextArea = document.querySelector(
     '[data-testid="tweetTextarea_0"]'
@@ -79,38 +91,54 @@ function sendServerRequest(toneId: string, prompt: string) {
   //     cancelable: true,
   //   } as ClipboardEventInit)
   // );
-  var port = chrome.runtime.connect({ name: "vakya" });
+  // var port = chrome.runtime.connect({ name: "vakya" });
   // twitterTextArea.innerText = "Writing......";
   addLoading(isLinkedIn);
-  port.postMessage({ type: "getPrompt", promptData: PromptData });
-  port.onMessage.addListener((msg) => {
-    if (msg.message === "done") {
-      removeLoading(isLinkedIn);
-      return;
-    } else if (msg.message === "success") {
-      const { data } = msg;
-      let prevText = twitterTextArea.innerText;
-      if (prevText?.includes("undefined")) {
-        prevText = prevText?.replace("undefined", " ");
-      }
-      if (data?.includes("undefined")) {
-        prevText = data?.replace("undefined", " ");
-      }
-      if (prevText === "Writing......") prevText = "";
-      let txt = prevText + data;
-      txt = txt.replace("undefined", " ");
+  // port.postMessage({ type: "getPrompt", promptData: PromptData });
+  // port.onMessage.addListener((msg) => {
+  //   if (msg.message === "done") {
+  //     removeLoading(isLinkedIn);
+  //     return;
+  //   } else if (msg.message === "success") {
+  //     const { data } = msg;
+  //     let prevText = twitterTextArea.innerText;
+  //     if (prevText?.includes("undefined")) {
+  //       prevText = prevText?.replace("undefined", " ");
+  //     }
+  //     if (data?.includes("undefined")) {
+  //       prevText = data?.replace("undefined", " ");
+  //     }
+  //     if (prevText === "Writing......") prevText = "";
+  //     let txt = prevText + data;
+  //     txt = txt.replace("undefined", " ");
 
-      const dataTo = new DataTransfer();
-      dataTo.setData("text/plain", txt);
-      twitterTextArea.dispatchEvent(
-        new ClipboardEvent("paste", {
-          clipboardData: dataTo,
-          bubbles: true,
-          cancelable: true,
-        } as ClipboardEventInit)
-      );
+  //     const dataTo = new DataTransfer();
+  //     dataTo.setData("text/plain", txt);
+  //     twitterTextArea.dispatchEvent(
+  //       new ClipboardEvent("paste", {
+  //         clipboardData: dataTo,
+  //         bubbles: true,
+  //         cancelable: true,
+  //       } as ClipboardEventInit)
+  //     );
+  //   }
+  // });
+  // updateInput(twitterTextArea, "Writing......");
+  chrome.runtime.sendMessage(
+    { type: "getPrompt", promptData: PromptData },
+    (response) => {
+      if (response?.data?.length) {
+        const resText = response.data[0];
+        updateInput(twitterTextArea, resText);
+        removeLoading(isLinkedIn);
+      } else {
+        updateInput(
+          twitterTextArea,
+          "Failed to generate text please try again"
+        );
+      }
     }
-  });
+  );
 }
 
 export const EmbedTwitterButtons = () => {
@@ -176,6 +204,18 @@ export const EmbedTwitterButtons = () => {
     "style",
     "cursor:pointer; background: #F9F5FF; border: none; color: #7F56D9; font-size: 12px; font-weight: 600; border-radius:9999px; padding: 4px 10px; margin-left: 8px; display: flex; align-items: center;"
   );
+
+  moreBtn.addEventListener("click", () => {
+    const text = findCurrentTweetText();
+    // sendServerRequest(TONE_IDS.MORE, text);
+    const dropdown = document.getElementById("containerVakya69");
+    // if dropdown display is none then show it else hide it
+    if (dropdown.style.display === "none") {
+      dropdown.style.display = "block";
+    } else {
+      dropdown.style.display = "none";
+    }
+  });
 
   const buttons = document.createElement("div");
   buttons.id = "vakyaBtn69";

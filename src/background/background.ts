@@ -60,66 +60,67 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-chrome.runtime.onConnect.addListener((port) => {
-  port.onMessage.addListener((request) => {
-    if (request.type == "getPrompt") {
-      console.log("request", request);
-      fetch(`${HOST}/api/v1/prompts/getPromptsStream`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(request.promptData),
-      })
-        .then((res) => res.body)
-        .then((data) => {
-          const reader = data.getReader();
-          const decoder = new TextDecoder();
-          let finalResult = [];
-          reader.read().then(function processText({ done, value }) {
-            if (done) {
-              port.postMessage({ message: "done" });
-              return;
-            }
-            const chunk = value;
-            const decodedResult = decoder.decode(chunk || new Uint8Array(), {
-              stream: !done,
-            });
-            const result = decodedResult.split("data: ");
+// chrome.runtime.onConnect.addListener((port) => {
+//   port.onMessage.addListener((request) => {
+//     if (request.type == "getPrompt") {
+//       console.log("request", request);
+//       fetch(`${HOST}/api/v1/prompts/getPromptsStream`, {
+//         method: "POST",
+//         credentials: "include",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(request.promptData),
+//       })
+//         .then((res) => res.body)
+//         .then((data) => {
+//           const reader = data.getReader();
+//           const decoder = new TextDecoder();
+//           let finalResult = [];
+//           reader.read().then(function processText({ done, value }) {
+//             if (done) {
+//               port.postMessage({ message: "done" });
+//               return;
+//             }
+//             const chunk = value;
+//             const decodedResult = decoder.decode(chunk || new Uint8Array(), {
+//               stream: !done,
+//             });
+//             const result = decodedResult.split("data: ");
 
-            const dataObj = result.map((item, i) => {
-              try {
-                if (item == "[DONE]") return;
-                return JSON.parse(item);
-              } catch (error) {
-                if (!item.endsWith("}")) {
-                  const res1 = item + result[i + 1];
-                  try {
-                    return JSON.parse(res1);
-                  } catch (error) {
-                    return null;
-                  }
-                }
-                return null;
-              }
-            });
+//             const dataObj = result.map((item, i) => {
+//               try {
+//                 if (item == "[DONE]") return;
+//                 return JSON.parse(item);
+//               } catch (error) {
+//                 if (!item.endsWith("}")) {
+//                   const res1 = item + result[i + 1];
+//                   try {
+//                     return JSON.parse(res1);
+//                   } catch (error) {
+//                     return null;
+//                   }
+//                 }
+//                 return null;
+//               }
+//             });
 
-            const newData = dataObj.filter((item) => item !== null);
-            finalResult = [...finalResult, ...newData];
-            newData.forEach((item) => {
-              const data = item.choices?.[0]?.delta?.content;
-              if (data !== undefined || data !== null) {
-                port.postMessage({ message: "success", data: data });
-              }
-            });
+//             const newData = dataObj.filter((item) => item !== null);
+//             finalResult = [...finalResult, ...newData];
+//             newData.forEach((item) => {
+//               const data = item.choices?.[0]?.delta?.content;
+//               if (data !== undefined || data !== null) {
+//                 port.postMessage({ message: "success", data: data });
+//               }
+//             });
 
-            return reader.read().then(processText);
-          });
-        });
-    }
-  });
-});
+//             return reader.read().then(processText);
+//           });
+//         });
+//     }
+//   });
+// });
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === "getUser") {
     fetch(`${HOST}/api/v1/login/success`, {
@@ -148,134 +149,31 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 
-  // if (request.type === "getPrompt" && request.promptData) {
-  //   fetch(`${HOST}/api/v1/prompts/getPromptsStream`, {
-  //     method: "POST",
-  //     credentials: "include",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(request.promptData),
-  //   })
-  //     .then((res) => res.body)
-  //     .then((data) => {
-  //       const reader = data.getReader();
-  //       const decoder = new TextDecoder();
-  //       let finalResult = [];
-  //       reader.read().then(function processText({ done, value }) {
-  //         // Result objects contain two properties:
-  //         // done  - true if the stream has already given you all its data.
-  //         // value - some data. Always undefined when done is true.
-  //         if (done) {
-  //           console.log("Stream complete");
+  if (request.type === "getPrompt" && request.promptData) {
+    fetch(`${HOST}/api/v1/prompts/getPrompts`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request.promptData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data69", data);
+        if (data.headers.success) {
+          sendResponse({ message: "success", data: data.body.choices });
+        } else {
+          sendResponse({ message: "fail", data: [] });
+        }
+      })
+      .catch((err) => {
+        console.log("err69", err);
+        sendResponse({ message: "error", data: [] });
+      });
 
-  //           return;
-  //         }
-  //         const chunk = value;
-  //         const decodedResult = decoder.decode(chunk || new Uint8Array(), {
-  //           stream: !done,
-  //         });
-  //         // console.log("chunk", decodedResult);
-
-  //         const result = decodedResult.split("data: ");
-
-  //         const dataObj = result.map((item) => {
-  //           try {
-  //             return JSON.parse(item);
-  //           } catch (error) {
-  //             return null;
-  //           }
-  //         });
-
-  //         const newData = dataObj.filter((item) => item !== null);
-  //         finalResult = [...finalResult, ...newData];
-
-  //         newData.forEach((item) => {
-  //           const data = item.choices?.[0]?.delta?.content;
-  //           // console.log("data", data);
-  //           if (data) {
-  //             // console.log("data", data);
-  //             // sendResponse({ message: "success", data: data });
-  //             // var port = chrome.runtime.connect({ name: "vakya" });
-  //             // port.postMessage({ message: "success", data: data });
-  //             // port.onMessage.addListener(function (msg) {
-  //             //   if (msg.message === "more") {
-  //             //     port.postMessage({
-  //             //       message: "success",
-  //             //       data: finalResult,
-  //             //     });
-  //             //   }
-  //             // });
-  //           }
-  //         });
-
-  //         // const interval = setInterval(() => {
-  //         //  for (let i = 0; i < newData.length; i++) {
-  //         //    const data = newData[i].choices?.[0]?.delta?.content;
-  //         //    if (data) {
-  //         //      sendResponse({ message: "success", data: data });
-  //         //    }
-  //         //  }
-
-  //         //   if(done) clearInterval(interval )
-
-  //         // }, 100);
-
-  //         return reader.read().then(processText);
-  //       });
-
-  //       // const interval = setInterval(() => {
-  //       //   for (let i = 0; i < finalResult.length; i++) {
-  //       //     const data = finalResult[i].choices?.[0]?.delta?.content;
-  //       //     if (data) {
-  //       //       sendResponse({ message: "success", data: data });
-  //       //     }
-  //       //   }
-
-  //       //   clearInterval(interval);
-  //       // }, 100);
-  //       // for (let i = 0; i < finalResult.length; i++) {
-  //       //   const data = finalResult[i].choices?.[0]?.delta?.content;
-  //       //   if (data) {
-  //       //     sendResponse({ message: "success", data: data });
-  //       //   }
-  //       // }
-  //     })
-  //     .catch((err) => {
-  //       console.log("err69", err);
-  //       sendResponse({ message: "error", data: [] });
-  //     });
-
-  //   return true;
-  // }
-
-  // if (request.type === "getPrompt" && request.promptData) {
-  //   fetch(`${HOST}/api/v1/prompts/getPromptsStream`, {
-  //     method: "POST",
-  //     credentials: "include",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(request.promptData),
-  //   })
-  //     // .then((res) =>
-
-  //     // )
-  //     .then((data) => {
-  //       console.log("data69", data);
-  //       // if (data.headers.success) {
-  //       //   sendResponse({ message: "success", data: data.body.choices });
-  //       // } else {
-  //       //   sendResponse({ message: "fail", data: [] });
-  //       // }
-  //     })
-  //     .catch((err) => {
-  //       console.log("err69", err);
-  //       sendResponse({ message: "error", data: [] });
-  //     });
-
-  //   return true;
-  // }
+    return true;
+  }
 
   if (request.type === "fetchProfiles") {
     // ${HOST}/api/v1/user/getUserCustomTones?categoryID=${UPWORK_ID}`

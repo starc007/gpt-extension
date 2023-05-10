@@ -288,101 +288,48 @@ const contentScript = () => {
       },
     };
 
-    var port = chrome.runtime.connect({ name: "vakya" });
-    port.postMessage({ type: "getPrompt", promptData: promptData });
-    port.onMessage.addListener((msg) => {
-      if (msg.data) {
-        setGeneratedResponse((prev) => {
-          if (prev) {
-            return prev + msg.data;
-          } else {
-            return msg.data;
-          }
-        });
-        setIsGenerating({
-          success: true,
-          loader: false,
-        });
-      }
-      // if (msg.message === "done") {
-      // }
-    });
-
-    // chrome.runtime.sendMessage(
-    //   { type: "getPrompt", promptData: promptData },
-    //   (response) => {
-    //     console.log("response", response.data);
-    //     // if (response?.data?.length) {
-    //     //   const resText = response.data[0];
-    //     //   console.log("res text", resText);
-    //     setGeneratedResponse(response.data);
+    // var port = chrome.runtime.connect({ name: "vakya" });
+    // port.postMessage({ type: "getPrompt", promptData: promptData });
+    // port.onMessage.addListener((msg) => {
+    //   if (msg.data) {
+    //     setGeneratedResponse((prev) => {
+    //       if (prev) {
+    //         return prev + msg.data;
+    //       } else {
+    //         return msg.data;
+    //       }
+    //     });
     //     setIsGenerating({
     //       success: true,
     //       loader: false,
     //     });
-    //     // } else {
-    //     //   toast.error("Something went wrong please try again");
-    //     //   setIsGenerating({
-    //     //     success: false,
-    //     //     loader: false,
-    //     //   });
-    //     // }
     //   }
-    // );
+    //   // if (msg.message === "done") {
+    //   // }
+    // });
+
+    chrome.runtime.sendMessage(
+      { type: "getPrompt", promptData: promptData },
+      (response) => {
+        console.log("response", response.data);
+        if (response?.data?.length) {
+          const resText = response.data[0];
+          console.log("res text", resText);
+          setGeneratedResponse(response.data);
+          setIsGenerating({
+            success: true,
+            loader: false,
+          });
+        } else {
+          toast.error("Something went wrong please try again");
+          setIsGenerating({
+            success: false,
+            loader: false,
+          });
+        }
+      }
+    );
   };
-
-  // chrome.runtime.onConnect.addListener((port) => {
-  //   console.log("Connected .....");
-  //   port.onMessage.addListener((msg) => {
-  //     console.log("message recieved " + msg);
-  //     if (msg.data) {
-  //       port.postMessage({ message: "more" });
-  //     }
-  //   });
-  // });
-
-  // const StreamResponse = () => {
-  //   setIsGenerating({
-  //     success: false,
-  //     loader: true,
-  //   });
-  //   setErrMsg("");
-  //   const url = "https://api.vakya.ai/api/v1/prompts/getPromptsStream";
-  //   const promptData = {
-  //     prompt: formData.prompt,
-  //     maxTokens: formData.maxTokens,
-  //     numResponses: formData.numResponses,
-  //     toneId: formData.toneId,
-  //     categoryInfoId: formData.categoryInfoId,
-  //     customToneId: formData.customToneId, //profileid
-  //     additionalInfo: formData.additionalInfo,
-  //   };
-
-  //   const source = new SSE(url, {
-  //     withCredentials: true,
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(promptData),
-  //   });
-  //   source.addEventListener("message", (event) => {
-  //     console.log("event", event);
-  //     if (event.data !== "[DONE]") {
-  //       let payload = JSON.parse(event.data);
-  //       console.log("payload", payload);
-  //     } else {
-  //       source.close();
-  //     }
-  //   });
-
-  //   source.addEventListener("readystatechange", (event) => {
-  //     if (event.readyState >= 2) {
-  //       source.close();
-  //     }
-  //   });
-  //   source.stream();
-  // };
 
   const defaultProfile =
     profiles?.length > 0 &&

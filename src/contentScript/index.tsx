@@ -16,13 +16,10 @@ import {
 //Twitter button
 import { EmbedTwitterButtons } from "./Twitter";
 import Twitter from "./Twitter/Twitter";
-import {
-  EmbedButtonsInCommentBox,
-  EmbedEmptyMessageBtn,
-  EmbedLinkedinButtons,
-} from "./Linkedin";
+import { EmbedButtonsInCommentBox, EmbedLinkedinButtons } from "./Linkedin";
 import Linkedin from "./Linkedin/Linkedin";
 import LinkedinComment from "./Linkedin/LinkedinComment";
+import { EmbedEmptyMessageBtn } from "./common";
 
 const hostName = window.location.hostname;
 
@@ -72,16 +69,16 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
   }
 });
 
-function getTheme() {
-  if (
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme:dark)").matches
-  ) {
-    return "dark";
-  } else {
-    return "light";
-  }
-}
+// function getTheme() {
+//   if (
+//     window.matchMedia &&
+//     window.matchMedia("(prefers-color-scheme:dark)").matches
+//   ) {
+//     return "dark";
+//   } else {
+//     return "light";
+//   }
+// }
 
 function CommentInit() {
   const isCommentEmbeded = document.getElementById("vakyaCommentContainer69");
@@ -90,14 +87,14 @@ function CommentInit() {
   const commentDiv = document.createElement("div");
   commentDiv.id = "vakyaCommentContainer69";
 
-  const theme = getTheme();
-  let isDarkMode = theme === "dark" ? true : false;
+  // const theme = getTheme();
+  // let isDarkMode = theme === "dark" ? true : false;
 
   if (isLinkedin) {
     if (loggedIn) {
       EmbedButtonsInCommentBox();
     } else {
-      EmbedEmptyMessageBtn(isDarkMode);
+      EmbedEmptyMessageBtn();
     }
     commentDiv.setAttribute(
       "style",
@@ -119,16 +116,20 @@ function SocialInit() {
 
   if (isEmbeded) return;
 
-  const theme = getTheme();
+  // const theme = getTheme();
 
-  let isDarkMode = theme === "dark" ? true : false;
+  // let isDarkMode = theme === "dark" ? true : false;
 
   const appDiv = document.createElement("div");
 
   appDiv.id = "containerVakya69";
 
   if (isTwitter) {
-    EmbedTwitterButtons();
+    if (loggedIn) {
+      EmbedTwitterButtons();
+    } else {
+      EmbedEmptyMessageBtn();
+    }
     appDiv.setAttribute(
       "style",
       "position: absolute; top: 31px; right: -103px; z-index: 999;"
@@ -139,7 +140,7 @@ function SocialInit() {
       EmbedLinkedinButtons();
       EmbedButtonsInCommentBox();
     } else {
-      EmbedEmptyMessageBtn(isDarkMode);
+      EmbedEmptyMessageBtn();
     }
     appDiv.setAttribute(
       "style",
