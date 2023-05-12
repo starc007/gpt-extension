@@ -137,7 +137,9 @@ const Twitter = () => {
     // setFormData({ prompt: "", toneId: "", profileId, additionalInfo: "" });
     const text = twitterTextArea.innerText;
     const PromptData = {
-      prompt: text ? text : prompt,
+      prompt: {
+        description: text ? text : prompt,
+      },
       toneId: "",
       maxTokens: 100,
       numResponses: 1,
@@ -208,7 +210,9 @@ const Twitter = () => {
   const SubmitGenerateThirdPerson = () => {
     const txt = findCurrentTweetText();
     const PromptData = {
-      prompt: txt ? txt : " ",
+      prompt: {
+        description: txt ? txt : " ",
+      },
       toneId: "",
       maxTokens: 100,
       numResponses: 1,

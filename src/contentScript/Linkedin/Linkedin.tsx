@@ -34,32 +34,6 @@ const Linkedin = () => {
   }, [isDropdownOpen]);
   const qlEditor = document?.querySelector(".ql-editor");
 
-  // var port = chrome.runtime.connect({ name: "vakya" });
-  // port.postMessage({ type: "getPrompt", promptData: PromptData });
-  // port.onMessage.addListener((msg) => {
-  //   if (msg.message === "done") {
-  //     setIsGenerating(false);
-  //     return;
-  //   } else if (msg.message === "success") {
-  //     const { data } = msg;
-  //     console.log("data", data);
-  //     let prevText = qlEditor?.textContent;
-  //     if (prevText === text) prevText = "";
-  //     if (prevText?.includes("undefined")) {
-  //       prevText = prevText?.replace("undefined", " ");
-  //     }
-  //     if (data?.includes("undefined")) {
-  //       prevText = data?.replace("undefined", " ");
-  //     }
-  //     if (prevText === "Writing......") prevText = " ";
-  //     let txt = prevText + data;
-  //     txt = txt.replace("undefined", " ");
-  //     qlEditor.textContent = txt;
-  //     // qlEditor.textContent = prevText + data;
-  //     setText(txt);
-  //   }
-  // });
-
   const handleSubmit = (prompt: string, toneId: string) => {
     setFormData({ prompt, toneId, profileId: "", additionalInfo: "" });
     const PromptData = {
@@ -77,25 +51,31 @@ const Linkedin = () => {
     setIsGenerating(true);
 
     qlEditor.textContent = "Writing......";
-    setText(text);
-    chrome.runtime.sendMessage(
-      { type: "getPrompt", promptData: PromptData },
-      (response) => {
-        if (response?.data?.length) {
-          const resText = response.data[0];
-          let txtToSent = qlEditor?.textContent;
-          if (txtToSent === "Writing......") txtToSent = " ";
-          txtToSent = resText;
-          qlEditor.textContent = txtToSent;
-          setIsGenerating(false);
-          setText(txtToSent);
-        } else {
-          toast.error("Something went wrong please try again");
-          setIsGenerating(false);
-          qlEditor.textContent = "Failed to generate text please try again";
+    var port = chrome.runtime.connect({ name: "vakya" });
+    port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
+    port.onMessage.addListener((msg) => {
+      if (msg.message === "done") {
+        setIsGenerating(false);
+        return;
+      } else if (msg.message === "success") {
+        const { data } = msg;
+        console.log("data", data);
+        let prevText = qlEditor?.textContent;
+        if (prevText === text) prevText = "";
+        if (prevText?.includes("undefined")) {
+          prevText = prevText?.replace("undefined", " ");
         }
+        if (data?.includes("undefined")) {
+          prevText = data?.replace("undefined", " ");
+        }
+        if (prevText === "Writing......") prevText = " ";
+        let txt = prevText + data;
+        txt = txt.replace("undefined", " ");
+        qlEditor.textContent = txt;
+        // qlEditor.textContent = prevText + data;
+        setText(txt);
       }
-    );
+    });
   };
 
   useEffect(() => {
@@ -177,51 +157,31 @@ const Linkedin = () => {
     };
 
     setIsGenerating(true);
-    // var port = chrome.runtime.connect({ name: "vakya" });
-    // port.postMessage({ type: "getPrompt", promptData: PromptData });
-    // port.onMessage.addListener((msg) => {
-    //   if (msg.message === "done") {
-    //     setIsGenerating(false);
-    //     return;
-    //   } else if (msg.message === "success") {
-    //     const { data } = msg;
-    //     let prevText = qlEditor?.textContent;
-    //     if (prevText === text) prevText = "";
-    //     if (prevText?.includes("undefined")) {
-    //       prevText = prevText?.replace("undefined", " ");
-    //     }
-    //     if (data?.includes("undefined")) {
-    //       prevText = data?.replace("undefined", " ");
-    //     }
-    //     if (prevText === "Writing......") prevText = " ";
-    //     let txt = prevText + data;
-    //     txt = txt.replace("undefined", " ");
-    //     qlEditor.textContent = txt;
-    //     // qlEditor.textContent = prevText + data;
-    //     setText(txt);
-    //   }
-    // });
     setIsDropdownOpen(false);
-    setText(text);
     qlEditor.textContent = "Writing......";
-    chrome.runtime.sendMessage(
-      { type: "getPrompt", promptData: PromptData },
-      (response) => {
-        if (response?.data?.length) {
-          const resText = response.data[0];
-          let txtToSent = qlEditor?.textContent;
-          if (txtToSent === "Writing......") txtToSent = " ";
-          txtToSent = resText;
-          qlEditor.textContent = txtToSent;
-          setIsGenerating(false);
-          setText(txtToSent);
-        } else {
-          toast.error("Something went wrong please try again");
-          setIsGenerating(false);
-          qlEditor.textContent = "Failed to generate text please try again";
+    var port = chrome.runtime.connect({ name: "vakya" });
+    port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
+    port.onMessage.addListener((msg) => {
+      if (msg.message === "done") {
+        setIsGenerating(false);
+        return;
+      } else if (msg.message === "success") {
+        const { data } = msg;
+        let prevText = qlEditor?.textContent;
+        if (prevText === text) prevText = "";
+        if (prevText?.includes("undefined")) {
+          prevText = prevText?.replace("undefined", " ");
         }
+        if (data?.includes("undefined")) {
+          prevText = data?.replace("undefined", " ");
+        }
+        if (prevText === "Writing......") prevText = " ";
+        let txt = prevText + data;
+        txt = txt.replace("undefined", " ");
+        qlEditor.textContent = txt;
+        setText(txt);
       }
-    );
+    });
   };
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -241,7 +201,9 @@ const Linkedin = () => {
       additionalInfo: name,
     });
     const PromptData = {
-      prompt: "",
+      prompt: {
+        description: "",
+      },
       toneId: "",
       maxTokens: 100,
       numResponses: 1,
@@ -256,25 +218,30 @@ const Linkedin = () => {
     setIsGenerating(true);
     qlEditor.textContent = "Writing......";
     setIsDropdownOpen(false);
-    setText(text);
-    chrome.runtime.sendMessage(
-      { type: "getPrompt", promptData: PromptData },
-      (response) => {
-        if (response?.data?.length) {
-          const resText = response.data[0];
-          let txtToSent = qlEditor?.textContent;
-          if (txtToSent === "Writing......") txtToSent = " ";
-          txtToSent = resText;
-          qlEditor.textContent = txtToSent;
-          setIsGenerating(false);
-          setText(txtToSent);
-        } else {
-          toast.error("Something went wrong please try again");
-          setIsGenerating(false);
-          qlEditor.textContent = "Failed to generate text please try again";
+    setIsDropdownOpen(false);
+    var port = chrome.runtime.connect({ name: "vakya" });
+    port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
+    port.onMessage.addListener((msg) => {
+      if (msg.message === "done") {
+        setIsGenerating(false);
+        return;
+      } else if (msg.message === "success") {
+        const { data } = msg;
+        let prevText = qlEditor?.textContent;
+        if (prevText === text) prevText = "";
+        if (prevText?.includes("undefined")) {
+          prevText = prevText?.replace("undefined", " ");
         }
+        if (data?.includes("undefined")) {
+          prevText = data?.replace("undefined", " ");
+        }
+        if (prevText === "Writing......") prevText = " ";
+        let txt = prevText + data;
+        txt = txt.replace("undefined", " ");
+        qlEditor.textContent = txt;
+        setText(txt);
       }
-    );
+    });
   };
 
   // console.log("profiles", profiles);

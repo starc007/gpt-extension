@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import Select, { components } from "react-select";
 import Lottie from "lottie-react";
-import Typewriter from "typewriter-effect";
-
 import { ProfileType } from "../api";
 import Login from "../options/Login";
 
@@ -105,10 +103,11 @@ const contentScript = () => {
     maxTokens: wordOptions[0].value,
     numResponses: 1,
     toneId: toneOptions[1].value,
-    categoryInfoId: 1,
+    categoryInfoId: "1",
     customToneId: "", //profileid
     additionalInfo: "",
     selectedProfile: allProfiles[0],
+    skills: [],
   });
 
   const hostName = window.location.hostname;
@@ -121,6 +120,10 @@ const contentScript = () => {
         setFormData,
         formData,
       });
+      // setFormData({
+      //   ...formData,
+      //   categoryInfoId: PLATFORMS.UPWORK,
+      // });
     }
 
     if (hostName === "www.freelancer.com") {
@@ -185,10 +188,11 @@ const contentScript = () => {
             maxTokens: wordOptions[0].value,
             numResponses: 1,
             toneId: toneOptions[1].value,
-            categoryInfoId: 1,
+            categoryInfoId: "1",
             customToneId: "", //profileid
             additionalInfo: "",
             selectedProfile: { label: "", value: "" },
+            skills: [],
           });
         }
       }
@@ -275,7 +279,10 @@ const contentScript = () => {
     });
     setErrMsg("");
     const promptData = {
-      prompt: formData.prompt,
+      prompt: {
+        description: formData.prompt,
+        skills: formData.skills,
+      },
       maxTokens: formData.maxTokens,
       numResponses: formData.numResponses,
       toneId: formData.toneId,
@@ -283,52 +290,52 @@ const contentScript = () => {
       customToneId: formData.customToneId, //profileid
       additionalInfo: formData.additionalInfo,
       meta: {
-        source: "1",
+        source: formData.categoryInfoId,
         description: jobTitle,
       },
     };
 
-    // var port = chrome.runtime.connect({ name: "vakya" });
-    // port.postMessage({ type: "getPrompt", promptData: promptData });
-    // port.onMessage.addListener((msg) => {
-    //   if (msg.data) {
-    //     setGeneratedResponse((prev) => {
-    //       if (prev) {
-    //         return prev + msg.data;
-    //       } else {
-    //         return msg.data;
-    //       }
-    //     });
-    //     setIsGenerating({
-    //       success: true,
-    //       loader: false,
-    //     });
-    //   }
-    //   // if (msg.message === "done") {
-    //   // }
-    // });
-
-    chrome.runtime.sendMessage(
-      { type: "getPrompt", promptData: promptData },
-      (response) => {
-        console.log("response", response.data);
-        if (response?.data?.length) {
-          const resText = response.data[0];
-          console.log("res text", resText);
-          setGeneratedResponse(response.data);
-          setIsGenerating({
-            success: true,
-            loader: false,
-          });
-        } else {
-          toast.error("Something went wrong please try again");
-          setIsGenerating({
-            success: false,
-            loader: false,
-          });
-        }
+    var port = chrome.runtime.connect({ name: "vakya" });
+    port.postMessage({ type: "getStreamPrompt", promptData: promptData });
+    port.onMessage.addListener((msg) => {
+      if (msg.data) {
+        setGeneratedResponse((prev) => {
+          if (prev) {
+            return prev + msg.data;
+          } else {
+            return msg.data;
+          }
+        });
+        setIsGenerating({
+          success: true,
+          loader: false,
+        });
       }
-    );
+      // if (msg.message === "done") {
+      // }
+    });
+
+    // chrome.runtime.sendMessage(
+    //   { type: "getPrompt", promptData: promptData },
+    //   (response) => {
+    //     console.log("response", response.data);
+    //     if (response?.data?.length) {
+    //       const resText = response.data[0];
+    //       console.log("res text", resText);
+    //       setGeneratedResponse(response.data);
+    //       setIsGenerating({
+    //         success: true,
+    //         loader: false,
+    //       });
+    //     } else {
+    //       toast.error("Something went wrong please try again");
+    //       setIsGenerating({
+    //         success: false,
+    //         loader: false,
+    //       });
+    //     }
+    //   }
+    // );
   };
 
   const defaultProfile =

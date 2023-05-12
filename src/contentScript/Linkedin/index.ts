@@ -91,7 +91,9 @@ function getLinkedInText(elem: any) {
 
 function sendServerRequest(toneId: string, text: string, linkElem: any) {
   const PromptData = {
-    prompt: text,
+    prompt: {
+      description: text,
+    },
     toneId: toneId,
     maxTokens: 100,
     numResponses: 1,
@@ -102,45 +104,45 @@ function sendServerRequest(toneId: string, text: string, linkElem: any) {
     },
   };
 
-  // var port = chrome.runtime.connect({ name: "vakya" });
+  var port = chrome.runtime.connect({ name: "vakya" });
   linkElem.textContent = "Writing......";
-  // port.postMessage({ type: "getPrompt", promptData: PromptData });
+  port.postMessage({ type: "getPrompt", promptData: PromptData });
   addLoading(isLinkedIn);
-  // port.onMessage.addListener((msg) => {
-  //   if (msg.message === "done") {
-  //     removeLoading(isLinkedIn);
-  //     return;
-  //   } else if (msg.message === "success") {
-  //     const { data } = msg;
-  //     let prevText = linkElem?.textContent;
-  //     if (prevText === text) prevText = "";
-  //     if (prevText?.includes("undefined")) {
-  //       prevText = prevText?.replace("undefined", " ");
-  //     }
-  //     if (data?.includes("undefined")) {
-  //       prevText = data?.replace("undefined", " ");
-  //     }
-  //     if (prevText === "Writing......") prevText = " ";
-  //     let txt = prevText + data;
-  //     txt = txt.replaceAll("undefined", " ");
-  //     linkElem.textContent = txt;
-  //   }
-  // });
-
-  chrome.runtime.sendMessage(
-    { type: "getPrompt", promptData: PromptData },
-    (response) => {
-      if (response?.data?.length) {
-        const resText = response.data[0];
-        let txtToSent = linkElem?.textContent;
-        if (txtToSent === text) txtToSent = "";
-        if (txtToSent === "Writing......") txtToSent = " ";
-        txtToSent = resText;
-        linkElem.textContent = txtToSent;
-        removeLoading(isLinkedIn);
+  port.onMessage.addListener((msg) => {
+    if (msg.message === "done") {
+      removeLoading(isLinkedIn);
+      return;
+    } else if (msg.message === "success") {
+      const { data } = msg;
+      let prevText = linkElem?.textContent;
+      if (prevText === text) prevText = "";
+      if (prevText?.includes("undefined")) {
+        prevText = prevText?.replace("undefined", " ");
       }
+      if (data?.includes("undefined")) {
+        prevText = data?.replace("undefined", " ");
+      }
+      if (prevText === "Writing......") prevText = " ";
+      let txt = prevText + data;
+      txt = txt.replaceAll("undefined", " ");
+      linkElem.textContent = txt;
     }
-  );
+  });
+
+  // chrome.runtime.sendMessage(
+  //   { type: "getPrompt", promptData: PromptData },
+  //   (response) => {
+  //     if (response?.data?.length) {
+  //       const resText = response.data[0];
+  //       let txtToSent = linkElem?.textContent;
+  //       if (txtToSent === text) txtToSent = "";
+  //       if (txtToSent === "Writing......") txtToSent = " ";
+  //       txtToSent = resText;
+  //       linkElem.textContent = txtToSent;
+  //       removeLoading(isLinkedIn);
+  //     }
+  //   }
+  // );
 }
 
 export const EmbedButtonsInCommentBox = () => {

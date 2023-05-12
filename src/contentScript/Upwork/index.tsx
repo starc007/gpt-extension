@@ -1,3 +1,5 @@
+import { PLATFORMS } from "../config";
+
 export const TextAreaContainer = () => {
   const textArea = document.querySelector(
     "[aria-labelledby='cover_letter_label']"
@@ -43,9 +45,10 @@ interface FormdataProps {
   maxTokens: number;
   numResponses: number;
   toneId: number;
-  categoryInfoId: number;
+  categoryInfoId: string;
   customToneId: string;
   additionalInfo: string;
+  skills: string[];
   selectedProfile: {
     label: string;
     value: string;
@@ -74,10 +77,21 @@ export const setDataForUpwork = ({
   const siblingStyle = window.getComputedStyle(sibling);
   const siblingDisplay = siblingStyle.getPropertyValue("display");
 
+  const skills = document.querySelectorAll(".up-skill-badge");
+  const skillsArr: string[] = [];
+  skills.forEach((skill) => {
+    skillsArr.push(skill.textContent?.replace(/\s+/g, " ").trim() || "");
+  });
+  setFormData({ ...formData, skills: skillsArr });
+
   if (siblingDisplay === "none") {
     const JDText = JD?.innerText;
     setJdText(JDText);
-    setFormData({ ...formData, prompt: JDText });
+    setFormData({
+      ...formData,
+      prompt: JDText,
+      categoryInfoId: PLATFORMS.UPWORK,
+    });
   }
 
   const siblingBtn = sibling?.querySelector("button");
@@ -89,7 +103,11 @@ export const setDataForUpwork = ({
     if (parent?.classList.contains("is-expanded")) {
       const JDText = JD?.innerText;
       setJdText(JDText);
-      setFormData({ ...formData, prompt: JDText });
+      setFormData({
+        ...formData,
+        prompt: JDText,
+        categoryInfoId: PLATFORMS.UPWORK,
+      });
       clearInterval(interval);
     }
   }, 300);

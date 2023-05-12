@@ -60,66 +60,65 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-// chrome.runtime.onConnect.addListener((port) => {
-//   port.onMessage.addListener((request) => {
-//     if (request.type == "getPrompt") {
-//       console.log("request", request);
-//       fetch(`${HOST}/api/v1/prompts/getPromptsStream`, {
-//         method: "POST",
-//         credentials: "include",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(request.promptData),
-//       })
-//         .then((res) => res.body)
-//         .then((data) => {
-//           const reader = data.getReader();
-//           const decoder = new TextDecoder();
-//           let finalResult = [];
-//           reader.read().then(function processText({ done, value }) {
-//             if (done) {
-//               port.postMessage({ message: "done" });
-//               return;
-//             }
-//             const chunk = value;
-//             const decodedResult = decoder.decode(chunk || new Uint8Array(), {
-//               stream: !done,
-//             });
-//             const result = decodedResult.split("data: ");
+chrome.runtime.onConnect.addListener((port) => {
+  port.onMessage.addListener((request) => {
+    if (request.type == "getStreamPrompt") {
+      fetch(`${HOST}/api/v1/prompts/getPromptsStream`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(request.promptData),
+      })
+        .then((res) => res.body)
+        .then((data) => {
+          const reader = data.getReader();
+          const decoder = new TextDecoder();
+          let finalResult = [];
+          reader.read().then(function processText({ done, value }) {
+            if (done) {
+              port.postMessage({ message: "done" });
+              return;
+            }
+            const chunk = value;
+            const decodedResult = decoder.decode(chunk || new Uint8Array(), {
+              stream: !done,
+            });
+            const result = decodedResult.split("data: ");
 
-//             const dataObj = result.map((item, i) => {
-//               try {
-//                 if (item == "[DONE]") return;
-//                 return JSON.parse(item);
-//               } catch (error) {
-//                 if (!item.endsWith("}")) {
-//                   const res1 = item + result[i + 1];
-//                   try {
-//                     return JSON.parse(res1);
-//                   } catch (error) {
-//                     return null;
-//                   }
-//                 }
-//                 return null;
-//               }
-//             });
+            const dataObj = result.map((item, i) => {
+              try {
+                if (item == "[DONE]") return;
+                return JSON.parse(item);
+              } catch (error) {
+                if (!item.endsWith("}")) {
+                  const res1 = item + result[i + 1];
+                  try {
+                    return JSON.parse(res1);
+                  } catch (error) {
+                    return null;
+                  }
+                }
+                return null;
+              }
+            });
 
-//             const newData = dataObj.filter((item) => item !== null);
-//             finalResult = [...finalResult, ...newData];
-//             newData.forEach((item) => {
-//               const data = item.choices?.[0]?.delta?.content;
-//               if (data !== undefined || data !== null) {
-//                 port.postMessage({ message: "success", data: data });
-//               }
-//             });
+            const newData = dataObj.filter((item) => item !== null);
+            finalResult = [...finalResult, ...newData];
+            newData.forEach((item) => {
+              const data = item.choices?.[0]?.delta?.content;
+              if (data !== undefined || data !== null) {
+                port.postMessage({ message: "success", data: data });
+              }
+            });
 
-//             return reader.read().then(processText);
-//           });
-//         });
-//     }
-//   });
-// });
+            return reader.read().then(processText);
+          });
+        });
+    }
+  });
+});
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === "getUser") {

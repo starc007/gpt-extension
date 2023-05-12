@@ -1,3 +1,5 @@
+import { PLATFORMS } from "../config";
+
 export const TextAreaContainer = () => {
   const url = chrome.runtime.getURL("icon.png");
   const textArea = document.getElementById("descriptionTextArea");
@@ -47,7 +49,8 @@ interface FormdataProps {
   maxTokens: number;
   numResponses: number;
   toneId: number;
-  categoryInfoId: number;
+  skills: string[];
+  categoryInfoId: string;
   customToneId: string;
   additionalInfo: string;
   selectedProfile: {
@@ -82,8 +85,19 @@ export const setDataForFreelancer = ({
   const jobDescText = appProjectDescEl.getElementsByTagName("fl-text")[0];
   const desc = jobDescText.getElementsByTagName("span")[0].innerText;
   setJdText(desc);
+
+  //skills find atrribute fltrackinglabel="ProjectSkillTag"
+  const skillsEl = document.querySelectorAll(
+    '[fltrackinglabel="ProjectSkillTag"]'
+  );
+  const skills = Array.from(skillsEl).map((el) => el.textContent);
+  //   remove duplicates and spaces
+  const uniqueSkills = [...new Set(skills)].map((el) => el?.trim());
+
   setFormData({
     ...formData,
     prompt: desc,
+    categoryInfoId: PLATFORMS.FREELANCER,
+    skills: uniqueSkills,
   });
 };
