@@ -205,17 +205,17 @@ export const EmbedTwitterButtons = () => {
     "cursor:pointer; background: #F9F5FF; border: none; color: #7F56D9; font-size: 12px; font-weight: 600; border-radius:9999px; padding: 4px 10px; margin-left: 8px; display: flex; align-items: center;"
   );
 
-  moreBtn.addEventListener("click", () => {
-    const text = findCurrentTweetText();
-    // sendServerRequest(TONE_IDS.MORE, text);
-    const dropdown = document.getElementById("containerVakya69");
-    // if dropdown display is none then show it else hide it
-    if (dropdown.style.display === "none") {
-      dropdown.style.display = "block";
-    } else {
-      dropdown.style.display = "none";
-    }
-  });
+  // moreBtn.addEventListener("click", () => {
+  //   const text = findCurrentTweetText();
+  //   // sendServerRequest(TONE_IDS.MORE, text);
+  //   const dropdown = document.getElementById("containerVakya69");
+  //   // if dropdown display is none then show it else hide it
+  //   if (dropdown.style.display === "none") {
+  //     dropdown.style.display = "block";
+  //   } else {
+  //     dropdown.style.display = "none";
+  //   }
+  // });
 
   const buttons = document.createElement("div");
   buttons.id = "vakyaBtn69";

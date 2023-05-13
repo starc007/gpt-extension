@@ -13,6 +13,7 @@ import AddProfile from "./Addprofile";
 
 import { setDataForUpwork } from "./Upwork";
 import { setDataForFreelancer } from "./Freelancer";
+import { PLATFORMS } from "./config";
 
 const toneOptions = [
   {
@@ -158,12 +159,21 @@ const contentScript = () => {
       setIsLoggedin(result.isLoggedin);
       if (result.isLoggedin) {
         if (profiles?.length) {
-          const options = profiles.map((profile: ProfileType) => {
+          const filteredProfiles = hostName?.includes("upwork")
+            ? profiles?.filter(
+                (profile: ProfileType) =>
+                  profile?.categoryInfoId == PLATFORMS.UPWORK
+              )
+            : profiles?.filter(
+                (profile: ProfileType) =>
+                  profile?.categoryInfoId == PLATFORMS.FREELANCER
+              );
+          const options = filteredProfiles.map((profile: any) => {
             return {
               value: profile.id,
               label: profile.toneDescription.title,
             };
-          });
+          }) as TempProfileType[];
           setAllProfiles(options);
         }
       } else {
@@ -198,12 +208,29 @@ const contentScript = () => {
       }
       if (key === "profiles") {
         setProfiles(newValue);
-        const options = newValue.map((profile: ProfileType) => {
+        // const options = newValue.map((profile: ProfileType) => {
+        //   return {
+        //     value: profile.id,
+        //     label: profile.toneDescription.title,
+        //   };
+        // });
+        // setAllProfiles(options);
+        const filteredProfiles = hostName?.includes("upwork")
+          ? newValue?.filter(
+              (profile: ProfileType) =>
+                profile?.categoryInfoId == PLATFORMS.UPWORK
+            )
+          : newValue?.filter(
+              (profile: ProfileType) =>
+                profile?.categoryInfoId == PLATFORMS.FREELANCER
+            );
+        console.log("filteredProfiles 1", filteredProfiles);
+        const options = filteredProfiles.map((profile: any) => {
           return {
             value: profile.id,
             label: profile.toneDescription.title,
           };
-        });
+        }) as TempProfileType[];
         setAllProfiles(options);
       }
     }
@@ -295,25 +322,27 @@ const contentScript = () => {
       },
     };
 
-    var port = chrome.runtime.connect({ name: "vakya" });
-    port.postMessage({ type: "getStreamPrompt", promptData: promptData });
-    port.onMessage.addListener((msg) => {
-      if (msg.data) {
-        setGeneratedResponse((prev) => {
-          if (prev) {
-            return prev + msg.data;
-          } else {
-            return msg.data;
-          }
-        });
-        setIsGenerating({
-          success: true,
-          loader: false,
-        });
-      }
-      // if (msg.message === "done") {
-      // }
-    });
+    console.log("promptData", promptData);
+
+    // var port = chrome.runtime.connect({ name: "vakya" });
+    // port.postMessage({ type: "getStreamPrompt", promptData: promptData });
+    // port.onMessage.addListener((msg) => {
+    //   if (msg.data) {
+    //     setGeneratedResponse((prev) => {
+    //       if (prev) {
+    //         return prev + msg.data;
+    //       } else {
+    //         return msg.data;
+    //       }
+    //     });
+    //     setIsGenerating({
+    //       success: true,
+    //       loader: false,
+    //     });
+    //   }
+    //   // if (msg.message === "done") {
+    //   // }
+    // });
 
     // chrome.runtime.sendMessage(
     //   { type: "getPrompt", promptData: promptData },
@@ -361,6 +390,17 @@ const contentScript = () => {
       }));
     }
   }, [addedProfile, allProfiles, defaultProfile, isLoggedin]);
+
+  // const filteredProfiles = hostName?.includes("upwork")
+  //   ? allProfiles?.filter(
+  //       (profile: ProfileType) => profile?.categoryInfoId == PLATFORMS.UPWORK
+  //     )
+  //   : allProfiles?.filter(
+  //       (profile: ProfileType) =>
+  //         profile?.categoryInfoId == PLATFORMS.FREELANCER
+  //     );
+
+  // console.log("filteredProfiles", allProfiles);
 
   return (
     <>

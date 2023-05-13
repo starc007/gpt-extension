@@ -82,7 +82,7 @@ export const setDataForUpwork = ({
   skills.forEach((skill) => {
     skillsArr.push(skill.textContent?.replace(/\s+/g, " ").trim() || "");
   });
-  setFormData({ ...formData, skills: skillsArr });
+  // setFormData({ ...formData, skills: skillsArr });
 
   if (siblingDisplay === "none") {
     const JDText = JD?.innerText;
@@ -91,6 +91,7 @@ export const setDataForUpwork = ({
       ...formData,
       prompt: JDText,
       categoryInfoId: PLATFORMS.UPWORK,
+      skills: skillsArr,
     });
   }
 
@@ -107,6 +108,7 @@ export const setDataForUpwork = ({
         ...formData,
         prompt: JDText,
         categoryInfoId: PLATFORMS.UPWORK,
+        skills: skillsArr,
       });
       clearInterval(interval);
     }

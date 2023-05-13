@@ -19,29 +19,29 @@ const Twitter = () => {
   //   additionalInfo: "",
   // });
 
-  // const moreBtnId = document.getElementById("moreBtn69");
+  const moreBtnId = document.getElementById("moreBtn69");
   // const funnyBtn69 = document.getElementById("funnyBtn69");
   // const interestingBtn69 = document.getElementById("interestingBtn69");
   // const qaBtn69 = document.getElementById("qaBtn69");
   // const regenerateBtn69 = document.getElementById("regenerateBtn69");
-  // useEffect(() => {
-  //   moreBtnId?.addEventListener("click", () => {
-  //     setIsDropdownOpen(!isDropdownOpen);
-  //   });
-  //   // const body = document.querySelector("body");
-  //   // body.addEventListener("mouseover", (e) => {
-  //   //   if (
-  //   //     !(e.target as HTMLElement).closest("#moreBtn69") &&
-  //   //     !(e.target as HTMLElement).closest("#containerVakya69")
-  //   //   ) {
-  //   //     setIsDropdownOpen(false);
-  //   //   }
-  //   // });
+  useEffect(() => {
+    moreBtnId?.addEventListener("click", () => {
+      setIsDropdownOpen(!isDropdownOpen);
+    });
+    // const body = document.querySelector("body");
+    // body.addEventListener("mouseover", (e) => {
+    //   if (
+    //     !(e.target as HTMLElement).closest("#moreBtn69") &&
+    //     !(e.target as HTMLElement).closest("#containerVakya69")
+    //   ) {
+    //     setIsDropdownOpen(false);
+    //   }
+    // });
 
-  //   return () => {
-  //     moreBtnId?.removeEventListener("mouseover", () => {});
-  //   };
-  // }, [isDropdownOpen]);
+    return () => {
+      moreBtnId?.removeEventListener("mouseover", () => {});
+    };
+  }, [isDropdownOpen]);
 
   useEffect(() => {
     if (isGenerating) addLoading(false);
@@ -248,7 +248,7 @@ const Twitter = () => {
     (profile: ProfileType) => profile?.categoryInfoId == PLATFORMS.TWITTER
   );
 
-  return (
+  return isDropdownOpen ? (
     <div className="w-96 rounded-lg bg-dark flex flex-col space-y-6 p-4 z-50 border border-primary">
       <div className="flex items-start space-x-4">
         <img src={chrome.runtime.getURL("select.png")} className="w-5 h-4" />
@@ -305,7 +305,7 @@ const Twitter = () => {
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default Twitter;
