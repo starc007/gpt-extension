@@ -106,7 +106,7 @@ function sendServerRequest(toneId: string, text: string, linkElem: any) {
 
   var port = chrome.runtime.connect({ name: "vakya" });
   linkElem.textContent = "Writing......";
-  port.postMessage({ type: "getPrompt", promptData: PromptData });
+  port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
   addLoading(isLinkedIn);
   port.onMessage.addListener((msg) => {
     if (msg.message === "done") {
