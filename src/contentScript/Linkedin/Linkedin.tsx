@@ -37,7 +37,9 @@ const Linkedin = () => {
   const handleSubmit = (prompt: string, toneId: string) => {
     setFormData({ prompt, toneId, profileId: "", additionalInfo: "" });
     const PromptData = {
-      prompt: prompt,
+      prompt: {
+        description: prompt,
+      },
       toneId: toneId,
       maxTokens: 100,
       numResponses: 1,
@@ -144,7 +146,9 @@ const Linkedin = () => {
   const handleSubmitProfile = (profileId: string) => {
     setFormData({ prompt: "", toneId: "", profileId, additionalInfo: "" });
     const PromptData = {
-      prompt: "",
+      prompt: {
+        description: "",
+      },
       toneId: "",
       maxTokens: 100,
       numResponses: 1,
