@@ -322,27 +322,27 @@ const contentScript = () => {
       },
     };
 
-    console.log("promptData", promptData);
+    // console.log("promptData", promptData);
 
-    // var port = chrome.runtime.connect({ name: "vakya" });
-    // port.postMessage({ type: "getStreamPrompt", promptData: promptData });
-    // port.onMessage.addListener((msg) => {
-    //   if (msg.data) {
-    //     setGeneratedResponse((prev) => {
-    //       if (prev) {
-    //         return prev + msg.data;
-    //       } else {
-    //         return msg.data;
-    //       }
-    //     });
-    //     setIsGenerating({
-    //       success: true,
-    //       loader: false,
-    //     });
-    //   }
-    //   // if (msg.message === "done") {
-    //   // }
-    // });
+    var port = chrome.runtime.connect({ name: "vakya" });
+    port.postMessage({ type: "getStreamPrompt", promptData: promptData });
+    port.onMessage.addListener((msg) => {
+      if (msg.data) {
+        setGeneratedResponse((prev) => {
+          if (prev) {
+            return prev + msg.data;
+          } else {
+            return msg.data;
+          }
+        });
+        setIsGenerating({
+          success: true,
+          loader: false,
+        });
+      }
+      // if (msg.message === "done") {
+      // }
+    });
 
     // chrome.runtime.sendMessage(
     //   { type: "getPrompt", promptData: promptData },
