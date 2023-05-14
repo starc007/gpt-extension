@@ -4,11 +4,11 @@ chrome.runtime.onInstalled.addListener(() => {
   console.log("onInstalled");
 });
 
-chrome.action.onClicked.addListener(() => {
-  chrome.runtime.openOptionsPage(() => {
-    console.log("Options page opened");
-  });
-});
+// chrome.action.onClicked.addListener(() => {
+//   chrome.runtime.openOptionsPage(() => {
+//     console.log("Options page opened");
+//   });
+// });
 
 const HOST = "https://api.vakya.ai";
 

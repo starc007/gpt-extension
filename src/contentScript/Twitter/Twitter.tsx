@@ -1,45 +1,37 @@
 import React, { useEffect, useState, useRef } from "react";
 import "../../assets/tailwind.css";
 import { useAuth } from "../../options/AuthContext";
-import { PLATFORMS, TONE_IDS } from "../config";
-import { findCurrentTweetText, updateInput } from "./index";
+import { PLATFORMS } from "../config";
+import { updateInput } from "./index";
 import { ProfileType } from "../../api";
 import { addLoading } from "../common";
 import { removeLoading } from "../common";
 
 const Twitter = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { isLoggedin, profiles } = useAuth();
+  const { profiles } = useAuth();
   const [isGenerating, setIsGenerating] = useState(false);
   const [name, setName] = useState("");
-  // const [formData, setFormData] = useState({
-  //   prompt: "",
-  //   toneId: "",
-  //   profileId: "",
-  //   additionalInfo: "",
-  // });
-
   const moreBtnId = document.getElementById("moreBtn69");
-  // const funnyBtn69 = document.getElementById("funnyBtn69");
-  // const interestingBtn69 = document.getElementById("interestingBtn69");
-  // const qaBtn69 = document.getElementById("qaBtn69");
-  // const regenerateBtn69 = document.getElementById("regenerateBtn69");
+
   useEffect(() => {
+    const commentEl = document.querySelectorAll('[data-testid="cellInnerDiv"]');
     moreBtnId?.addEventListener("click", () => {
       setIsDropdownOpen(!isDropdownOpen);
+      if (isDropdownOpen) {
+        commentEl?.forEach((el: HTMLDivElement, i) => {
+          if (i == 0 || i == 1) return;
+          el?.style.setProperty("z-index", "1", "important");
+        });
+      } else {
+        commentEl?.forEach((el: HTMLDivElement, i) => {
+          if (i == 0 || i == 1) return;
+          el?.style.setProperty("z-index", "-1", "important");
+        });
+      }
     });
-    // const body = document.querySelector("body");
-    // body.addEventListener("mouseover", (e) => {
-    //   if (
-    //     !(e.target as HTMLElement).closest("#moreBtn69") &&
-    //     !(e.target as HTMLElement).closest("#containerVakya69")
-    //   ) {
-    //     setIsDropdownOpen(false);
-    //   }
-    // });
-
     return () => {
-      moreBtnId?.removeEventListener("mouseover", () => {});
+      moreBtnId?.removeEventListener("click", () => {});
     };
   }, [isDropdownOpen]);
 
@@ -55,90 +47,11 @@ const Twitter = () => {
     twitterTextArea.click();
   }, []);
 
-  // const handleSubmit = (prompt: string, toneId: string) => {
-  //   const text = twitterTextArea.innerText;
-  //   console.log("text", text);
-
-  //   const PromptData = {
-  //     prompt: text ? text : prompt,
-  //     toneId: toneId,
-  //     maxTokens: 100,
-  //     numResponses: 1,
-  //     categoryInfoId: PLATFORMS.TWITTER,
-  //     meta: {
-  //       source: PLATFORMS.TWITTER,
-  //       description: prompt ? "replied to a tweet" : "Created post on twitter",
-  //     },
-  //   };
-  //   setIsGenerating(true);
-  //   var port = chrome.runtime.connect({ name: "vakya" });
-  //   // twitterTextArea.innerText = "Writing......";
-  //   port.postMessage({ type: "getPrompt", promptData: PromptData });
-  //   port.onMessage.addListener((msg) => {
-  //     if (msg.message === "done") {
-  //       setIsGenerating(false);
-  //       return;
-  //     } else if (msg.message === "success") {
-  //       const { data } = msg;
-  //       let prevText = twitterTextArea.innerText;
-  //       if (prevText === allText) prevText = "";
-  //       if (prevText?.includes("undefined")) {
-  //         prevText = prevText?.replace("undefined", " ");
-  //       }
-  //       if (data?.includes("undefined")) {
-  //         prevText = data?.replace("undefined", " ");
-  //       }
-  //       if (prevText === "Writing......") prevText = "";
-  //       let txt = prevText + data;
-  //       txt = txt.replace("undefined", " ");
-
-  //       // twitterTextArea.innerText = txt;
-  //       //add text to the text area
-  //       // twitterTextArea.value = txt;
-  //       // twitterTextArea.innerText = txt;
-  //       // twitterTextArea.dispatchEvent(new Event("input", { bubbles: true }));
-  //       const input = document.querySelector('[data-testid="tweetTextarea_0"]');
-  //       const dataTo = new DataTransfer();
-  //       dataTo.setData("text/plain", txt);
-  //       input.dispatchEvent(
-  //         new ClipboardEvent("paste", {
-  //           clipboardData: dataTo,
-  //           bubbles: true,
-  //           cancelable: true,
-  //         } as ClipboardEventInit)
-  //       );
-
-  //       setAllText(txt);
-  //     }
-  //   });
-  // };
-
-  // useEffect(() => {
-  // if (isLoggedin) {
-  //   funnyBtn69?.addEventListener("click", () => {
-  //     const text = findCurrentTweetText();
-  //     handleSubmit(text, TONE_IDS.FUNNY);
-  //   });
-  //   interestingBtn69?.addEventListener("click", () => {
-  //     const text = findCurrentTweetText();
-  //     handleSubmit(text, TONE_IDS.INTERESTING);
-  //   });
-  //   qaBtn69?.addEventListener("click", () => {
-  //     const text = findCurrentTweetText();
-  //     handleSubmit(text, TONE_IDS.QUESTION);
-  //   });
-  //   regenerateBtn69?.addEventListener("click", () => {
-  //     handleSubmit(formData.prompt, formData.toneId);
-  //   });
-  // }
-  // }, [isLoggedin, formData]);
-
-  const handleSubmitProfile = (prompt: string, profileId: string) => {
-    // setFormData({ prompt: "", toneId: "", profileId, additionalInfo: "" });
-    const text = twitterTextArea.innerText;
+  const handleSubmitProfile = async (profileId: string) => {
+    const tweitterPrompt = await chrome.storage.sync.get("twitterPrompt");
     const PromptData = {
       prompt: {
-        description: text ? text : prompt,
+        description: tweitterPrompt,
       },
       toneId: "",
       maxTokens: 100,
@@ -202,16 +115,15 @@ const Twitter = () => {
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
     if (val === "0") return;
-    const txt = findCurrentTweetText();
-    handleSubmitProfile(txt, val);
+    handleSubmitProfile(val);
     setIsDropdownOpen(false);
   };
 
-  const SubmitGenerateThirdPerson = () => {
-    const txt = findCurrentTweetText();
+  const SubmitGenerateThirdPerson = async () => {
+    const prompt = await chrome.storage.sync.get("twitterPrompt");
     const PromptData = {
       prompt: {
-        description: txt ? txt : " ",
+        description: prompt,
       },
       toneId: "",
       maxTokens: 100,
@@ -220,7 +132,7 @@ const Twitter = () => {
       additionalInfo: name,
       meta: {
         source: PLATFORMS.LINKEDIN,
-        description: "Created post on linkedin",
+        description: "Created post on Twitter",
       },
     };
 

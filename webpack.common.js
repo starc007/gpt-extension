@@ -7,7 +7,7 @@ const autoprefixer = require("autoprefixer");
 module.exports = {
   devtool: "cheap-module-source-map",
   entry: {
-    options: path.resolve("src/options/index.tsx"),
+    // options: path.resolve("src/options/index.tsx"),
     background: path.resolve("src/background/background.ts"),
     contentScript: path.resolve("src/contentScript/index.tsx"),
   },
@@ -60,7 +60,7 @@ module.exports = {
         },
       ],
     }),
-    ...getHtmlPlugins(["popup", "options"]),
+    ...getHtmlPlugins(["popup"]),
   ],
   optimization: {
     splitChunks: {
