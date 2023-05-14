@@ -51,7 +51,7 @@ const Twitter = () => {
     const tweitterPrompt = await chrome.storage.sync.get("twitterPrompt");
     const PromptData = {
       prompt: {
-        description: tweitterPrompt,
+        description: tweitterPrompt.twitterPrompt,
       },
       toneId: "",
       maxTokens: 100,

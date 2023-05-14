@@ -36,6 +36,10 @@ const Linkedin = () => {
 
   const handleSubmit = (prompt: string, toneId: string) => {
     setFormData({ prompt, toneId, profileId: "", additionalInfo: "" });
+    chrome.storage.sync.set({
+      linkedinPrompt: prompt,
+      toneIdLinkedin: toneId,
+    });
     const PromptData = {
       prompt: {
         description: prompt,
@@ -57,11 +61,12 @@ const Linkedin = () => {
     port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
     port.onMessage.addListener((msg) => {
       if (msg.message === "done") {
+        const qlEditorValue = qlEditor?.textContent;
+        chrome.storage.sync.set({ responsetext: qlEditorValue });
         setIsGenerating(false);
         return;
       } else if (msg.message === "success") {
         const { data } = msg;
-        console.log("data", data);
         let prevText = qlEditor?.textContent;
         if (prevText === text) prevText = "";
         if (prevText?.includes("undefined")) {
@@ -82,31 +87,52 @@ const Linkedin = () => {
 
   useEffect(() => {
     if (isLoggedin) {
-      funnyBtn69.addEventListener("click", () => {
+      funnyBtn69.addEventListener("click", async () => {
         const qlEditorValue = qlEditor?.textContent;
         setIsDropdownOpen(false);
         if (qlEditorValue === "Writing......") return;
-        handleSubmit(qlEditorValue, TONE_IDS.FUNNY);
+
+        const prompt = await chrome.storage.sync.get("responsetext");
+
+        if (prompt.responsetext === qlEditorValue) {
+          const oldPrompt = await chrome.storage.sync.get("linkedinPrompt");
+          handleSubmit(oldPrompt.linkedinPrompt, TONE_IDS.FUNNY);
+        } else {
+          handleSubmit(qlEditorValue, TONE_IDS.FUNNY);
+        }
       });
 
-      interestingBtn69.addEventListener("click", () => {
+      interestingBtn69.addEventListener("click", async () => {
         const qlEditorValue = qlEditor?.textContent;
         setIsDropdownOpen(false);
         if (qlEditorValue === "Writing......") return;
-        handleSubmit(qlEditorValue, TONE_IDS.INTERESTING);
+        const prompt = await chrome.storage.sync.get("responsetext");
+        if (prompt.responsetext === qlEditorValue) {
+          const oldPrompt = await chrome.storage.sync.get("linkedinPrompt");
+          handleSubmit(oldPrompt.linkedinPrompt, TONE_IDS.INTERESTING);
+        } else {
+          handleSubmit(qlEditorValue, TONE_IDS.INTERESTING);
+        }
+        // handleSubmit(qlEditorValue, TONE_IDS.INTERESTING);
       });
 
-      qaBtn69.addEventListener("click", () => {
+      qaBtn69.addEventListener("click", async () => {
         const qlEditorValue = qlEditor?.textContent;
         setIsDropdownOpen(false);
         if (qlEditorValue === "Writing......") return;
-        handleSubmit(qlEditorValue, TONE_IDS.QUESTION);
+        const prompt = await chrome.storage.sync.get("responsetext");
+        if (prompt.responsetext === qlEditorValue) {
+          const oldPrompt = await chrome.storage.sync.get("linkedinPrompt");
+          handleSubmit(oldPrompt.linkedinPrompt, TONE_IDS.QUESTION);
+        } else {
+          handleSubmit(qlEditorValue, TONE_IDS.QUESTION);
+        }
       });
 
-      regenerateBtn69.addEventListener("click", () => {
-        if (!formData.toneId) return;
-
-        handleSubmit(formData.prompt, formData.toneId);
+      regenerateBtn69.addEventListener("click", async () => {
+        const prompt = await chrome.storage.sync.get("linkedinPrompt");
+        const toneId = await chrome.storage.sync.get("toneIdLinkedin");
+        handleSubmit(prompt.linkedinPrompt, toneId.toneIdLinkedin);
       });
     }
 
@@ -116,7 +142,7 @@ const Linkedin = () => {
       qaBtn69?.removeEventListener("click", () => {});
       regenerateBtn69?.removeEventListener("click", () => {});
     };
-  }, [isLoggedin, formData]);
+  }, [isLoggedin]);
 
   const handleGenerate = () => {
     if (isGenerating) {
