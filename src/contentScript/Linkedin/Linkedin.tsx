@@ -85,26 +85,37 @@ const Linkedin = () => {
       funnyBtn69.addEventListener("click", () => {
         const qlEditorValue = qlEditor?.textContent;
         setIsDropdownOpen(false);
+        if (qlEditorValue === "Writing......") return;
         handleSubmit(qlEditorValue, TONE_IDS.FUNNY);
       });
 
       interestingBtn69.addEventListener("click", () => {
         const qlEditorValue = qlEditor?.textContent;
         setIsDropdownOpen(false);
+        if (qlEditorValue === "Writing......") return;
         handleSubmit(qlEditorValue, TONE_IDS.INTERESTING);
       });
 
       qaBtn69.addEventListener("click", () => {
         const qlEditorValue = qlEditor?.textContent;
         setIsDropdownOpen(false);
+        if (qlEditorValue === "Writing......") return;
         handleSubmit(qlEditorValue, TONE_IDS.QUESTION);
       });
 
       regenerateBtn69.addEventListener("click", () => {
         if (!formData.toneId) return;
+
         handleSubmit(formData.prompt, formData.toneId);
       });
     }
+
+    return () => {
+      funnyBtn69?.removeEventListener("click", () => {});
+      interestingBtn69?.removeEventListener("click", () => {});
+      qaBtn69?.removeEventListener("click", () => {});
+      regenerateBtn69?.removeEventListener("click", () => {});
+    };
   }, [isLoggedin, formData]);
 
   const handleGenerate = () => {
