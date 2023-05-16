@@ -162,29 +162,37 @@ const Twitter = () => {
 
   return isDropdownOpen ? (
     <div className="w-96 rounded-lg bg-dark flex flex-col space-y-6 p-4 z-50 border border-primary">
-      <div className="flex items-start space-x-4">
-        <img src={chrome.runtime.getURL("select.png")} className="w-5 h-4" />
-        <div className="flex flex-col -mt-[2px]">
-          <p className="font-medium text-white">Select Profile from Vakya</p>
-          <p className="text-xs font-normal text-lightPurple2">
-            Results will be generated based on your profile selection
-          </p>
-          <select
-            onChange={handleSelectChange}
-            className="w-full mt-3 px-4 h-11 bg-transparent border border-white rounded-lg text-white"
-          >
-            <option value="0">Select Profile</option>
-            {twitterProfiles?.map((profile) => (
-              <option key={profile.id} value={profile.id}>
-                {profile?.toneDescription?.title}
-              </option>
-            ))}
-          </select>
+      {twitterProfiles?.length > 0 ? (
+        <div className="flex items-start space-x-4">
+          <img src={chrome.runtime.getURL("select.png")} className="w-5 h-4" />
+          <div className="flex flex-col -mt-[2px]">
+            <p className="font-medium text-white">Select Profile from Vakya</p>
+            <p className="text-xs font-normal text-lightPurple2">
+              Results will be generated based on your profile selection
+            </p>
+            <select
+              onChange={handleSelectChange}
+              className="w-full mt-3 px-4 h-11 bg-transparent border border-white rounded-lg text-white"
+            >
+              <option value="0">Select Profile</option>
+              {twitterProfiles?.map((profile) => (
+                <option key={profile.id} value={profile.id}>
+                  {profile?.toneDescription?.title}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
+      ) : null}
       <div className="flex items-start space-x-4">
         <img src={chrome.runtime.getURL("userplus.png")} className="w-6" />
-        <div className="flex flex-col -mt-[2px]">
+        <div
+          onClick={() => {
+            window.open("https://test.vakya.ai/dashboard/profile", "_blank");
+            setIsDropdownOpen(false);
+          }}
+          className="flex flex-col -mt-[2px] cursor-pointer"
+        >
           <p className="font-medium text-white">Create New Profile</p>
           <p className="text-xs font-normal text-lightPurple2">
             Create profile the way you want vakya to answer for you

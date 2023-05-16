@@ -4,11 +4,13 @@ chrome.runtime.onInstalled.addListener(() => {
   console.log("onInstalled");
 });
 
-// chrome.action.onClicked.addListener(() => {
-//   chrome.runtime.openOptionsPage(() => {
-//     console.log("Options page opened");
-//   });
-// });
+chrome.action.onClicked.addListener(() => {
+  // chrome.runtime.openOptionsPage(() => {
+  //   console.log("Options page opened");
+  // });
+  // open https://test.vakya.ai
+  chrome.tabs.create({ url: "https://test.vakya.ai" });
+});
 
 const HOST = "https://api.vakya.ai";
 
@@ -159,7 +161,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("data69", data);
         if (data.headers.success) {
           sendResponse({ message: "success", data: data.body.choices });
         } else {

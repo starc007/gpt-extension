@@ -305,42 +305,50 @@ const Linkedin = () => {
 
   return isDropdownOpen ? (
     <div className="w-[30rem] rounded-lg bg-dark flex flex-col space-y-6 p-4 border border-primary">
-      <div className="flex items-start space-x-4">
-        <img src={chrome.runtime.getURL("select.png")} className="w-6" />
-        <div className="flex flex-col -mt-[2px]">
-          <p
-            className="font-medium text-white"
-            style={{
-              fontSize: "14px",
-            }}
-          >
-            Select Profile from Vakya
-          </p>
-          <p
-            className="font-normal text-lightPurple2"
-            style={{
-              fontSize: "10px",
-            }}
-          >
-            Results will be generated based on your profile selection
-          </p>
-          <select
-            disabled={isGenerating}
-            className="selectLinkedin69 disabled:opacity-50 disabled:cursor-not-allowed"
-            onChange={handleSelectChange}
-          >
-            <option value="0">Select Profile</option>
-            {linkedinProfiles.map((profile) => (
-              <option key={profile.id} value={profile.id}>
-                {profile?.toneDescription?.title}
-              </option>
-            ))}
-          </select>
+      {linkedinProfiles?.length > 0 ? (
+        <div className="flex items-start space-x-4">
+          <img src={chrome.runtime.getURL("select.png")} className="w-6" />
+          <div className="flex flex-col -mt-[2px]">
+            <p
+              className="font-medium text-white"
+              style={{
+                fontSize: "14px",
+              }}
+            >
+              Select Profile from Vakya
+            </p>
+            <p
+              className="font-normal text-lightPurple2"
+              style={{
+                fontSize: "10px",
+              }}
+            >
+              Results will be generated based on your profile selection
+            </p>
+            <select
+              disabled={isGenerating}
+              className="selectLinkedin69 disabled:opacity-50 disabled:cursor-not-allowed"
+              onChange={handleSelectChange}
+            >
+              <option value="0">Select Profile</option>
+              {linkedinProfiles.map((profile) => (
+                <option key={profile.id} value={profile.id}>
+                  {profile?.toneDescription?.title}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
+      ) : null}
       <div className="flex items-start space-x-4">
         <img src={chrome.runtime.getURL("userplus.png")} className="w-6" />
-        <div className="flex flex-col -mt-[2px]">
+        <div
+          onClick={() => {
+            window.open("https://test.vakya.ai/dashboard/profile", "_blank");
+            setIsDropdownOpen(false);
+          }}
+          className="flex flex-col -mt-[2px] cursor-pointer"
+        >
           <p
             className="font-medium text-white"
             style={{

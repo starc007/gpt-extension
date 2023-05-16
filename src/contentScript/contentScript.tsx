@@ -322,11 +322,10 @@ const contentScript = () => {
       },
     };
 
-    // console.log("promptData", promptData);
-
     var port = chrome.runtime.connect({ name: "vakya" });
     port.postMessage({ type: "getStreamPrompt", promptData: promptData });
     port.onMessage.addListener((msg) => {
+      console.log("msg", msg);
       if (msg.data) {
         setGeneratedResponse((prev) => {
           if (prev) {
@@ -339,6 +338,12 @@ const contentScript = () => {
           success: true,
           loader: false,
         });
+      } else {
+        // toast.error("Something went wrong please try again");
+        // setIsGenerating({
+        //   success: false,
+        //   loader: false,
+        // });
       }
       // if (msg.message === "done") {
       // }
@@ -367,9 +372,18 @@ const contentScript = () => {
     // );
   };
 
+  const filteredProfiles = hostName?.includes("upwork")
+    ? profiles?.filter(
+        (profile: ProfileType) => profile?.categoryInfoId == PLATFORMS.UPWORK
+      )
+    : profiles?.filter(
+        (profile: ProfileType) =>
+          profile?.categoryInfoId == PLATFORMS.FREELANCER
+      );
+
   const defaultProfile =
-    profiles?.length > 0 &&
-    profiles.find((profile: ProfileType) => profile?.default === true);
+    filteredProfiles?.length > 0 &&
+    filteredProfiles.find((profile: ProfileType) => profile?.default === true);
 
   useEffect(() => {
     if (addedProfile) {
