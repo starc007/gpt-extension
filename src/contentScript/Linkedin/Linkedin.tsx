@@ -180,11 +180,21 @@ const Linkedin = () => {
 
   if (!isLoggedin) return null;
 
-  const handleSubmitProfile = (profileId: string) => {
-    setFormData({ prompt: "", toneId: "", profileId, additionalInfo: "" });
+  const handleSubmitProfile = async (profileId: string) => {
+    let txtPrompt = "";
+    const qlEditorValue = qlEditor?.textContent;
+    if (qlEditorValue === "Writing......") return;
+    const prompt = await chrome.storage.sync.get("responsetext");
+    if (prompt.responsetext === qlEditorValue) {
+      const oldPrompt = await chrome.storage.sync.get("linkedinPrompt");
+      txtPrompt = oldPrompt.linkedinPrompt;
+    } else {
+      txtPrompt = qlEditorValue;
+    }
+
     const PromptData = {
       prompt: {
-        description: "",
+        description: txtPrompt,
       },
       toneId: "",
       maxTokens: 100,
@@ -228,22 +238,25 @@ const Linkedin = () => {
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
     if (val === "0") return;
-    qlEditor.textContent = "Writing......";
     handleSubmitProfile(val);
     setIsDropdownOpen(false);
   };
 
-  const SubmitGenerateThirdPerson = () => {
+  const SubmitGenerateThirdPerson = async () => {
     // if (!name) return toast.error("Please enter ");
-    setFormData({
-      prompt: "",
-      toneId: "",
-      profileId: "",
-      additionalInfo: name,
-    });
+    let txtPrompt = "";
+    const qlEditorValue = qlEditor?.textContent;
+    if (qlEditorValue === "Writing......") return;
+    const prompt = await chrome.storage.sync.get("responsetext");
+    if (prompt.responsetext === qlEditorValue) {
+      const oldPrompt = await chrome.storage.sync.get("linkedinPrompt");
+      txtPrompt = oldPrompt.linkedinPrompt;
+    } else {
+      txtPrompt = qlEditorValue;
+    }
     const PromptData = {
       prompt: {
-        description: "",
+        description: txtPrompt,
       },
       toneId: "",
       maxTokens: 100,
