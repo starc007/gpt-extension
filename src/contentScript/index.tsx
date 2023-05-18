@@ -69,17 +69,6 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
   }
 });
 
-// function getTheme() {
-//   if (
-//     window.matchMedia &&
-//     window.matchMedia("(prefers-color-scheme:dark)").matches
-//   ) {
-//     return "dark";
-//   } else {
-//     return "light";
-//   }
-// }
-
 function CommentInit() {
   const isCommentEmbeded = document.getElementById("vakyaCommentContainer69");
   if (isCommentEmbeded) return;
@@ -113,12 +102,12 @@ function CommentInit() {
 
 function SocialInit() {
   const isEmbeded = document.getElementById("containerVakya69");
+  const toolbar = document.querySelector('[data-testid="toolBar"]');
 
-  if (isEmbeded) return;
+  const parent = toolbar?.parentElement;
+  const childCount = parent?.childElementCount;
 
-  // const theme = getTheme();
-
-  // let isDarkMode = theme === "dark" ? true : false;
+  if (isEmbeded && childCount >= 2) return;
 
   const appDiv = document.createElement("div");
 
@@ -166,7 +155,6 @@ const interval = setInterval(() => {
     "[aria-labelledby='cover_letter_label']"
   );
   const freelancerCheck = document.getElementById("descriptionTextArea");
-  const twitterCheck = document.querySelector('[data-testid="toolBar"]');
   const linkedinCheck = document.getElementsByClassName(
     "share-creation-state__additional-toolbar"
   );
@@ -189,5 +177,16 @@ const interval = setInterval(() => {
   } else if (conditionCheck) {
     init();
     clearInterval(interval);
+  }
+}, 400);
+
+const newInterval = setInterval(() => {
+  if (isTwitter && loggedIn) {
+    const url = window.location.href;
+    if (url.includes("compose/tweet")) {
+      SocialInit();
+    }
+  } else {
+    clearInterval(newInterval);
   }
 }, 400);

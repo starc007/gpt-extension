@@ -325,7 +325,6 @@ const contentScript = () => {
     var port = chrome.runtime.connect({ name: "vakya" });
     port.postMessage({ type: "getStreamPrompt", promptData: promptData });
     port.onMessage.addListener((msg) => {
-      console.log("msg", msg);
       if (msg.data) {
         setGeneratedResponse((prev) => {
           if (prev) {

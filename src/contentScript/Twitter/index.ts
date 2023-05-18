@@ -71,9 +71,13 @@ function sendServerRequest(toneId: string, prompt: string) {
   text = text.replace(/(\r\n|\n|\r)/gm, "");
   text = text.replace(/(\s\s)/gm, " ");
   text = text.trim();
+
+  const isTweet = document.querySelector(
+    '[data-testid="tweetButtonInline"]'
+  ).textContent;
   const PromptData = {
     prompt: {
-      description: text.length > 0 ? text : prompt,
+      description: isTweet === "Reply" ? prompt : text,
     },
     toneId: toneId,
     maxTokens: 100,
@@ -81,80 +85,39 @@ function sendServerRequest(toneId: string, prompt: string) {
     categoryInfoId: PLATFORMS.TWITTER,
     meta: {
       source: PLATFORMS.TWITTER,
-      description: prompt ? "replied to a tweet" : "Created post on twitter",
+      description:
+        isTweet === "Reply" ? "replied to a tweet" : "Created post on twitter",
     },
   };
 
-  // const txt =
-  //   "loreum ipsum dolor sit amet djahd kjdhjs dkdh jksd kjad jdj hd dkh adsakdhds";
-
-  // const dataTo = new DataTransfer();
-  // dataTo.setData("text/plain", txt);
-  // twitterTextArea.dispatchEvent(
-  //   new ClipboardEvent("paste", {
-  //     clipboardData: dataTo,
-  //     bubbles: true,
-  //     cancelable: true,
-  //   } as ClipboardEventInit)
-  // );
-  // var port = chrome.runtime.connect({ name: "vakya" });
-  // twitterTextArea.innerText = "Writing......";
   addLoading(isLinkedIn);
-  // port.postMessage({ type: "getPrompt", promptData: PromptData });
-  // port.onMessage.addListener((msg) => {
-  //   if (msg.message === "done") {
-  //     removeLoading(isLinkedIn);
-  //     return;
-  //   } else if (msg.message === "success") {
-  //     const { data } = msg;
-  //     let prevText = twitterTextArea.innerText;
-  //     if (prevText?.includes("undefined")) {
-  //       prevText = prevText?.replace("undefined", " ");
-  //     }
-  //     if (data?.includes("undefined")) {
-  //       prevText = data?.replace("undefined", " ");
-  //     }
-  //     if (prevText === "Writing......") prevText = "";
-  //     let txt = prevText + data;
-  //     txt = txt.replace("undefined", " ");
-
-  //     const dataTo = new DataTransfer();
-  //     dataTo.setData("text/plain", txt);
-  //     twitterTextArea.dispatchEvent(
-  //       new ClipboardEvent("paste", {
-  //         clipboardData: dataTo,
-  //         bubbles: true,
-  //         cancelable: true,
-  //       } as ClipboardEventInit)
-  //     );
-  //   }
-  // });
-  // updateInput(twitterTextArea, "Writing......");
   chrome.runtime.sendMessage(
     { type: "getPrompt", promptData: PromptData },
     (response) => {
       if (response?.data?.length) {
         const resText = response.data[0];
+        const ptag = document.getElementById("failed69");
+        if (ptag.style.display === "block") ptag.style.display = "none";
         updateInput(twitterTextArea, resText);
         removeLoading(isLinkedIn);
       } else {
         removeLoading(isLinkedIn);
-        updateInput(
-          twitterTextArea,
-          "Failed to generate text please try again"
-        );
+        const ptag = document.getElementById("failed69");
+        ptag.style.display = "block";
       }
     }
   );
 }
 
 export const EmbedTwitterButtons = () => {
+  const toolbar = document.querySelector('[data-testid="toolBar"]');
+  const parent = toolbar?.parentElement;
+  const childCount = parent?.childElementCount;
+
   const isButtonsEmbeded = document.getElementById("vakyaBtn69");
-  if (isButtonsEmbeded) {
+  if (isButtonsEmbeded && childCount >= 2) {
     return;
   }
-
-  const toolbar = document.querySelector('[data-testid="toolBar"]');
 
   if (!toolbar) {
     requestAnimationFrame(EmbedTwitterButtons);
@@ -227,6 +190,14 @@ export const EmbedTwitterButtons = () => {
     chrome.storage.sync.set({ twitterPrompt: pmpt });
   });
 
+  const p = document.createElement("p");
+  p.innerHTML = "Failed";
+  p.id = "failed69";
+  p.setAttribute(
+    "style",
+    "color: red; font-size: 12px; font-weight: 600; margin-left: 8px; display: none;"
+  );
+
   const buttons = document.createElement("div");
   buttons.id = "vakyaBtn69";
   buttons.setAttribute(
@@ -238,6 +209,7 @@ export const EmbedTwitterButtons = () => {
   buttons.appendChild(interestingBtn);
   buttons.appendChild(qaBtn);
   buttons.appendChild(moreBtn);
+  buttons.appendChild(p);
 
   toolbar.firstElementChild.setAttribute("style", "margin-top: 9px;");
   toolbar.lastElementChild.setAttribute("style", "margin-top: 9px;");

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "../../assets/tailwind.css";
 import { useAuth } from "../../options/AuthContext";
 import { PLATFORMS } from "../config";
-import { updateInput } from "./index";
+import { findCurrentTweetText, updateInput } from "./index";
 import { ProfileType } from "../../api";
 import { addLoading } from "../common";
 import { removeLoading } from "../common";
@@ -48,19 +48,29 @@ const Twitter = () => {
   }, []);
 
   const handleSubmitProfile = async (profileId: string) => {
-    const tweitterPrompt = await chrome.storage.sync.get("twitterPrompt");
+    const isTweet = document.querySelector(
+      '[data-testid="tweetButtonInline"]'
+    ).textContent;
+
+    const twitterTextArea = document.querySelector(
+      '[data-testid="tweetTextarea_0"]'
+    ) as any;
+    let text = twitterTextArea.innerText;
+    const currentTweetText = findCurrentTweetText();
+
     const PromptData = {
       prompt: {
-        description: tweitterPrompt.twitterPrompt,
+        description: isTweet === "Reply" ? currentTweetText : text,
       },
       toneId: "",
       maxTokens: 100,
       numResponses: 1,
       customToneId: profileId,
-      categoryInfoId: PLATFORMS.LINKEDIN,
+      categoryInfoId: PLATFORMS.TWITTER,
       meta: {
-        source: PLATFORMS.LINKEDIN,
-        description: "Created post on linkedin",
+        source: PLATFORMS.TWITTER,
+        description:
+          isTweet === "Reply" ? "reply to a tweet" : "Created post on twitter",
       },
     };
 
@@ -90,23 +100,19 @@ const Twitter = () => {
     //   }
     // });
     setIsDropdownOpen(false);
-    // qlEditor.textContent = "Writing......";
     chrome.runtime.sendMessage(
       { type: "getPrompt", promptData: PromptData },
       (response) => {
         if (response?.data?.length) {
           const resText = response.data[0];
-          // let txtToSent = twitterTextArea.innerText;
-          // if (txtToSent === "Writing......") txtToSent = " ";
-          // txtToSent = resText;
+          const ptag = document.getElementById("failed69");
+          if (ptag.style.display === "block") ptag.style.display = "none";
           updateInput(twitterTextArea, resText);
           setIsGenerating(false);
         } else {
           setIsGenerating(false);
-          updateInput(
-            twitterTextArea,
-            "Failed to generate text please try again"
-          );
+          const ptag = document.getElementById("failed69");
+          ptag.style.display = "block";
         }
       }
     );
@@ -120,19 +126,29 @@ const Twitter = () => {
   };
 
   const SubmitGenerateThirdPerson = async () => {
-    const prompt = await chrome.storage.sync.get("twitterPrompt");
+    const isTweet = document.querySelector(
+      '[data-testid="tweetButtonInline"]'
+    ).textContent;
+
+    const twitterTextArea = document.querySelector(
+      '[data-testid="tweetTextarea_0"]'
+    ) as any;
+    let text = twitterTextArea.innerText;
+    const currentTweetText = findCurrentTweetText();
+
     const PromptData = {
       prompt: {
-        description: prompt,
+        description: isTweet === "Reply" ? currentTweetText : text,
       },
       toneId: "",
       maxTokens: 100,
       numResponses: 1,
-      categoryInfoId: PLATFORMS.LINKEDIN,
+      categoryInfoId: PLATFORMS.TWITTER,
       additionalInfo: name,
       meta: {
-        source: PLATFORMS.LINKEDIN,
-        description: "Created post on Twitter",
+        source: PLATFORMS.TWITTER,
+        description:
+          isTweet === "Reply" ? "reply to a tweet" : "Created post on twitter",
       },
     };
 
@@ -143,14 +159,14 @@ const Twitter = () => {
       (response) => {
         if (response?.data?.length) {
           const resText = response.data[0];
+          const ptag = document.getElementById("failed69");
+          if (ptag.style.display === "block") ptag.style.display = "none";
           updateInput(twitterTextArea, resText);
           setIsGenerating(false);
         } else {
           setIsGenerating(false);
-          updateInput(
-            twitterTextArea,
-            "Failed to generate text please try again"
-          );
+          const ptag = document.getElementById("failed69");
+          ptag.style.display = "block";
         }
       }
     );
