@@ -99,7 +99,7 @@ function sendServerRequest(toneId: string, text: string, linkElem: any) {
     numResponses: 1,
     categoryInfoId: PLATFORMS.LINKEDIN,
     meta: {
-      source: PLATFORMS.LINKEDIN,
+      source: PLATFORMS.LINKEDIN_COMMENT,
       description: "replied to post",
     },
   };
