@@ -11,6 +11,7 @@ export const PLATFORMS = {
   FREELANCER: "2",
   TWITTER: "3",
   LINKEDIN: "4",
+  LINKEDIN_COMMENT:"5",
 };
 
 export const TONE_IDS = {

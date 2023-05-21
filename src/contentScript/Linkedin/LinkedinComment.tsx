@@ -36,7 +36,7 @@ const LinkedinComment = () => {
       customToneId: profileId,
       categoryInfoId: PLATFORMS.LINKEDIN,
       meta: {
-        source: PLATFORMS.LINKEDIN,
+        source: PLATFORMS.LINKEDIN_COMMENT,
         description: "Created post on linkedin",
       },
     };
@@ -83,7 +83,7 @@ const LinkedinComment = () => {
       categoryInfoId: PLATFORMS.LINKEDIN,
       additionalInfo: name,
       meta: {
-        source: PLATFORMS.LINKEDIN,
+        source: PLATFORMS.LINKEDIN_COMMENT,
         description: "Created post on linkedin",
       },
     };
