@@ -290,6 +290,7 @@ const contentScript = () => {
 
   const handleSubmit = () => {
     setAddedProfile(null);
+    setGeneratedResponse(null);
     if (!isLoggedin) {
       return toast.error("Please login to use this feature");
     }

@@ -55,8 +55,10 @@ export const updateInput = (input: any, value: string) => {
   dataTo.setData("text/plain", value);
   input.dispatchEvent(
     new ClipboardEvent("paste", {
-      clipboardData: dataTo,
+      dataType: "text/plain",
+      data: value,
       bubbles: true,
+      clipboardData: dataTo,
       cancelable: true,
     } as ClipboardEventInit)
   );
