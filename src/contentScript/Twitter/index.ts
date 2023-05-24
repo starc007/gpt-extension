@@ -64,10 +64,41 @@ export const updateInput = (input: any, value: string) => {
   );
 };
 
+// function getLastTextNodeIn(node) {
+//   while (node) {
+//     if (node.nodeType == 3) {
+//       return node;
+//     } else {
+//       node = node.lastChild;
+//     }
+//   }
+// }
+
+// function isRangeAfterNode(range, node) {
+//   var nodeRange, lastTextNode;
+//   if (range.compareBoundaryPoints) {
+//     nodeRange = document.createRange();
+//     lastTextNode = getLastTextNodeIn(node);
+//     nodeRange.selectNodeContents(lastTextNode);
+//     nodeRange.collapse(false);
+//     return range.compareBoundaryPoints(range.START_TO_END, nodeRange) > -1;
+//   } else if (range.compareEndPoints) {
+//     if (node.nodeType == 1) {
+//       nodeRange = document.createTextRange();
+//       nodeRange.moveToElementText(node);
+//       nodeRange.collapse(false);
+//       return range.compareEndPoints("StartToEnd", nodeRange) > -1;
+//     } else {
+//       return false;
+//     }
+//   }
+// }
+
 function sendServerRequest(toneId: string, prompt: string) {
   const twitterTextArea = document.querySelector(
     '[data-testid="tweetTextarea_0"]'
   ) as any;
+
   let text = twitterTextArea.innerText;
   // remove space new line and other special characters from text
   text = text.replace(/(\r\n|\n|\r)/gm, "");
@@ -100,6 +131,11 @@ function sendServerRequest(toneId: string, prompt: string) {
         const resText = response.data[0];
         const ptag = document.getElementById("failed69");
         if (ptag.style.display === "block") ptag.style.display = "none";
+        // updateInput(twitterTextArea, resText);
+        //empty the text area
+        if (text.length > 0) {
+        }
+        // document.execCommand("insertText", false, resText);
         updateInput(twitterTextArea, resText);
         removeLoading(isLinkedIn);
       } else {

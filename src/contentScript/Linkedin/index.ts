@@ -124,25 +124,11 @@ function sendServerRequest(toneId: string, text: string, linkElem: any) {
       }
       if (prevText === "Writing......") prevText = " ";
       let txt = prevText + data;
-      txt = txt.replaceAll("undefined", " ");
+      txt = txt.replace("undefined", " ");
+      txt = txt.replace(/^\s+|\s+$/g, "");
       linkElem.textContent = txt;
     }
   });
-
-  // chrome.runtime.sendMessage(
-  //   { type: "getPrompt", promptData: PromptData },
-  //   (response) => {
-  //     if (response?.data?.length) {
-  //       const resText = response.data[0];
-  //       let txtToSent = linkElem?.textContent;
-  //       if (txtToSent === text) txtToSent = "";
-  //       if (txtToSent === "Writing......") txtToSent = " ";
-  //       txtToSent = resText;
-  //       linkElem.textContent = txtToSent;
-  //       removeLoading(isLinkedIn);
-  //     }
-  //   }
-  // );
 }
 
 export const EmbedButtonsInCommentBox = () => {
@@ -254,50 +240,3 @@ export const EmbedButtonsInCommentBox = () => {
     b.appendChild(buttons);
   });
 };
-
-// export const EmbedEmptyMessageBtn = (isDarkMode: boolean) => {
-//   // Use Vakya for creating posts through AI
-//   const isButtonsEmbeded = document.getElementById("vakyaBtn69");
-//   if (isButtonsEmbeded) {
-//     return;
-//   }
-//   //   const toolbar = document.querySelector("[class");
-//   // select class share-creation-state__msg-wrapper
-//   const toolbar = document.getElementsByClassName(
-//     "share-creation-state__additional-toolbar"
-//   );
-
-//   const isBox = document.getElementsByClassName(
-//     "share-box"
-//   ) as HTMLCollectionOf<HTMLElement>;
-//   const url = chrome.runtime.getURL("icon.png");
-//   //check if display is none
-//   if (isBox.length > 0) {
-//     const NologinBtn = document.createElement("a");
-//     NologinBtn.href = "https://test.vakya.ai";
-//     NologinBtn.target = "_blank";
-//     NologinBtn.innerHTML =
-//       "<span style='color: #7F56D9; font-weight: 700; margin-right:3px'>Use Vakya </span> for creating posts through AI";
-//     NologinBtn.id = "NologinBtn69";
-//     NologinBtn.setAttribute(
-//       "style",
-//       `cursor: pointer; color: ${
-//         isDarkMode ? "#7F56D9" : "#7F56D9"
-//       }; background: transparent; padding: 4px 8px; font-size: 13px; font-size: 13px; width:303px ;display:flex;`
-//     );
-//     const img = document.createElement("img");
-//     img.setAttribute("style", "width: 20px; height: 20px; margin-left: 8px;");
-//     img.src = url;
-//     NologinBtn.appendChild(img);
-
-//     const buttons = document.createElement("div");
-//     buttons.id = "vakyaBtn69";
-//     buttons.setAttribute(
-//       "style",
-//       "display: flex; align-items: center; height: 100%; margin-top: 8px; position: relative;"
-//     );
-//     buttons.appendChild(NologinBtn);
-
-//     toolbar[0].appendChild(buttons);
-//   }
-// };

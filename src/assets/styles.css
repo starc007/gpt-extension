@@ -49,7 +49,7 @@
 }
 
 .generate__btn69 {
-  @apply bg-primary;
+  @apply bg-primary text-white rounded-lg w-1/2 flex items-center justify-center text-sm  h-11;
 }
 
 .css-1p3m7a8-multiValue {
@@ -121,4 +121,128 @@ css-v7duua:hover {
   color: #fff;
   padding: 0 0.5rem;
   margin-left: 6px;
+}
+
+.div__parentLinkedin69 {
+  @apply w-[30rem] rounded-lg bg-dark flex flex-col space-y-6 p-4 border border-primary;
+}
+
+.cmn__cls69 {
+  @apply flex items-start space-x-4;
+}
+
+.disabled__cls69 {
+  @apply disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.linkedin__dropCol69 {
+  @apply font-medium text-white;
+}
+.linkedin__dropCol691 {
+  @apply font-normal text-lightPurple2;
+}
+
+.linkedin__cmn2 {
+  @apply flex flex-col -mt-[2px];
+}
+
+.twitter__parent69 {
+  @apply w-96 rounded-lg bg-dark flex flex-col space-y-6 p-4 z-50 border border-primary;
+}
+
+.twitter__select69 {
+  @apply w-full mt-3 px-4 h-11 bg-transparent border border-white rounded-lg text-white;
+}
+
+.sb_btm69 {
+  @apply flex absolute gap-2 bottom-2 bg-white w-11/12 border-t pt-3;
+}
+
+.cancel__btn69 {
+  @apply border text-gray-700 rounded-lg w-1/2 flex items-center justify-center text-sm h-11;
+}
+
+.cursor__cls69 {
+  @apply cursor-not-allowed;
+}
+
+.cmn__cls3 {
+  @apply flex items-start;
+}
+
+.result__txtArea {
+  @apply w-full p-2 focus:outline-none resize-none text-sm h-full;
+}
+.result__txtAreaParent {
+  @apply border border-gray-200 rounded;
+}
+
+.txt__primary {
+  @apply text-primary;
+}
+
+.lottie__div69 {
+  @apply w-full flex flex-col items-center border p-4 rounded;
+}
+
+.addition__infoInp9 {
+  @apply w-full border border-gray-200 text-sm placeholder:text-sm p-2 rounded focus:outline-none focus:ring-1 ring-primary transition duration-300;
+}
+
+.cmn__txtCol {
+  @apply text-gray-600 text-xs font-medium;
+}
+
+.width__cls69 {
+  @apply w-full mt-1;
+}
+.width__half69 {
+  @apply w-1/2;
+}
+
+.div__parentHorizontal69 {
+  @apply flex gap-4 w-full;
+}
+.selProfileDiv {
+  @apply flex flex-col space-y-3;
+}
+
+.jd__div69 {
+  @apply flex items-center border border-primary bg-lightPurple px-2 rounded-lg py-2 mt-3;
+}
+
+.jd__heading69 {
+  @apply text-primary font-medium w-[64px] text-sm;
+}
+.jd__title69 {
+  @apply text-gray-700 truncate w-80 text-sm;
+}
+
+.main__title69 {
+  @apply mt-6 text-gray-700 font-medium text-base;
+}
+
+.sb__loginBtn {
+  @apply px-12 h-12 rounded-md text-gray-600 font-medium text-sm mt-5 flex items-center justify-center border hover:bg-gray-100 transition duration-300;
+}
+
+.sb__loginBtndisabled {
+  @apply cursor-not-allowed bg-zinc-100 text-gray-500;
+}
+
+.csr__pointer {
+  @apply cursor-pointer;
+}
+
+.loader_cls {
+  @apply w-5 h-5 ml-3 text-gray-800;
+}
+.sb__loginContainer {
+  @apply flex flex-col items-center justify-center h-screen px-6;
+}
+.sb__loginContainertxt {
+  @apply text-3xl font-bold text-gray-700;
+}
+.sb__loginContainerdesc {
+  @apply mt-2 text-gray-500 text-sm;
 }

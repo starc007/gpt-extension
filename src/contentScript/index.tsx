@@ -4,10 +4,8 @@ import ContentScript from "./contentScript";
 import "../assets/styles.css";
 import { AuthProvider } from "../options/AuthContext";
 
-// Enject button for upwork
 import { TextAreaContainer, LabelAddContainer } from "./Upwork";
 
-// Enject button for freelancer
 import {
   TextAreaContainer as FreelancerEnjectButton,
   LabelAddContainer as FreelancerEnjectLabel,
@@ -18,7 +16,6 @@ import { EmbedTwitterButtons } from "./Twitter";
 import Twitter from "./Twitter/Twitter";
 import { EmbedButtonsInCommentBox, EmbedLinkedinButtons } from "./Linkedin";
 import Linkedin from "./Linkedin/Linkedin";
-import LinkedinComment from "./Linkedin/LinkedinComment";
 import { EmbedEmptyMessageBtn } from "./common";
 
 const hostName = window.location.hostname;
@@ -69,36 +66,36 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
   }
 });
 
-function CommentInit() {
-  const isCommentEmbeded = document.getElementById("vakyaCommentContainer69");
-  if (isCommentEmbeded) return;
+// function CommentInit() {
+//   const isCommentEmbeded = document.getElementById("vakyaCommentContainer69");
+//   if (isCommentEmbeded) return;
 
-  const commentDiv = document.createElement("div");
-  commentDiv.id = "vakyaCommentContainer69";
+//   const commentDiv = document.createElement("div");
+//   commentDiv.id = "vakyaCommentContainer69";
 
-  // const theme = getTheme();
-  // let isDarkMode = theme === "dark" ? true : false;
+//   // const theme = getTheme();
+//   // let isDarkMode = theme === "dark" ? true : false;
 
-  if (isLinkedin) {
-    if (loggedIn) {
-      EmbedButtonsInCommentBox();
-    } else {
-      EmbedEmptyMessageBtn();
-    }
-    commentDiv.setAttribute(
-      "style",
-      "position: absolute; top: 34px; right: 119px; z-index: 999;"
-    );
-  }
+//   if (isLinkedin) {
+//     if (loggedIn) {
+//       EmbedButtonsInCommentBox();
+//     } else {
+//       EmbedEmptyMessageBtn();
+//     }
+//     commentDiv.setAttribute(
+//       "style",
+//       "position: absolute; top: 34px; right: 119px; z-index: 999;"
+//     );
+//   }
 
-  const commentButtons = document.getElementById("vakyaCommentBtn69");
-  commentButtons?.appendChild(commentDiv);
-  const commentRoot = createRoot(commentDiv);
+//   const commentButtons = document.getElementById("vakyaCommentBtn69");
+//   commentButtons?.appendChild(commentDiv);
+//   const commentRoot = createRoot(commentDiv);
 
-  commentRoot.render(
-    <AuthProvider>{isLinkedin ? <LinkedinComment /> : null}</AuthProvider>
-  );
-}
+//   commentRoot.render(
+//     <AuthProvider>{isLinkedin ? <LinkedinComment /> : null}</AuthProvider>
+//   );
+// }
 
 function SocialInit() {
   const isEmbeded = document.getElementById("containerVakya69");
@@ -107,13 +104,12 @@ function SocialInit() {
   const parent = toolbar?.parentElement;
   const childCount = parent?.childElementCount;
 
-  if (isEmbeded && childCount >= 2) return;
-
   const appDiv = document.createElement("div");
 
   appDiv.id = "containerVakya69";
 
   if (isTwitter) {
+    if (isEmbeded && childCount >= 2) return;
     if (loggedIn) {
       EmbedTwitterButtons();
     } else {
@@ -125,6 +121,7 @@ function SocialInit() {
     );
   }
   if (isLinkedin) {
+    if (isEmbeded) return;
     if (loggedIn) {
       EmbedLinkedinButtons();
       EmbedButtonsInCommentBox();
@@ -159,9 +156,9 @@ const interval = setInterval(() => {
     "share-creation-state__additional-toolbar"
   );
 
-  const commentButtons = document.querySelectorAll(
-    "form.comments-comment-box__form"
-  );
+  // const commentButtons = document.querySelectorAll(
+  //   "form.comments-comment-box__form"
+  // );
   const conditionCheck =
     hostName === "www.upwork.com"
       ? upworkCheck
@@ -169,7 +166,7 @@ const interval = setInterval(() => {
       ? freelancerCheck
       : false;
 
-  if (commentButtons.length > 0) CommentInit();
+  // if (commentButtons.length > 0) CommentInit();
 
   if (isTwitter || (isLinkedin && linkedinCheck)) {
     SocialInit();

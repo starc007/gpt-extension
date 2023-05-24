@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
-import "../../assets/tailwind.css";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../options/AuthContext";
 import { PLATFORMS } from "../config";
 import { findCurrentTweetText, updateInput } from "./index";
@@ -177,19 +176,27 @@ const Twitter = () => {
   );
 
   return isDropdownOpen ? (
-    <div className="w-96 rounded-lg bg-dark flex flex-col space-y-6 p-4 z-50 border border-primary">
+    <div className="twitter__parent69">
       {twitterProfiles?.length > 0 ? (
-        <div className="flex items-start space-x-4">
-          <img src={chrome.runtime.getURL("select.png")} className="w-5 h-4" />
-          <div className="flex flex-col -mt-[2px]">
-            <p className="font-medium text-white">Select Profile from Vakya</p>
-            <p className="text-xs font-normal text-lightPurple2">
+        <div className="cmn__cls69">
+          <img
+            src={chrome.runtime.getURL("select.png")}
+            style={{
+              width: "20px",
+              height: "16px",
+            }}
+          />
+          <div className="linkedin__cmn2">
+            <p className="linkedin__dropCol69">Select Profile from Vakya</p>
+            <p
+              className="linkedin__dropCol691"
+              style={{
+                fontSize: "12px",
+              }}
+            >
               Results will be generated based on your profile selection
             </p>
-            <select
-              onChange={handleSelectChange}
-              className="w-full mt-3 px-4 h-11 bg-transparent border border-white rounded-lg text-white"
-            >
+            <select onChange={handleSelectChange} className="twitter__select69">
               <option value="0">Select Profile</option>
               {twitterProfiles?.map((profile) => (
                 <option key={profile.id} value={profile.id}>
@@ -200,40 +207,68 @@ const Twitter = () => {
           </div>
         </div>
       ) : null}
-      <div className="flex items-start space-x-4">
-        <img src={chrome.runtime.getURL("userplus.png")} className="w-6" />
+      <div className="cmn__cls69">
+        <img
+          src={chrome.runtime.getURL("userplus.png")}
+          style={{
+            width: "24px",
+          }}
+        />
         <div
           onClick={() => {
             window.open("https://test.vakya.ai/dashboard/profile", "_blank");
             setIsDropdownOpen(false);
           }}
-          className="flex flex-col -mt-[2px] cursor-pointer"
+          className="linkedin__cmn2"
+          style={{
+            cursor: "pointer",
+          }}
         >
-          <p className="font-medium text-white">Create New Profile</p>
-          <p className="text-xs font-normal text-lightPurple2">
+          <p className="linkedin__dropCol69">Create New Profile</p>
+          <p
+            className="linkedin__dropCol691"
+            style={{
+              fontSize: "12px",
+            }}
+          >
             Create profile the way you want vakya to answer for you
           </p>
         </div>
       </div>
-      <div className="flex items-start space-x-4">
-        <img src={chrome.runtime.getURL("usercheck.png")} className="w-6" />
-        <div className="flex flex-col -mt-[2px]">
-          <p className="font-medium text-white">Write as</p>
-          <p className="text-xs font-normal text-lightPurple2">
+      <div className="cmn__cls69">
+        <img
+          src={chrome.runtime.getURL("usercheck.png")}
+          style={{
+            width: "24px",
+          }}
+        />
+        <div className="linkedin__cmn2">
+          <p className="linkedin__dropCol69">Write as</p>
+          <p
+            className="linkedin__dropCol691"
+            style={{
+              fontSize: "12px",
+            }}
+          >
             Write description of a persona (person or specific personality) you
             want vakya to generate results as.
           </p>
-          <div className="border flex justify-between items-center rounded-lg mt-4 py-1 w-full">
+          <div
+            className="divLinkedin__moreBtn69"
+            style={{
+              border: "1px solid #E5E5E5",
+            }}
+          >
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-max h-10 px-2 text-sm text-white bg-transparent border-none focus:outline-none"
+              // className="w-max h-10 px-2 text-sm text-white bg-transparent border-none focus:outline-none"
               placeholder="Write as"
             />
             <button
               onClick={SubmitGenerateThirdPerson}
-              className="w-20 h-10 mr-1 text-sm text-white bg-primary rounded-lg border-none focus:outline-none"
+              // className="w-20 h-10 mr-1 text-sm text-white bg-primary rounded-lg border-none focus:outline-none"
             >
               Generate
             </button>

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import "../../assets/tailwind.css";
 import { useAuth } from "../../options/AuthContext";
 import { PLATFORMS, TONE_IDS } from "../config";
 import { ProfileType } from "../../api";
-import { toast } from "react-hot-toast";
 
 const Linkedin = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -11,12 +9,6 @@ const Linkedin = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [name, setName] = useState("");
   const [text, setText] = useState("");
-  const [formData, setFormData] = useState({
-    prompt: "",
-    toneId: "",
-    profileId: "",
-    additionalInfo: "",
-  });
 
   const moreBtnId = document.getElementById("moreBtn69");
   const funnyBtn69 = document.getElementById("funnyBtn69");
@@ -35,7 +27,6 @@ const Linkedin = () => {
   const qlEditor = document?.querySelector(".ql-editor");
 
   const handleSubmit = (prompt: string, toneId: string) => {
-    setFormData({ prompt, toneId, profileId: "", additionalInfo: "" });
     chrome.storage.sync.set({
       linkedinPrompt: prompt,
       toneIdLinkedin: toneId,
@@ -78,6 +69,8 @@ const Linkedin = () => {
         if (prevText === "Writing......") prevText = " ";
         let txt = prevText + data;
         txt = txt.replace("undefined", " ");
+        //remove space from start
+        txt = txt.replace(/^\s+|\s+$/g, "");
         qlEditor.textContent = txt;
         // qlEditor.textContent = prevText + data;
         setText(txt);
@@ -304,13 +297,18 @@ const Linkedin = () => {
   );
 
   return isDropdownOpen ? (
-    <div className="w-[30rem] rounded-lg bg-dark flex flex-col space-y-6 p-4 border border-primary">
+    <div className="div__parentLinkedin69">
       {linkedinProfiles?.length > 0 ? (
-        <div className="flex items-start space-x-4">
-          <img src={chrome.runtime.getURL("select.png")} className="w-6" />
-          <div className="flex flex-col -mt-[2px]">
+        <div className="cmn__cls69">
+          <img
+            src={chrome.runtime.getURL("select.png")}
+            style={{
+              width: "24px",
+            }}
+          />
+          <div className="linkedin__cmn2">
             <p
-              className="font-medium text-white"
+              className="linkedin__dropCol69"
               style={{
                 fontSize: "14px",
               }}
@@ -318,7 +316,7 @@ const Linkedin = () => {
               Select Profile from Vakya
             </p>
             <p
-              className="font-normal text-lightPurple2"
+              className="linkedin__dropCol691"
               style={{
                 fontSize: "10px",
               }}
@@ -327,7 +325,7 @@ const Linkedin = () => {
             </p>
             <select
               disabled={isGenerating}
-              className="selectLinkedin69 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="selectLinkedin69 disabled__cls69"
               onChange={handleSelectChange}
             >
               <option value="0">Select Profile</option>
@@ -340,17 +338,25 @@ const Linkedin = () => {
           </div>
         </div>
       ) : null}
-      <div className="flex items-start space-x-4">
-        <img src={chrome.runtime.getURL("userplus.png")} className="w-6" />
+      <div className="cmn__cls69">
+        <img
+          src={chrome.runtime.getURL("userplus.png")}
+          style={{
+            width: "24px",
+          }}
+        />
         <div
           onClick={() => {
             window.open("https://test.vakya.ai/dashboard/profile", "_blank");
             setIsDropdownOpen(false);
           }}
-          className="flex flex-col -mt-[2px] cursor-pointer"
+          className="linkedin__cmn2"
+          style={{
+            cursor: "pointer",
+          }}
         >
           <p
-            className="font-medium text-white"
+            className="linkedin__dropCol69"
             style={{
               fontSize: "14px",
             }}
@@ -358,7 +364,7 @@ const Linkedin = () => {
             Create New Profile
           </p>
           <p
-            className="font-normal text-lightPurple2"
+            className="linkedin__dropCol691"
             style={{
               fontSize: "10px",
             }}
@@ -367,11 +373,16 @@ const Linkedin = () => {
           </p>
         </div>
       </div>
-      <div className="flex items-start space-x-4">
-        <img src={chrome.runtime.getURL("usercheck.png")} className="w-6" />
-        <div className="flex flex-col -mt-[2px]">
+      <div className="cmn__cls69">
+        <img
+          src={chrome.runtime.getURL("usercheck.png")}
+          style={{
+            width: "24px",
+          }}
+        />
+        <div className="linkedin__cmn2">
           <p
-            className="font-medium dark:text-white text-black"
+            className="linkedin__dropCol69"
             style={{
               fontSize: "14px",
             }}
@@ -379,7 +390,7 @@ const Linkedin = () => {
             Write as
           </p>
           <p
-            className="font-normal text-lightPurple2"
+            className="linkedin__dropCol691"
             style={{
               fontSize: "10px",
             }}
@@ -397,7 +408,7 @@ const Linkedin = () => {
             <button
               disabled={isGenerating || !name}
               onClick={SubmitGenerateThirdPerson}
-              className="disabled:opacity-50 disabled:cursor-not-allowed"
+              className="disabled__cls69"
             >
               Generate
             </button>

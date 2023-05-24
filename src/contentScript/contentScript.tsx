@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import Select, { components } from "react-select";
 import Lottie from "lottie-react";
@@ -7,7 +7,7 @@ import Login from "../options/Login";
 
 import GenerateAnimation from "./GenerateAnimation.json";
 
-import "../assets/tailwind.css";
+// import "../assets/tailwind.css";
 import { useAuth } from "../options/AuthContext";
 import AddProfile from "./Addprofile";
 
@@ -121,10 +121,10 @@ const contentScript = () => {
         setFormData,
         formData,
       });
-      // setFormData({
-      //   ...formData,
-      //   categoryInfoId: PLATFORMS.UPWORK,
-      // });
+      setFormData({
+        ...formData,
+        categoryInfoId: PLATFORMS.UPWORK,
+      });
     }
 
     if (hostName === "www.freelancer.com") {
@@ -133,6 +133,10 @@ const contentScript = () => {
         setJobTitle,
         setFormData,
         formData,
+      });
+      setFormData({
+        ...formData,
+        categoryInfoId: PLATFORMS.FREELANCER,
       });
     }
 
@@ -405,16 +409,9 @@ const contentScript = () => {
     }
   }, [addedProfile, allProfiles, defaultProfile, isLoggedin]);
 
-  // const filteredProfiles = hostName?.includes("upwork")
-  //   ? allProfiles?.filter(
-  //       (profile: ProfileType) => profile?.categoryInfoId == PLATFORMS.UPWORK
-  //     )
-  //   : allProfiles?.filter(
-  //       (profile: ProfileType) =>
-  //         profile?.categoryInfoId == PLATFORMS.FREELANCER
-  //     );
+  // const [textArHeight, setTextArHeight] = useState(7);
 
-  // console.log("filteredProfiles", allProfiles);
+  // console.log("textArHeight", textArHeight);
 
   return (
     <>
@@ -429,51 +426,59 @@ const contentScript = () => {
           {!isLoggedin ? (
             <Login isContentScript={true} />
           ) : !isVisible && isOpen ? (
-            <div className="p-4">
-              <div className="flex items-center justify-between ">
+            <div
+              // className="p-4"
+              style={{
+                padding: "1rem",
+              }}
+            >
+              <div
+                // className="flex items-center justify-between "
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
                 <img
                   src={chrome.runtime.getURL("logoDark.svg")}
                   alt="logo"
-                  className="w-24"
+                  // className="w-24"
+                  style={{
+                    width: "96px",
+                  }}
                 />
                 <button
                   onClick={() => {
-                    chrome.runtime.sendMessage({
-                      type: "openOptionsPage",
-                    });
+                    window.open("https://test.vakya.ai/", "_blank");
                   }}
                 >
                   <img
                     src={chrome.runtime.getURL("home2.svg")}
                     alt="logo"
-                    className="w-5"
+                    // className="w-5"
+                    style={{
+                      width: "20px",
+                    }}
                   />
                 </button>
               </div>
-              <p className="mt-6 text-gray-700 font-medium text-base">
-                Smart AI Cover Letter Writer
-              </p>
+              <p className="main__title69">Smart AI Cover Letter Writer</p>
 
-              <div className="flex items-center border border-primary bg-lightPurple px-2 rounded-lg py-2 mt-3">
-                <span className="text-primary font-medium w-[64px] text-sm">
-                  Job Title:
-                </span>
-                <p className="text-gray-700 truncate w-80 text-sm">
-                  {jobTitle}
-                </p>
+              <div className="jd__div69">
+                <span className="jd__heading69">Job Title:</span>
+                <p className="jd__title69">{jobTitle}</p>
               </div>
               <div
-                className="flex flex-col space-y-3"
+                className="selProfileDiv"
                 style={{
                   marginTop: "1.1rem",
                 }}
               >
                 <div>
-                  <p className="text-gray-600 text-xs font-medium">
-                    Select Profile
-                  </p>
+                  <p className="cmn__txtCol">Select Profile</p>
                   <Select
-                    className="mt-1"
+                    className="width__cls69"
                     options={allProfiles}
                     value={formData.selectedProfile}
                     placeholder="Select Profile"
@@ -523,14 +528,14 @@ const contentScript = () => {
                     // don't hover on last option
                   />
                 </div>
-                <div className="flex gap-4 w-full">
-                  <div className="w-1/2">
-                    <p className="text-gray-600 text-xs font-medium">Tone</p>
+                <div className="div__parentHorizontal69">
+                  <div className="width__half69">
+                    <p className="cmn__txtCol">Tone</p>
                     <Select
                       options={toneOptions}
                       placeholder="Select Tone"
                       defaultValue={toneOptions[0]}
-                      className="w-full mt-1"
+                      className="width__cls69"
                       onChange={(e) =>
                         setFormData({ ...formData, toneId: e.value })
                       }
@@ -565,15 +570,13 @@ const contentScript = () => {
                       }}
                     />
                   </div>
-                  <div className="w-1/2">
-                    <p className="text-gray-600 text-xs font-medium">
-                      Word Limit
-                    </p>
+                  <div className="width__half69">
+                    <p className="cmn__txtCol">Word Limit</p>
                     <Select
                       options={wordOptions}
                       placeholder="Select Words Count"
                       defaultValue={wordOptions[0]}
-                      className="w-full mt-1"
+                      className="width__cls69"
                       onChange={(e) =>
                         setFormData({ ...formData, maxTokens: e.value })
                       }
@@ -610,7 +613,7 @@ const contentScript = () => {
                   </div>
                 </div>
                 <textarea
-                  className="w-full border border-gray-200 text-sm placeholder:text-sm p-2 rounded focus:outline-none focus:ring-1 ring-primary transition duration-300"
+                  className="addition__infoInp9"
                   placeholder="Additional Information"
                   rows={2}
                   onChange={(e) =>
@@ -622,26 +625,28 @@ const contentScript = () => {
                 ></textarea>
 
                 {isGenerating.loader ? (
-                  <div className="w-full flex flex-col items-center border p-4 rounded">
+                  <div className="lottie__div69">
                     <Lottie
                       animationData={GenerateAnimation}
                       loop={true}
                       className="w-44"
                     />
-                    <p className="text-primary">Generating</p>
+                    <p className="txt__primary">Generating</p>
                   </div>
                 ) : isGenerating.success ? (
                   <div>
-                    <p className="text-primary">Cover Letter Generated</p>
-                    <div className="border border-gray-200 rounded">
+                    <p className="txt__primary">Cover Letter Generated</p>
+                    <div className="result__txtAreaParent">
                       <textarea
-                        className="w-full p-2 focus:outline-none resize-none text-sm"
-                        rows={7}
+                        className="result__txtArea"
                         value={
                           //remove /n from generated response
                           generatedResponse?.replace(/(\r\n|\n|\r)/gm, " ")
                         }
-                        onChange={(e) => setGeneratedResponse(e.target.value)}
+                        rows={7}
+                        onChange={(e) => {
+                          setGeneratedResponse(e.target.value);
+                        }}
                       ></textarea>
                       {/* <Typewriter
                         options={{
@@ -658,17 +663,31 @@ const contentScript = () => {
                             .start();
                         }}
                       /> */}
-                      <div className="flex justify-between p-2">
+                      <div
+                        // className="flex justify-between p-2"
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          padding: "8px",
+                        }}
+                      >
                         <button
                           onClick={() => {
                             handleSubmit();
                           }}
-                          className="flex items-center text-sm"
+                          className="cmn__cls3"
+                          // style={{
+                          //   width: "14px",
+                          // }}
                         >
                           <img
                             src={chrome.runtime.getURL("regenerate.svg")}
                             alt="regen"
-                            className="w-5 mr-1"
+                            // className="w-5 mr-1"
+                            style={{
+                              width: "20px",
+                              marginRight: "4px",
+                            }}
                           />
                           <span className="pt-[1px]">Regenerate Response</span>
                         </button>
@@ -679,12 +698,15 @@ const contentScript = () => {
                             ),
                               toast.success("Copied to clipboard");
                           }}
-                          className="flex items-center"
+                          className="cmn__cls3"
                         >
                           <img
                             src={chrome.runtime.getURL("copy.svg")}
                             alt="copy"
-                            className="w-6"
+                            // className="w-6"
+                            style={{
+                              width: "24px",
+                            }}
                           />
                         </button>
                       </div>
@@ -696,10 +718,10 @@ const contentScript = () => {
 
                 {errMsg && <p>{errMsg}</p>}
               </div>
-              <div className="flex absolute gap-2 bottom-2 bg-white w-11/12 border-t pt-3">
+              <div className="sb_btm69">
                 <button
-                  className={`border text-gray-700 rounded-lg w-1/2 flex items-center justify-center text-sm h-11 ${
-                    isGenerating.loader ? "cursor-not-allowed" : ""
+                  className={`cancel__btn69 ${
+                    isGenerating.loader ? "cursor__cls69" : ""
                   }`}
                   onClick={ToggleSidebar}
                   disabled={isGenerating.loader}
@@ -710,7 +732,7 @@ const contentScript = () => {
                   <button
                     disabled={isGenerating.loader}
                     onClick={fillDetails}
-                    className="generate__btn69 text-white rounded-lg w-1/2 flex items-center justify-center text-sm  h-11"
+                    className="generate__btn69"
                   >
                     Fill
                   </button>
@@ -718,7 +740,7 @@ const contentScript = () => {
                   <button
                     disabled={isGenerating.loader}
                     onClick={handleSubmit}
-                    className="generate__btn69 text-white rounded-lg w-1/2 flex items-center justify-center text-sm  h-11"
+                    className="generate__btn69"
                   >
                     {isGenerating.loader ? "Generating..." : "Generate"}
                   </button>
@@ -734,10 +756,6 @@ const contentScript = () => {
           onClick={ToggleSidebar}
         ></div>
       </div>
-
-      {/* {isVisible && (
-        
-      )} */}
     </>
   );
 };
