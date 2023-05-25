@@ -8,6 +8,7 @@ import Login from "../options/Login";
 import GenerateAnimation from "./GenerateAnimation.json";
 
 // import "../assets/tailwind.css";
+// import "../assets/styles.css";
 import { useAuth } from "../options/AuthContext";
 import AddProfile from "./Addprofile";
 
@@ -255,7 +256,7 @@ const contentScript = () => {
         {props.children}
         <button
           onClick={() => setIsVisible(true)}
-          className="text-primary w-full px-4 pt-2 pb-3 flex items-center"
+          className="cstm__selectbtn"
           onMouseOver={onMouseEnter}
         >
           <svg
@@ -270,7 +271,14 @@ const contentScript = () => {
               fill="#7F56D9"
             />
           </svg>
-          <span className="pt-[2px] ml-1">Create New Profile</span>
+          <span
+            style={{
+              paddingTop: "2px",
+              marginLeft: "4px",
+            }}
+          >
+            Create New Profile
+          </span>
         </button>
       </components.MenuList>
     );
@@ -451,6 +459,11 @@ const contentScript = () => {
                 <button
                   onClick={() => {
                     window.open("https://test.vakya.ai/", "_blank");
+                  }}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    outline: "none",
                   }}
                 >
                   <img

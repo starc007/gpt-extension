@@ -21,6 +21,12 @@
   right: 0;
 }
 
+.fnt__family69 {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
 .sidebar-overlay {
   position: fixed;
   top: 0;
@@ -45,11 +51,11 @@
   right: 15px;
 }
 .fill__btn69 {
-  @apply bg-gray-300 text-gray-800 flex justify-center items-center h-10 w-24 border-none cursor-pointer rounded;
+  @apply bg-gray-300 text-gray-800 flex justify-center items-center h-10 w-24 border-none cursor-pointer rounded outline-none;
 }
 
 .generate__btn69 {
-  @apply bg-primary text-white rounded-lg w-1/2 flex items-center justify-center text-sm  h-11;
+  @apply bg-primary text-white rounded-lg w-1/2 flex items-center justify-center text-sm  h-11 border-none outline-none;
 }
 
 .css-1p3m7a8-multiValue {
@@ -159,7 +165,7 @@ css-v7duua:hover {
 }
 
 .cancel__btn69 {
-  @apply border text-gray-700 rounded-lg w-1/2 flex items-center justify-center text-sm h-11;
+  @apply border text-gray-700 rounded-lg w-1/2 flex items-center justify-center text-sm h-11 border-gray-300 outline-none;
 }
 
 .cursor__cls69 {
@@ -245,4 +251,68 @@ css-v7duua:hover {
 }
 .sb__loginContainerdesc {
   @apply mt-2 text-gray-500 text-sm;
+}
+
+p,
+h1 {
+  margin: 0;
+  padding: 0;
+}
+
+#ctOpen69 {
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+
+button {
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  background-image: none;
+  background-color: transparent;
+  text-transform: none;
+  -webkit-appearance: button;
+}
+
+.cstm__selectbtn {
+  @apply text-primary w-full px-4 pt-2 pb-3 flex items-center border-none bg-transparent outline-none;
+}
+
+.cmnLabel__addPfp {
+  @apply text-gray-600 text-sm mb-1;
+}
+
+.cmnDes__addPfp {
+  @apply border border-gray-200 rounded px-2 h-10 text-sm placeholder:text-sm transition duration-300 outline-none focus:outline-none;
+}
+
+.txt__addPfp {
+  @apply border border-gray-200 rounded p-2 transition duration-300 focus:outline-none focus:ring-1 focus:ring-primary resize-none;
+}
+
+.cancelBtn__addPfp {
+  @apply flex items-center justify-center rounded-md bg-gray-100 px-4 w-1/2 h-11 text-sm font-medium text-gray-700 border border-gray-200 outline-none focus:outline-none;
+}
+
+.addPfp__btn {
+  @apply flex items-center justify-center rounded-md generate__btn69 px-4 w-1/2 h-11 text-sm font-medium text-white;
+}
+
+.btns__parentPfp {
+  @apply flex px-4 space-x-2 w-full absolute bottom-2 left-0;
+}
+
+.pfp__h1 {
+  @apply text-base font-medium text-gray-700;
+}
+
+.pfp__h2 {
+  @apply text-xs text-gray-500;
+}
+
+#vakyaBtn69 {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }

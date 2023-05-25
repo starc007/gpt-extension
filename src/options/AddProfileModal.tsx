@@ -81,7 +81,12 @@ const AddProfileModal = () => {
       closeModal={() => setIsAddProfileModalOpen(false)}
       cls="max-w-lg container"
     >
-      <div className="flex items-center">
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
         <img src="user.svg" alt="user" className="w-12 h-12" />
         <div className="flex flex-col ml-4">
           <h1 className="text-base font-medium text-gray-700">

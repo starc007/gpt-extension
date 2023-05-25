@@ -6,6 +6,8 @@ import { ProfileType } from "../../api";
 import { addLoading } from "../common";
 import { removeLoading } from "../common";
 
+// import "../../assets/tailwind.css";
+
 const Twitter = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { profiles } = useAuth();
@@ -192,6 +194,7 @@ const Twitter = () => {
               className="linkedin__dropCol691"
               style={{
                 fontSize: "12px",
+                paddingTop: "3px",
               }}
             >
               Results will be generated based on your profile selection
@@ -211,7 +214,7 @@ const Twitter = () => {
         <img
           src={chrome.runtime.getURL("userplus.png")}
           style={{
-            width: "24px",
+            width: "22px",
           }}
         />
         <div
@@ -229,6 +232,7 @@ const Twitter = () => {
             className="linkedin__dropCol691"
             style={{
               fontSize: "12px",
+              paddingTop: "3px",
             }}
           >
             Create profile the way you want vakya to answer for you
@@ -239,7 +243,7 @@ const Twitter = () => {
         <img
           src={chrome.runtime.getURL("usercheck.png")}
           style={{
-            width: "24px",
+            width: "22px",
           }}
         />
         <div className="linkedin__cmn2">
@@ -248,6 +252,7 @@ const Twitter = () => {
             className="linkedin__dropCol691"
             style={{
               fontSize: "12px",
+              paddingTop: "3px",
             }}
           >
             Write description of a persona (person or specific personality) you
@@ -257,6 +262,7 @@ const Twitter = () => {
             className="divLinkedin__moreBtn69"
             style={{
               border: "1px solid #E5E5E5",
+              padding: "0.2rem 0",
             }}
           >
             <input

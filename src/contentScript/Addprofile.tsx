@@ -8,9 +8,8 @@ interface Props {
   setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const cmnLabel = "text-gray-600 text-sm mb-1";
-const cmnClass =
-  "border rounded px-2 h-10 text-sm placeholder:text-sm transition duration-300 focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent";
+const cmnLabel = "cmnLabel__addPfp";
+const cmnClass = "cmnDes__addPfp";
 
 const AddProfile: FC<Props> = ({ setIsVisible }) => {
   const { isLoggedin, AddProfile, formData, setFormData } = useAuth();
@@ -40,21 +39,50 @@ const AddProfile: FC<Props> = ({ setIsVisible }) => {
     formData.skills.length < 1;
 
   return (
-    <div className="px-4 py-6">
-      <div className="flex items-center">
+    <div
+      className="px-4 py-6"
+      style={{
+        padding: "1.5rem 1rem",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
         <img
           src={chrome.runtime.getURL("user.svg")}
           alt="user"
-          className="w-12 h-12"
+          style={{
+            width: "3rem",
+            height: "3rem",
+          }}
         />
-        <div className="flex flex-col ml-4">
-          <h1 className="text-base font-medium text-gray-700">Add Profile</h1>
-          <p className="text-xs text-gray-500">Enter your profile details</p>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            marginLeft: "1rem",
+          }}
+        >
+          <h1 className="pfp__h1">Add Profile</h1>
+          <p className="pfp__h2">Enter your profile details</p>
         </div>
       </div>
-      <div className="flex flex-col space-y-4 mt-4">
+      <div
+        className="selProfileDiv"
+        style={{
+          marginTop: "1rem",
+        }}
+      >
         {" "}
-        <div className="flex flex-col">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <label className={cmnLabel}>Profile Title</label>
           <input
             type="text"
@@ -66,12 +94,17 @@ const AddProfile: FC<Props> = ({ setIsVisible }) => {
             required
           />
         </div>
-        <div className="flex flex-col">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <label className={cmnLabel}>Skills</label>
           <Select
             isMulti
             options={skills}
-            className="h-11 w-full"
+            className="width__cls69"
             maxMenuHeight={150}
             styles={{
               control: (provided) => ({
@@ -112,12 +145,17 @@ const AddProfile: FC<Props> = ({ setIsVisible }) => {
             }}
           />
         </div>
-        <div className="flex flex-col">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <label className={cmnLabel}>Bio</label>
           <textarea
             name="bio"
             rows={4}
-            className="border rounded p-2 transition duration-300 focus:outline-none focus:ring-1 focus:ring-primary resize-none"
+            className="txt__addPfp"
             placeholder="e.g: I am a full stack developer."
             value={formData.bio}
             onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
@@ -125,10 +163,10 @@ const AddProfile: FC<Props> = ({ setIsVisible }) => {
           ></textarea>
         </div>
       </div>
-      <div className="flex px-4 space-x-2 w-full absolute bottom-2 left-0">
+      <div className="btns__parentPfp">
         <button
           type="button"
-          className="flex items-center justify-center rounded-md bg-gray-100 px-4 w-1/2 h-11 text-sm font-medium text-gray-700"
+          className="cancelBtn__addPfp"
           onClick={() => setIsVisible(false)}
         >
           Cancel
@@ -137,9 +175,7 @@ const AddProfile: FC<Props> = ({ setIsVisible }) => {
           type="button"
           onClick={HandleSubmit}
           disabled={isButtonDisabled}
-          className={`flex items-center justify-center rounded-md generate__btn69 px-4 w-1/2 h-11 text-sm font-medium text-white ${
-            isButtonDisabled && "opacity-50 cursor-not-allowed"
-          }`}
+          className={`addPfp__btn ${isButtonDisabled && "disabled__cls69"}`}
         >
           Add Profile
         </button>
