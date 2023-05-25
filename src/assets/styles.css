@@ -180,7 +180,7 @@ css-v7duua:hover {
   @apply w-full p-2 focus:outline-none resize-none text-sm h-full;
 }
 .result__txtAreaParent {
-  @apply border border-gray-200 rounded;
+  @apply border border-gray-200 rounded-lg border-none;
 }
 
 .txt__primary {
@@ -188,7 +188,7 @@ css-v7duua:hover {
 }
 
 .lottie__div69 {
-  @apply w-full flex flex-col items-center border p-4 rounded;
+  @apply w-full flex flex-col items-center border border-gray-200 p-4 rounded;
 }
 
 .addition__infoInp9 {

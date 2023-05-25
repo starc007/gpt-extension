@@ -638,18 +638,32 @@ const contentScript = () => {
                 ></textarea>
 
                 {isGenerating.loader ? (
-                  <div className="lottie__div69">
+                  <div
+                    className="lottie__div69"
+                    style={{
+                      border: "1px solid #e2e8f0",
+                    }}
+                  >
                     <Lottie
                       animationData={GenerateAnimation}
                       loop={true}
-                      className="w-44"
+                      // className="w-44"
+                      style={{
+                        width: "175px",
+                      }}
                     />
                     <p className="txt__primary">Generating</p>
                   </div>
                 ) : isGenerating.success ? (
                   <div>
                     <p className="txt__primary">Cover Letter Generated</p>
-                    <div className="result__txtAreaParent">
+                    <div
+                      className="result__txtAreaParent"
+                      style={{
+                        border: "1px solid #e2e8f0",
+                        marginTop: "5px",
+                      }}
+                    >
                       <textarea
                         className="result__txtArea"
                         value={
@@ -659,6 +673,9 @@ const contentScript = () => {
                         rows={7}
                         onChange={(e) => {
                           setGeneratedResponse(e.target.value);
+                        }}
+                        style={{
+                          border: "none",
                         }}
                       ></textarea>
                       {/* <Typewriter
@@ -689,9 +706,11 @@ const contentScript = () => {
                             handleSubmit();
                           }}
                           className="cmn__cls3"
-                          // style={{
-                          //   width: "14px",
-                          // }}
+                          style={{
+                            border: "none",
+                            outline: "none",
+                            background: "none",
+                          }}
                         >
                           <img
                             src={chrome.runtime.getURL("regenerate.svg")}
@@ -712,6 +731,11 @@ const contentScript = () => {
                               toast.success("Copied to clipboard");
                           }}
                           className="cmn__cls3"
+                          style={{
+                            border: "none",
+                            outline: "none",
+                            background: "none",
+                          }}
                         >
                           <img
                             src={chrome.runtime.getURL("copy.svg")}
