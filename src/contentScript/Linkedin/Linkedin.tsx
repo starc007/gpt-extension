@@ -49,6 +49,21 @@ const Linkedin = () => {
 
     qlEditor.textContent = "Writing......";
     var port = chrome.runtime.connect({ name: "vakya" });
+
+    // let ks =
+    //   "facts about the human brainOur brain is the center of our nervous system and controls everything we do, from breathing to thinking. It's a fascinating organ that is still being studied to understand its capabilities and limitations. Here are some interesting facts about the human\n1. The human brain is made up of about100 billion neurons. These neurons are connected to each through trillions of synapses, which help transmit information between them\n2. Our brain consumes around20% of our body's energy, although it only weighs about2% of our total body weight3. Unlike most other cells in our body, neurons cannot replicate or reproduce.";
+
+    // qlEditor.textContent = ks;
+    // if (ks?.includes("\n")) {
+    //   console.log("new line");
+    //   qlEditor.append(document.createElement("br"));
+    // } else {
+    //   ks = ks.replace(/^\s+|\s+$/g, "");
+    //   qlEditor.textContent = ks;
+    // }
+
+    // console.log("ks", ks);
+
     port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
     port.onMessage.addListener((msg) => {
       if (msg.message === "done") {
@@ -60,18 +75,29 @@ const Linkedin = () => {
         const { data } = msg;
         let prevText = qlEditor?.textContent;
         if (prevText === text) prevText = "";
+        if (prevText === "Writing......") prevText = " ";
         if (prevText?.includes("undefined")) {
           prevText = prevText?.replace("undefined", " ");
         }
         if (data?.includes("undefined")) {
           prevText = data?.replace("undefined", " ");
         }
-        if (prevText === "Writing......") prevText = " ";
         let txt = prevText + data;
         txt = txt.replace("undefined", " ");
-        //remove space from start
+        if (txt?.includes("\n")) {
+          console.log("new line");
+          // txt = txt + "/n";
+        }
+
         txt = txt.replace(/^\s+|\s+$/g, "");
-        qlEditor.textContent = txt;
+        // console.log("txt", txt);
+        // console.log("txt123", txt.toString());
+
+        qlEditor.textContent = txt.toString();
+        //remove space from start
+        // txt = txt.replace(/^\s+|\s+$/g, "");
+
+        // qlEditor.textContent = txt;
         // qlEditor.textContent = prevText + data;
         setText(txt);
       }

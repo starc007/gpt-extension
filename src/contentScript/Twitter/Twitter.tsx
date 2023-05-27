@@ -45,7 +45,11 @@ const Twitter = () => {
     '[data-testid="tweetTextarea_0"]'
   ) as HTMLTextAreaElement;
   useEffect(() => {
-    twitterTextArea.click();
+    const url = window.location.href;
+    if (url.includes("compose/tweet")) {
+    } else {
+      twitterTextArea.click();
+    }
   }, []);
 
   const handleSubmitProfile = async (profileId: string) => {

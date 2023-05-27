@@ -177,13 +177,13 @@ const interval = setInterval(() => {
   }
 }, 400);
 
-const newInterval = setInterval(() => {
-  if (isTwitter && loggedIn) {
-    const url = window.location.href;
-    if (url.includes("compose/tweet")) {
-      SocialInit();
-    }
-  } else {
-    clearInterval(newInterval);
-  }
-}, 400);
+// const newInterval = setInterval(() => {
+//   if (isTwitter && loggedIn) {
+//     const url = window.location.href;
+//     if (url.includes("compose/tweet")) {
+//       SocialInit();
+//     }
+//   } else {
+//     clearInterval(newInterval);
+//   }
+// }, 400);

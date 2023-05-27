@@ -77,7 +77,7 @@ chrome.runtime.onConnect.addListener((port) => {
         .then((data) => {
           const reader = data.getReader();
           const decoder = new TextDecoder();
-          let finalResult = [];
+          // let finalResult = [];
           reader.read().then(function processText({ done, value }) {
             if (done) {
               port.postMessage({ message: "done" });
@@ -107,7 +107,7 @@ chrome.runtime.onConnect.addListener((port) => {
             });
 
             const newData = dataObj.filter((item) => item !== null);
-            finalResult = [...finalResult, ...newData];
+            // finalResult = [...finalResult, ...newData];
             newData.forEach((item) => {
               const data = item.choices?.[0]?.delta?.content;
               if (data !== undefined || data !== null) {
