@@ -51,53 +51,51 @@ export function findCurrentTweetText() {
 let isLinkedIn = window.location.origin.includes("linkedin.com");
 
 export const updateInput = (input: any, value: string) => {
-  const dataTo = new DataTransfer();
-  dataTo.setData("text/plain", value);
-  input.dispatchEvent(
-    new ClipboardEvent("paste", {
-      dataType: "text/plain",
-      data: value,
-      bubbles: true,
-      clipboardData: dataTo,
-      cancelable: true,
-    } as ClipboardEventInit)
-  );
+  // const dataTo = new DataTransfer();
+  // dataTo.setData("text/plain", value);
+  // input.innerText = value;
+  // input.dispatchEvent(
+  //   new ClipboardEvent("paste", {
+  //     dataType: "text/plain",
+  //     data: value,
+  //     bubbles: true,
+  //     clipboardData: dataTo,
+  //     cancelable: true,
+  //   } as ClipboardEventInit)
+  // );
+  const textWrapper = input.querySelector('[data-text="true"]')?.parentElement;
+  if (textWrapper) {
+    textWrapper.innerHTML = `<span data-text="true">${value}</span>`;
+    textWrapper.dispatchEvent(
+      new Event("input", { bubbles: true, cancelable: true })
+    );
+  }
 };
 
-// function getLastTextNodeIn(node) {
-//   while (node) {
-//     if (node.nodeType == 3) {
-//       return node;
-//     } else {
-//       node = node.lastChild;
-//     }
-//   }
-// }
+export const findClosestInput: (el: Element) => HTMLInputElement | null = (
+  el
+) => {
+  const inputEl = el.querySelector(
+    'div[data-testid^="tweetTextarea_"][role="textbox"]'
+  ) as HTMLInputElement;
+  if (inputEl) {
+    return inputEl;
+  }
 
-// function isRangeAfterNode(range, node) {
-//   var nodeRange, lastTextNode;
-//   if (range.compareBoundaryPoints) {
-//     nodeRange = document.createRange();
-//     lastTextNode = getLastTextNodeIn(node);
-//     nodeRange.selectNodeContents(lastTextNode);
-//     nodeRange.collapse(false);
-//     return range.compareBoundaryPoints(range.START_TO_END, nodeRange) > -1;
-//   } else if (range.compareEndPoints) {
-//     if (node.nodeType == 1) {
-//       nodeRange = document.createTextRange();
-//       nodeRange.moveToElementText(node);
-//       nodeRange.collapse(false);
-//       return range.compareEndPoints("StartToEnd", nodeRange) > -1;
-//     } else {
-//       return false;
-//     }
-//   }
-// }
+  if (!el.parentElement) {
+    return null;
+  } else {
+    return findClosestInput(el.parentElement);
+  }
+};
 
 function sendServerRequest(toneId: string, prompt: string) {
-  const twitterTextArea = document.querySelector(
-    '[data-testid="tweetTextarea_0"]'
-  ) as any;
+  // const twitterTextArea = document.querySelector(
+  //   '[data-testid="tweetTextarea_0"]'
+  // ) as any;
+
+  const toolbar = document.querySelector('[data-testid="toolBar"]');
+  const twitterTextArea = findClosestInput(toolbar);
 
   let text = twitterTextArea.innerText;
   // remove space new line and other special characters from text
@@ -133,8 +131,23 @@ function sendServerRequest(toneId: string, prompt: string) {
         if (ptag.style.display === "block") ptag.style.display = "none";
         // updateInput(twitterTextArea, resText);
         //empty the text area
-        if (text.length > 0) {
-        }
+        // if (text.length > 0) {
+        //   const allSpans =
+        //     twitterTextArea.querySelectorAll('[data-text="true"]');
+        //   allSpans.forEach((span) => {
+        //     if (span.parentElement.parentElement.tagName === "DIV") {
+        //       span.remove();
+        //     } else if (span.parentElement.parentElement.tagName === "SPAN") {
+        //       span.parentElement.parentElement.remove();
+        //     } else if (
+        //       span.parentElement.parentElement.parentElement.tagName === "SPAN"
+        //     ) {
+        //       span.parentElement.parentElement.parentElement.remove();
+        //     } else {
+        //       console.log("not found");
+        //     }
+        //   });
+        // }
         // document.execCommand("insertText", false, resText);
         updateInput(twitterTextArea, resText);
         removeLoading(isLinkedIn);
