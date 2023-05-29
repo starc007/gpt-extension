@@ -132,7 +132,8 @@ async function sendServerRequest(
     numResponses: 1,
     categoryInfoId: PLATFORMS.TWITTER,
     meta: {
-      source: PLATFORMS.TWITTER,
+      source:
+        isTweet === "Reply" ? PLATFORMS.LINKEDIN_COMMENT : PLATFORMS.TWITTER,
       description:
         isTweet === "Reply" ? "replied to a tweet" : "Created post on twitter",
     },

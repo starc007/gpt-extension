@@ -84,7 +84,8 @@ const Twitter = () => {
       customToneId: profileId,
       categoryInfoId: PLATFORMS.TWITTER,
       meta: {
-        source: PLATFORMS.TWITTER,
+        source:
+          isTweet === "Reply" ? PLATFORMS.LINKEDIN_COMMENT : PLATFORMS.TWITTER,
         description:
           isTweet === "Reply" ? "reply to a tweet" : "Created post on twitter",
       },
@@ -174,7 +175,8 @@ const Twitter = () => {
       categoryInfoId: PLATFORMS.TWITTER,
       additionalInfo: name,
       meta: {
-        source: PLATFORMS.TWITTER,
+        source:
+          isTweet === "Reply" ? PLATFORMS.LINKEDIN_COMMENT : PLATFORMS.TWITTER,
         description:
           isTweet === "Reply" ? "reply to a tweet" : "Created post on twitter",
       },
