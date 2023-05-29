@@ -89,26 +89,43 @@ export const findClosestInput: (el: Element) => HTMLInputElement | null = (
   }
 };
 
-function sendServerRequest(toneId: string, prompt: string) {
+async function sendServerRequest(
+  toneId: string,
+  prompt: string,
+  txt: string,
+  ele: any
+) {
   // const twitterTextArea = document.querySelector(
   //   '[data-testid="tweetTextarea_0"]'
   // ) as any;
+  chrome.storage.sync.set({
+    oldTwittePrompt: txt,
+  });
 
-  const toolbar = document.querySelector('[data-testid="toolBar"]');
-  const twitterTextArea = findClosestInput(toolbar);
+  // const toolbar = document.querySelector('[data-testid="toolBar"]');
+  // const twitterTextArea = findClosestInput(toolbar);
 
-  let text = twitterTextArea.innerText;
+  // let promptToSend = ""
+  // let text = twitterTextArea.innerText;
+  // const respText = await chrome.storage.sync.get("twitterRes");
+  // const oldPrompt = await chrome.storage.sync.get("twittePrompt");
+  // if (respText?.twitterRes && text === respText.twitterRes) {
+  //   promptToSend = oldPrompt.twittePrompt;
+  // } else {
+  //   promptToSend = text;
+  // }
   // remove space new line and other special characters from text
-  text = text.replace(/(\r\n|\n|\r)/gm, "");
-  text = text.replace(/(\s\s)/gm, " ");
-  text = text.trim();
+  // text = text.replace(/(\r\n|\n|\r)/gm, "");
+  // text = text.replace(/(\s\s)/gm, " ");
+  // text = text.trim();
 
   const isTweet = document.querySelector(
     '[data-testid="tweetButtonInline"]'
   ).textContent;
+
   const PromptData = {
     prompt: {
-      description: isTweet === "Reply" ? prompt : text,
+      description: isTweet === "Reply" ? prompt : txt,
     },
     toneId: toneId,
     maxTokens: 100,
@@ -122,34 +139,18 @@ function sendServerRequest(toneId: string, prompt: string) {
   };
 
   addLoading(isLinkedIn);
+  // const loremI =
+  //   "loremsdfdsfds j djahdjs dakhdsk sahdsdhsakd hsakjhdjkd ajd hsjkdh ajkdsdhakjdhsjkd aj dhksjhjadjk dks hdjkahdksh dkhjas dkja dkja";
+  // updateInput(twitterTextArea, loremI);
   chrome.runtime.sendMessage(
     { type: "getPrompt", promptData: PromptData },
-    (response) => {
+    async (response) => {
       if (response?.data?.length) {
         const resText = response.data[0];
         const ptag = document.getElementById("failed69");
         if (ptag.style.display === "block") ptag.style.display = "none";
-        // updateInput(twitterTextArea, resText);
-        //empty the text area
-        // if (text.length > 0) {
-        //   const allSpans =
-        //     twitterTextArea.querySelectorAll('[data-text="true"]');
-        //   allSpans.forEach((span) => {
-        //     if (span.parentElement.parentElement.tagName === "DIV") {
-        //       span.remove();
-        //     } else if (span.parentElement.parentElement.tagName === "SPAN") {
-        //       span.parentElement.parentElement.remove();
-        //     } else if (
-        //       span.parentElement.parentElement.parentElement.tagName === "SPAN"
-        //     ) {
-        //       span.parentElement.parentElement.parentElement.remove();
-        //     } else {
-        //       console.log("not found");
-        //     }
-        //   });
-        // }
-        // document.execCommand("insertText", false, resText);
-        updateInput(twitterTextArea, resText);
+        await chrome.storage.sync.set({ twitterRes: resText });
+        updateInput(ele, resText);
         removeLoading(isLinkedIn);
       } else {
         removeLoading(isLinkedIn);
@@ -183,9 +184,21 @@ export const EmbedTwitterButtons = () => {
     "cursor: pointer; color: #7F56D9; border: 1px solid #7F56D9; background: transparent; border-radius: 9999px; padding: 3px 8px; font-size: 12px; font-weight: 700"
   );
 
-  funnyBtn.addEventListener("click", () => {
+  funnyBtn.addEventListener("click", async () => {
     const text = findCurrentTweetText();
-    sendServerRequest(TONE_IDS.FUNNY, text);
+    const toolbar = document.querySelector('[data-testid="toolBar"]');
+    const twitterTextArea = findClosestInput(toolbar);
+
+    let promptToSend = "";
+    let text1 = twitterTextArea.innerText;
+    const respText = await chrome.storage.sync.get("twitterRes");
+    const oldPrompt = await chrome.storage.sync.get("oldTwittePrompt");
+    if (respText?.twitterRes && text1 === respText.twitterRes) {
+      promptToSend = oldPrompt.oldTwittePrompt;
+    } else {
+      promptToSend = text1;
+    }
+    sendServerRequest(TONE_IDS.FUNNY, text, promptToSend, twitterTextArea);
   });
 
   const interestingBtn = document.createElement("div");
@@ -196,9 +209,26 @@ export const EmbedTwitterButtons = () => {
     "cursor: pointer; color: #7F56D9; border: 1px solid #7F56D9; background: transparent; font-weight: 700; border-radius: 9999px; padding: 3px 8px; font-size: 12px; margin-left: 8px;"
   );
 
-  interestingBtn.addEventListener("click", () => {
+  interestingBtn.addEventListener("click", async () => {
     const text = findCurrentTweetText();
-    sendServerRequest(TONE_IDS.INTERESTING, text);
+    const toolbar = document.querySelector('[data-testid="toolBar"]');
+    const twitterTextArea = findClosestInput(toolbar);
+
+    let promptToSend = "";
+    let text1 = twitterTextArea.innerText;
+    const respText = await chrome.storage.sync.get("twitterRes");
+    const oldPrompt = await chrome.storage.sync.get("oldTwittePrompt");
+    if (respText?.twitterRes && text1 === respText.twitterRes) {
+      promptToSend = oldPrompt.oldTwittePrompt;
+    } else {
+      promptToSend = text1;
+    }
+    sendServerRequest(
+      TONE_IDS.INTERESTING,
+      text,
+      promptToSend,
+      twitterTextArea
+    );
   });
 
   const qaBtn = document.createElement("div");
@@ -209,9 +239,21 @@ export const EmbedTwitterButtons = () => {
     "cursor: pointer; color: #7F56D9; border: 1px solid #7F56D9; background: transparent; border-radius: 9999px; padding: 3px 8px; font-size: 12px; font-weight: 700;  margin-left: 8px;"
   );
 
-  qaBtn.addEventListener("click", () => {
+  qaBtn.addEventListener("click", async () => {
     const text = findCurrentTweetText();
-    sendServerRequest(TONE_IDS.QUESTION, text);
+    const toolbar = document.querySelector('[data-testid="toolBar"]');
+    const twitterTextArea = findClosestInput(toolbar);
+
+    let promptToSend = "";
+    let text1 = twitterTextArea.innerText;
+    const respText = await chrome.storage.sync.get("twitterRes");
+    const oldPrompt = await chrome.storage.sync.get("oldTwittePrompt");
+    if (respText?.twitterRes && text1 === respText.twitterRes) {
+      promptToSend = oldPrompt.oldTwittePrompt;
+    } else {
+      promptToSend = text1;
+    }
+    sendServerRequest(TONE_IDS.QUESTION, text, promptToSend, twitterTextArea);
   });
 
   const moreBtn = document.createElement("div");
