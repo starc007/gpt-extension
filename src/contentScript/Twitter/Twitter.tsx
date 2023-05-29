@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../options/AuthContext";
 import { PLATFORMS } from "../config";
-import { findCurrentTweetText, updateInput } from "./index";
+import { findClosestInput, findCurrentTweetText, updateInput } from "./index";
 import { ProfileType } from "../../api";
 import { addLoading } from "../common";
 import { removeLoading } from "../common";
@@ -57,15 +57,26 @@ const Twitter = () => {
       '[data-testid="tweetButtonInline"]'
     ).textContent;
 
-    const twitterTextArea = document.querySelector(
-      '[data-testid="tweetTextarea_0"]'
-    ) as any;
+    // const twitterTextArea = document.querySelector(
+    //   '[data-testid="tweetTextarea_0"]'
+    // ) as any;
+    const toolbar = document.querySelector('[data-testid="toolBar"]');
+    const twitterTextArea = findClosestInput(toolbar);
     let text = twitterTextArea.innerText;
     const currentTweetText = findCurrentTweetText();
 
+    let promptToSend = "";
+    const respText = await chrome.storage.sync.get("twitterRes");
+    const oldPrompt = await chrome.storage.sync.get("oldTwittePrompt");
+    if (respText?.twitterRes && text === respText.twitterRes) {
+      promptToSend = oldPrompt.oldTwittePrompt;
+    } else {
+      promptToSend = text;
+    }
+
     const PromptData = {
       prompt: {
-        description: isTweet === "Reply" ? currentTweetText : text,
+        description: isTweet === "Reply" ? currentTweetText : promptToSend,
       },
       toneId: "",
       maxTokens: 100,
@@ -107,11 +118,12 @@ const Twitter = () => {
     setIsDropdownOpen(false);
     chrome.runtime.sendMessage(
       { type: "getPrompt", promptData: PromptData },
-      (response) => {
+      async (response) => {
         if (response?.data?.length) {
           const resText = response.data[0];
           const ptag = document.getElementById("failed69");
           if (ptag.style.display === "block") ptag.style.display = "none";
+          await chrome.storage.sync.set({ twitterRes: resText });
           updateInput(twitterTextArea, resText);
           setIsGenerating(false);
         } else {
@@ -135,15 +147,26 @@ const Twitter = () => {
       '[data-testid="tweetButtonInline"]'
     ).textContent;
 
-    const twitterTextArea = document.querySelector(
-      '[data-testid="tweetTextarea_0"]'
-    ) as any;
+    // const twitterTextArea = document.querySelector(
+    //   '[data-testid="tweetTextarea_0"]'
+    // ) as any;
+    const toolbar = document.querySelector('[data-testid="toolBar"]');
+    const twitterTextArea = findClosestInput(toolbar);
     let text = twitterTextArea.innerText;
     const currentTweetText = findCurrentTweetText();
 
+    let promptToSend = "";
+    const respText = await chrome.storage.sync.get("twitterRes");
+    const oldPrompt = await chrome.storage.sync.get("oldTwittePrompt");
+    if (respText?.twitterRes && text === respText.twitterRes) {
+      promptToSend = oldPrompt.oldTwittePrompt;
+    } else {
+      promptToSend = text;
+    }
+
     const PromptData = {
       prompt: {
-        description: isTweet === "Reply" ? currentTweetText : text,
+        description: isTweet === "Reply" ? currentTweetText : promptToSend,
       },
       toneId: "",
       maxTokens: 100,
@@ -161,15 +184,18 @@ const Twitter = () => {
     setIsDropdownOpen(false);
     chrome.runtime.sendMessage(
       { type: "getPrompt", promptData: PromptData },
-      (response) => {
+      async (response) => {
         if (response?.data?.length) {
           const resText = response.data[0];
           const ptag = document.getElementById("failed69");
           if (ptag.style.display === "block") ptag.style.display = "none";
+          await chrome.storage.sync.set({ twitterRes: resText });
           updateInput(twitterTextArea, resText);
           setIsGenerating(false);
+          setName("");
         } else {
           setIsGenerating(false);
+          setName("");
           const ptag = document.getElementById("failed69");
           ptag.style.display = "block";
         }
