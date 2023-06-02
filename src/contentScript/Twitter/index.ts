@@ -100,6 +100,7 @@ async function sendServerRequest(
   // ) as any;
   chrome.storage.sync.set({
     oldTwittePrompt: txt,
+    oldTwitterToneId: toneId,
   });
 
   // const toolbar = document.querySelector('[data-testid="toolBar"]');
@@ -119,6 +120,7 @@ async function sendServerRequest(
   // text = text.replace(/(\s\s)/gm, " ");
   // text = text.trim();
 
+  const regenerateBtn69 = document.getElementById("regenerateBtn69");
   const isTweet = document.querySelector(
     '[data-testid="tweetButtonInline"]'
   ).textContent;
@@ -153,10 +155,12 @@ async function sendServerRequest(
         await chrome.storage.sync.set({ twitterRes: resText });
         updateInput(ele, resText);
         removeLoading(isLinkedIn);
+        regenerateBtn69.style.display = "flex";
       } else {
         removeLoading(isLinkedIn);
         const ptag = document.getElementById("failed69");
         ptag.style.display = "block";
+        regenerateBtn69.style.display = "none";
       }
     }
   );
@@ -257,6 +261,40 @@ export const EmbedTwitterButtons = () => {
     sendServerRequest(TONE_IDS.QUESTION, text, promptToSend, twitterTextArea);
   });
 
+  const regenerate = document.createElement("div");
+  regenerate.id = "regenerateBtn69";
+  const img1 = document.createElement("img");
+  img1.src = chrome.runtime.getURL("generatePrimary.png");
+  img1.setAttribute("style", "width: 17px; height: 17px;");
+  regenerate.appendChild(img1);
+  regenerate.setAttribute(
+    "style",
+    "cursor: pointer; border: 1px solid #7F56D9; background: transparent; border-radius: 9999px; padding: 4px 2px;  margin-left: 8px; width: 32px;justify-content: center; display: none;"
+  );
+
+  regenerate.addEventListener("click", async () => {
+    const text = findCurrentTweetText();
+    const toolbar = document.querySelector('[data-testid="toolBar"]');
+    const twitterTextArea = findClosestInput(toolbar);
+
+    let promptToSend = "";
+    let text1 = twitterTextArea.innerText;
+    const respText = await chrome.storage.sync.get("twitterRes");
+    const oldPrompt = await chrome.storage.sync.get("oldTwittePrompt");
+    const oldTonId = await chrome.storage.sync.get("oldTwitterToneId");
+    if (respText?.twitterRes && text1 === respText.twitterRes) {
+      promptToSend = oldPrompt.oldTwittePrompt;
+    } else {
+      promptToSend = text1;
+    }
+    sendServerRequest(
+      oldTonId.oldTwitterToneId,
+      text,
+      promptToSend,
+      twitterTextArea
+    );
+  });
+
   const moreBtn = document.createElement("div");
   moreBtn.innerHTML = "More";
   moreBtn.id = "moreBtn69";
@@ -302,6 +340,7 @@ export const EmbedTwitterButtons = () => {
   buttons.appendChild(funnyBtn);
   buttons.appendChild(interestingBtn);
   buttons.appendChild(qaBtn);
+  buttons.appendChild(regenerate);
   buttons.appendChild(moreBtn);
   buttons.appendChild(p);
 

@@ -62,6 +62,13 @@ export const EmbedLinkedinButtons = () => {
       "style",
       "cursor:pointer; background: #F9F5FF; border: none; color: #7F56D9; font-size: 12px; font-weight: 600; border-radius:9999px; padding: 4px 10px; margin-left: 8px; display: flex; align-items: center;"
     );
+    const p = document.createElement("p");
+    p.innerHTML = "Failed";
+    p.id = "failedLink69";
+    p.setAttribute(
+      "style",
+      "color: red; font-size: 12px; font-weight: 600; margin-left: 8px; display: none;"
+    );
 
     const buttons = document.createElement("div");
     buttons.id = "vakyaBtn69";
@@ -75,6 +82,7 @@ export const EmbedLinkedinButtons = () => {
     buttons.appendChild(qaBtn);
     buttons.appendChild(regenerate);
     buttons.appendChild(moreBtn);
+    buttons.appendChild(p);
     toolbar[0].appendChild(buttons);
   }
 };
@@ -104,31 +112,60 @@ function sendServerRequest(toneId: string, text: string, linkElem: any) {
     },
   };
 
-  var port = chrome.runtime.connect({ name: "vakya" });
+  // var port = chrome.runtime.connect({ name: "vakya" });
   linkElem.textContent = "Writing......";
-  port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
+  // port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
   addLoading(isLinkedIn);
-  port.onMessage.addListener((msg) => {
-    if (msg.message === "done") {
-      removeLoading(isLinkedIn);
-      return;
-    } else if (msg.message === "success") {
-      const { data } = msg;
-      let prevText = linkElem?.textContent;
-      if (prevText === text) prevText = "";
-      if (prevText?.includes("undefined")) {
-        prevText = prevText?.replace("undefined", " ");
+  // port.onMessage.addListener((msg) => {
+  //   if (msg.message === "done") {
+  //     removeLoading(isLinkedIn);
+  //     return;
+  //   } else if (msg.message === "success") {
+  //     const { data } = msg;
+  //     let prevText = linkElem?.textContent;
+  //     if (prevText === text) prevText = "";
+  //     if (prevText?.includes("undefined")) {
+  //       prevText = prevText?.replace("undefined", " ");
+  //     }
+  //     if (data?.includes("undefined")) {
+  //       prevText = data?.replace("undefined", " ");
+  //     }
+  //     if (prevText === "Writing......") prevText = " ";
+  //     let txt = prevText + data;
+  //     txt = txt.replace("undefined", " ");
+  //     txt = txt.replace(/^\s+|\s+$/g, "");
+  //     linkElem.textContent = txt;
+  //   }
+  // });
+  chrome.runtime.sendMessage(
+    { type: "getPrompt", promptData: PromptData },
+    (response) => {
+      if (response?.data?.length) {
+        const resText = response.data[0];
+        let prevText = linkElem?.textContent;
+        const ptag = document.getElementById("failedLink69");
+        if (ptag?.style?.display === "block") ptag.style.display = "none";
+        if (prevText === text) prevText = "";
+        if (prevText === "Writing......") prevText = " ";
+        if (prevText?.includes("undefined")) {
+          prevText = prevText?.replace("undefined", " ");
+        }
+        if (resText?.includes("undefined")) {
+          prevText = resText?.replace("undefined", " ");
+        }
+        let txt = prevText + resText;
+        txt = txt.replace("undefined", " ");
+        txt = txt.replace(/^\s+|\s+$/g, "");
+        linkElem.textContent = txt;
+        removeLoading(isLinkedIn);
+      } else {
+        removeLoading(isLinkedIn);
+        linkElem.textContent = "";
+        const ptag = document.getElementById("failedLink69");
+        ptag.style.display = "block";
       }
-      if (data?.includes("undefined")) {
-        prevText = data?.replace("undefined", " ");
-      }
-      if (prevText === "Writing......") prevText = " ";
-      let txt = prevText + data;
-      txt = txt.replace("undefined", " ");
-      txt = txt.replace(/^\s+|\s+$/g, "");
-      linkElem.textContent = txt;
     }
-  });
+  );
 }
 
 export const EmbedButtonsInCommentBox = () => {

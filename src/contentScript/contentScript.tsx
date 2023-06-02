@@ -335,53 +335,51 @@ const contentScript = () => {
       },
     };
 
-    var port = chrome.runtime.connect({ name: "vakya" });
-    port.postMessage({ type: "getStreamPrompt", promptData: promptData });
-    port.onMessage.addListener((msg) => {
-      if (msg.data) {
-        setGeneratedResponse((prev) => {
-          if (prev) {
-            return prev + msg.data;
-          } else {
-            return msg.data;
-          }
-        });
-        setIsGenerating({
-          success: true,
-          loader: false,
-        });
-      } else {
-        // toast.error("Something went wrong please try again");
-        // setIsGenerating({
-        //   success: false,
-        //   loader: false,
-        // });
-      }
-      // if (msg.message === "done") {
-      // }
-    });
-
-    // chrome.runtime.sendMessage(
-    //   { type: "getPrompt", promptData: promptData },
-    //   (response) => {
-    //     console.log("response", response.data);
-    //     if (response?.data?.length) {
-    //       const resText = response.data[0];
-    //       console.log("res text", resText);
-    //       setGeneratedResponse(response.data);
-    //       setIsGenerating({
-    //         success: true,
-    //         loader: false,
-    //       });
-    //     } else {
-    //       toast.error("Something went wrong please try again");
-    //       setIsGenerating({
-    //         success: false,
-    //         loader: false,
-    //       });
-    //     }
+    // var port = chrome.runtime.connect({ name: "vakya" });
+    // port.postMessage({ type: "getStreamPrompt", promptData: promptData });
+    // port.onMessage.addListener((msg) => {
+    //   if (msg.data) {
+    //     setGeneratedResponse((prev) => {
+    //       if (prev) {
+    //         return prev + msg.data;
+    //       } else {
+    //         return msg.data;
+    //       }
+    //     });
+    //     setIsGenerating({
+    //       success: true,
+    //       loader: false,
+    //     });
+    //   } else {
+    //     // toast.error("Something went wrong please try again");
+    //     // setIsGenerating({
+    //     //   success: false,
+    //     //   loader: false,
+    //     // });
     //   }
-    // );
+    //   // if (msg.message === "done") {
+    //   // }
+    // });
+
+    chrome.runtime.sendMessage(
+      { type: "getPrompt", promptData: promptData },
+      (response) => {
+        if (response?.data?.length) {
+          const resText = response.data[0];
+          setGeneratedResponse(response.data);
+          setIsGenerating({
+            success: true,
+            loader: false,
+          });
+        } else {
+          toast.error("Something went wrong please try again");
+          setIsGenerating({
+            success: false,
+            loader: false,
+          });
+        }
+      }
+    );
   };
 
   const filteredProfiles = hostName?.includes("upwork")
@@ -648,9 +646,9 @@ const contentScript = () => {
                       animationData={GenerateAnimation}
                       loop={true}
                       // className="w-44"
-                      style={{
-                        width: "175px",
-                      }}
+                      // style={{
+                      //   width: "175px",
+                      // }}
                     />
                     <p className="txt__primary">Generating</p>
                   </div>
@@ -668,7 +666,8 @@ const contentScript = () => {
                         className="result__txtArea"
                         value={
                           //remove /n from generated response
-                          generatedResponse?.replace(/(\r\n|\n|\r)/gm, " ")
+                          // generatedResponse?.replace(/(\r\n|\n|\r)/gm, " ")
+                          generatedResponse
                         }
                         rows={7}
                         onChange={(e) => {
@@ -676,6 +675,7 @@ const contentScript = () => {
                         }}
                         style={{
                           border: "none",
+                          whiteSpace: "pre-wrap",
                         }}
                       ></textarea>
                       {/* <Typewriter

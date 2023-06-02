@@ -48,7 +48,7 @@ const Linkedin = () => {
     setIsGenerating(true);
 
     qlEditor.textContent = "Writing......";
-    var port = chrome.runtime.connect({ name: "vakya" });
+    // var port = chrome.runtime.connect({ name: "vakya" });
 
     // let ks =
     //   "facts about the human brainOur brain is the center of our nervous system and controls everything we do, from breathing to thinking. It's a fascinating organ that is still being studied to understand its capabilities and limitations. Here are some interesting facts about the human\n1. The human brain is made up of about100 billion neurons. These neurons are connected to each through trillions of synapses, which help transmit information between them\n2. Our brain consumes around20% of our body's energy, although it only weighs about2% of our total body weight3. Unlike most other cells in our body, neurons cannot replicate or reproduce.";
@@ -64,44 +64,76 @@ const Linkedin = () => {
 
     // console.log("ks", ks);
 
-    port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
-    port.onMessage.addListener((msg) => {
-      if (msg.message === "done") {
-        const qlEditorValue = qlEditor?.textContent;
-        chrome.storage.sync.set({ responsetext: qlEditorValue });
-        setIsGenerating(false);
-        return;
-      } else if (msg.message === "success") {
-        const { data } = msg;
-        let prevText = qlEditor?.textContent;
-        if (prevText === text) prevText = "";
-        if (prevText === "Writing......") prevText = " ";
-        if (prevText?.includes("undefined")) {
-          prevText = prevText?.replace("undefined", " ");
-        }
-        if (data?.includes("undefined")) {
-          prevText = data?.replace("undefined", " ");
-        }
-        let txt = prevText + data;
-        txt = txt.replace("undefined", " ");
-        if (txt?.includes("\n")) {
-          console.log("new line");
-          // txt = txt + "/n";
-        }
+    // port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
+    // port.onMessage.addListener((msg) => {
+    //   if (msg.message === "done") {
+    //     const qlEditorValue = qlEditor?.textContent;
+    //     chrome.storage.sync.set({ responsetext: qlEditorValue });
+    //     setIsGenerating(false);
+    //     return;
+    //   } else if (msg.message === "success") {
+    //     const { data } = msg;
+    //     let prevText = qlEditor?.textContent;
+    //     if (prevText === text) prevText = "";
+    //     if (prevText === "Writing......") prevText = " ";
+    //     if (prevText?.includes("undefined")) {
+    //       prevText = prevText?.replace("undefined", " ");
+    //     }
+    //     if (data?.includes("undefined")) {
+    //       prevText = data?.replace("undefined", " ");
+    //     }
+    //     let txt = prevText + data;
+    //     txt = txt.replace("undefined", " ");
+    //     if (txt?.includes("\n")) {
+    //       console.log("new line");
+    //       // txt = txt + "/n";
+    //     }
 
-        txt = txt.replace(/^\s+|\s+$/g, "");
-        // console.log("txt", txt);
-        // console.log("txt123", txt.toString());
+    //     txt = txt.replace(/^\s+|\s+$/g, "");
+    //     // console.log("txt", txt);
+    //     // console.log("txt123", txt.toString());
 
-        qlEditor.textContent = txt.toString();
-        //remove space from start
-        // txt = txt.replace(/^\s+|\s+$/g, "");
+    //     qlEditor.textContent = txt.toString();
+    //     //remove space from start
+    //     // txt = txt.replace(/^\s+|\s+$/g, "");
 
-        // qlEditor.textContent = txt;
-        // qlEditor.textContent = prevText + data;
-        setText(txt);
+    //     // qlEditor.textContent = txt;
+    //     // qlEditor.textContent = prevText + data;
+    //     setText(txt);
+    //   }
+    // });
+    chrome.runtime.sendMessage(
+      { type: "getPrompt", promptData: PromptData },
+      (response) => {
+        if (response?.data?.length) {
+          const resText = response.data[0];
+          let prevText = qlEditor?.textContent;
+          const ptag = document.getElementById("failed69");
+          if (ptag.style.display === "block") ptag.style.display = "none";
+          if (prevText === text) prevText = "";
+          if (prevText === "Writing......") prevText = " ";
+          if (prevText?.includes("undefined")) {
+            prevText = prevText?.replace("undefined", " ");
+          }
+          if (resText?.includes("undefined")) {
+            prevText = resText?.replace("undefined", " ");
+          }
+          let txt = prevText + resText;
+          txt = txt.replace(/^\s+|\s+$/g, "");
+          qlEditor.textContent = txt;
+          setIsGenerating(false);
+          setText(txt);
+          const qlEditorValue = qlEditor?.textContent;
+          chrome.storage.sync.set({ responsetext: qlEditorValue });
+        } else {
+          setIsGenerating(false);
+          //remove Writing......
+          qlEditor.textContent = "";
+          const ptag = document.getElementById("failed69");
+          ptag.style.display = "block";
+        }
       }
-    });
+    );
   };
 
   useEffect(() => {
@@ -229,29 +261,61 @@ const Linkedin = () => {
     setIsGenerating(true);
     setIsDropdownOpen(false);
     qlEditor.textContent = "Writing......";
-    var port = chrome.runtime.connect({ name: "vakya" });
-    port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
-    port.onMessage.addListener((msg) => {
-      if (msg.message === "done") {
-        setIsGenerating(false);
-        return;
-      } else if (msg.message === "success") {
-        const { data } = msg;
-        let prevText = qlEditor?.textContent;
-        if (prevText === text) prevText = "";
-        if (prevText?.includes("undefined")) {
-          prevText = prevText?.replace("undefined", " ");
+    // var port = chrome.runtime.connect({ name: "vakya" });
+    // port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
+    // port.onMessage.addListener((msg) => {
+    //   if (msg.message === "done") {
+    //     setIsGenerating(false);
+    //     return;
+    //   } else if (msg.message === "success") {
+    //     const { data } = msg;
+    //     let prevText = qlEditor?.textContent;
+    //     if (prevText === text) prevText = "";
+    //     if (prevText?.includes("undefined")) {
+    //       prevText = prevText?.replace("undefined", " ");
+    //     }
+    //     if (data?.includes("undefined")) {
+    //       prevText = data?.replace("undefined", " ");
+    //     }
+    //     if (prevText === "Writing......") prevText = " ";
+    //     let txt = prevText + data;
+    //     txt = txt.replace("undefined", " ");
+    //     qlEditor.textContent = txt;
+    //     setText(txt);
+    //   }
+    // });
+    chrome.runtime.sendMessage(
+      { type: "getPrompt", promptData: PromptData },
+      (response) => {
+        if (response?.data?.length) {
+          const resText = response.data[0];
+          let prevText = qlEditor?.textContent;
+          const ptag = document.getElementById("failed69");
+          if (ptag.style.display === "block") ptag.style.display = "none";
+          if (prevText === text) prevText = "";
+          if (prevText === "Writing......") prevText = " ";
+          if (prevText?.includes("undefined")) {
+            prevText = prevText?.replace("undefined", " ");
+          }
+          if (resText?.includes("undefined")) {
+            prevText = resText?.replace("undefined", " ");
+          }
+          let txt = prevText + resText;
+          txt = txt.replace(/^\s+|\s+$/g, "");
+          qlEditor.textContent = txt;
+          setIsGenerating(false);
+          setText(txt);
+          const qlEditorValue = qlEditor?.textContent;
+          chrome.storage.sync.set({ responsetext: qlEditorValue });
+        } else {
+          setIsGenerating(false);
+          //remove Writing......
+          qlEditor.textContent = "";
+          const ptag = document.getElementById("failed69");
+          ptag.style.display = "block";
         }
-        if (data?.includes("undefined")) {
-          prevText = data?.replace("undefined", " ");
-        }
-        if (prevText === "Writing......") prevText = " ";
-        let txt = prevText + data;
-        txt = txt.replace("undefined", " ");
-        qlEditor.textContent = txt;
-        setText(txt);
       }
-    });
+    );
   };
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -292,29 +356,61 @@ const Linkedin = () => {
     qlEditor.textContent = "Writing......";
     setIsDropdownOpen(false);
     setIsDropdownOpen(false);
-    var port = chrome.runtime.connect({ name: "vakya" });
-    port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
-    port.onMessage.addListener((msg) => {
-      if (msg.message === "done") {
-        setIsGenerating(false);
-        return;
-      } else if (msg.message === "success") {
-        const { data } = msg;
-        let prevText = qlEditor?.textContent;
-        if (prevText === text) prevText = "";
-        if (prevText?.includes("undefined")) {
-          prevText = prevText?.replace("undefined", " ");
+    // var port = chrome.runtime.connect({ name: "vakya" });
+    // port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
+    // port.onMessage.addListener((msg) => {
+    //   if (msg.message === "done") {
+    //     setIsGenerating(false);
+    //     return;
+    //   } else if (msg.message === "success") {
+    //     const { data } = msg;
+    //     let prevText = qlEditor?.textContent;
+    //     if (prevText === text) prevText = "";
+    //     if (prevText?.includes("undefined")) {
+    //       prevText = prevText?.replace("undefined", " ");
+    //     }
+    //     if (data?.includes("undefined")) {
+    //       prevText = data?.replace("undefined", " ");
+    //     }
+    //     if (prevText === "Writing......") prevText = " ";
+    //     let txt = prevText + data;
+    //     txt = txt.replace("undefined", " ");
+    //     qlEditor.textContent = txt;
+    //     setText(txt);
+    //   }
+    // });
+    chrome.runtime.sendMessage(
+      { type: "getPrompt", promptData: PromptData },
+      (response) => {
+        if (response?.data?.length) {
+          const resText = response.data[0];
+          let prevText = qlEditor?.textContent;
+          const ptag = document.getElementById("failed69");
+          if (ptag.style.display === "block") ptag.style.display = "none";
+          if (prevText === text) prevText = "";
+          if (prevText === "Writing......") prevText = " ";
+          if (prevText?.includes("undefined")) {
+            prevText = prevText?.replace("undefined", " ");
+          }
+          if (resText?.includes("undefined")) {
+            prevText = resText?.replace("undefined", " ");
+          }
+          let txt = prevText + resText;
+          txt = txt.replace(/^\s+|\s+$/g, "");
+          qlEditor.textContent = txt;
+          setIsGenerating(false);
+          setText(txt);
+          const qlEditorValue = qlEditor?.textContent;
+          chrome.storage.sync.set({ responsetext: qlEditorValue });
+        } else {
+          setIsGenerating(false);
+          //remove Writing......
+          qlEditor.textContent = "";
+          const ptag = document.getElementById("failed69");
+          ptag.style.display = "block";
         }
-        if (data?.includes("undefined")) {
-          prevText = data?.replace("undefined", " ");
-        }
-        if (prevText === "Writing......") prevText = " ";
-        let txt = prevText + data;
-        txt = txt.replace("undefined", " ");
-        qlEditor.textContent = txt;
-        setText(txt);
       }
-    });
+    );
   };
 
   // console.log("profiles", profiles);
