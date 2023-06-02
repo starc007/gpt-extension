@@ -108,7 +108,7 @@ const Linkedin = () => {
         if (response?.data?.length) {
           const resText = response.data[0];
           let prevText = qlEditor?.textContent;
-          const ptag = document.getElementById("failed69");
+          const ptag = document.getElementById("failedLink69");
           if (ptag.style.display === "block") ptag.style.display = "none";
           if (prevText === text) prevText = "";
           if (prevText === "Writing......") prevText = " ";
@@ -129,7 +129,7 @@ const Linkedin = () => {
           setIsGenerating(false);
           //remove Writing......
           qlEditor.textContent = "";
-          const ptag = document.getElementById("failed69");
+          const ptag = document.getElementById("failedLink69");
           ptag.style.display = "block";
         }
       }
