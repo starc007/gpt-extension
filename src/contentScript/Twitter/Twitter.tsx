@@ -285,7 +285,10 @@ const Twitter = () => {
         />
         <div
           onClick={() => {
-            window.open("https://test.vakya.ai/dashboard/profile", "_blank");
+            window.open(
+              "https://test.vakya.ai/dashboard/profile?showModal=true",
+              "_blank"
+            );
             setIsDropdownOpen(false);
           }}
           className="linkedin__cmn2"
