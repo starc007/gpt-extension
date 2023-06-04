@@ -293,8 +293,8 @@ const contentScript = () => {
     if (hostName === "www.freelancer.com") {
       textArea = document.getElementById("descriptionTextArea");
     }
-    const fillResponse = generatedResponse.replace(/\s+/g, " ");
-    textArea.value = fillResponse;
+    // const fillResponse = generatedResponse.replace(/\s+/g, " ");
+    textArea.value = generatedResponse;
     textArea.dispatchEvent(new Event("input", { bubbles: true }));
 
     toast.success("Cover letter filled");

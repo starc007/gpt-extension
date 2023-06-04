@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../options/AuthContext";
-import { PLATFORMS } from "../config";
+import { MAX_WORDS, PLATFORMS, TONE_IDS } from "../config";
 import { findClosestInput, findCurrentTweetText, updateInput } from "./index";
 import { ProfileType } from "../../api";
 import { addLoading } from "../common";
@@ -56,6 +56,7 @@ const Twitter = () => {
     const isTweet = document.querySelector(
       '[data-testid="tweetButtonInline"]'
     ).textContent;
+    const regenerateBtn69 = document.getElementById("regenerateBtn69");
 
     // const twitterTextArea = document.querySelector(
     //   '[data-testid="tweetTextarea_0"]'
@@ -79,7 +80,7 @@ const Twitter = () => {
         description: isTweet === "Reply" ? currentTweetText : promptToSend,
       },
       toneId: "",
-      maxTokens: 100,
+      maxTokens: MAX_WORDS.TWITTER,
       numResponses: 1,
       customToneId: profileId,
       categoryInfoId: PLATFORMS.TWITTER,
@@ -122,15 +123,25 @@ const Twitter = () => {
       async (response) => {
         if (response?.data?.length) {
           const resText = response.data[0];
+          const txt = resText
+            .trim()
+            .replace(/^\"/g, "")
+            .replace(/\"$/g, "")
+            .trim();
           const ptag = document.getElementById("failed69");
           if (ptag.style.display === "block") ptag.style.display = "none";
-          await chrome.storage.sync.set({ twitterRes: resText });
-          updateInput(twitterTextArea, resText);
+          chrome.storage.sync.set({ twitterRes: txt });
+          chrome.storage.sync.set({ twitterProfileId: profileId });
+          //remove oldTwitterToneId
+          chrome.storage.sync.set({ oldTwitterToneId: null });
+          regenerateBtn69.style.display = "flex";
+          updateInput(twitterTextArea, txt);
           setIsGenerating(false);
         } else {
           setIsGenerating(false);
           const ptag = document.getElementById("failed69");
           ptag.style.display = "block";
+          regenerateBtn69.style.display = "none";
         }
       }
     );
@@ -144,6 +155,7 @@ const Twitter = () => {
   };
 
   const SubmitGenerateThirdPerson = async () => {
+    const regenerateBtn69 = document.getElementById("regenerateBtn69");
     const isTweet = document.querySelector(
       '[data-testid="tweetButtonInline"]'
     ).textContent;
@@ -169,8 +181,8 @@ const Twitter = () => {
       prompt: {
         description: isTweet === "Reply" ? currentTweetText : promptToSend,
       },
-      toneId: "",
-      maxTokens: 100,
+      toneId: TONE_IDS.WRITE_AS,
+      maxTokens: MAX_WORDS.TWITTER,
       numResponses: 1,
       categoryInfoId: PLATFORMS.TWITTER,
       additionalInfo: name,
@@ -191,15 +203,21 @@ const Twitter = () => {
           const resText = response.data[0];
           const ptag = document.getElementById("failed69");
           if (ptag.style.display === "block") ptag.style.display = "none";
-          await chrome.storage.sync.set({ twitterRes: resText });
+          chrome.storage.sync.set({ twitterRes: resText });
+          chrome.storage.sync.set({ twitterProfileId: null });
+          chrome.storage.sync.set({ oldTwitterToneId: TONE_IDS.WRITE_AS });
+          chrome.storage.sync.set({ twitterAditionalInfo: name });
+
           updateInput(twitterTextArea, resText);
           setIsGenerating(false);
           setName("");
+          regenerateBtn69.style.display = "flex";
         } else {
           setIsGenerating(false);
           setName("");
           const ptag = document.getElementById("failed69");
           ptag.style.display = "block";
+          regenerateBtn69.style.display = "none";
         }
       }
     );

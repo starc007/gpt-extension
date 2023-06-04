@@ -11,7 +11,7 @@ export const PLATFORMS = {
   FREELANCER: "2",
   TWITTER: "3",
   LINKEDIN: "4",
-  LINKEDIN_COMMENT:"5",
+  LINKEDIN_COMMENT: "5",
 };
 
 export const TONE_IDS = {
@@ -22,4 +22,10 @@ export const TONE_IDS = {
   DISLIKE: "13",
   SUPPORT: "14",
   JOKE: "15",
+  WRITE_AS: "200",
+};
+
+export const MAX_WORDS = {
+  LINKEDIN: 500,
+  TWITTER: 100,
 };

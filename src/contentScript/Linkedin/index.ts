@@ -1,5 +1,5 @@
 import { addLoading, removeLoading } from "../common";
-import { PLATFORMS, TONE_IDS } from "../config";
+import { MAX_WORDS, PLATFORMS, TONE_IDS } from "../config";
 
 let isLinkedIn = window.location.origin.includes("linkedin.com");
 
@@ -103,7 +103,7 @@ function sendServerRequest(toneId: string, text: string, linkElem: any) {
       description: text,
     },
     toneId: toneId,
-    maxTokens: 100,
+    maxTokens: MAX_WORDS.LINKEDIN,
     numResponses: 1,
     categoryInfoId: PLATFORMS.LINKEDIN,
     meta: {

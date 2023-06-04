@@ -1,5 +1,5 @@
 import { addLoading, removeLoading } from "../common";
-import { PLATFORMS, TONE_IDS } from "../config";
+import { MAX_WORDS, PLATFORMS, TONE_IDS } from "../config";
 
 function textNodesUnder(node) {
   var all = [];
@@ -47,6 +47,21 @@ export function findCurrentTweetText() {
 
   return text;
 }
+export const getTweetText = () => {
+  const replyToTweet = document.querySelector(
+    'article[data-testid="tweet"][tabindex="-1"]'
+  );
+  let replyTo: string | undefined = undefined;
+  if (!!replyToTweet) {
+    const textEl = replyToTweet.querySelector('div[data-testid="tweetText"]');
+    if (!textEl || !textEl.textContent) {
+      return;
+    }
+
+    replyTo = textEl.textContent;
+  }
+  return replyTo;
+};
 
 let isLinkedIn = window.location.origin.includes("linkedin.com");
 
@@ -93,7 +108,9 @@ async function sendServerRequest(
   toneId: string,
   prompt: string,
   txt: string,
-  ele: any
+  ele: any,
+  profileId?: string,
+  twitterAditionalInfo?: string
 ) {
   // const twitterTextArea = document.querySelector(
   //   '[data-testid="tweetTextarea_0"]'
@@ -125,21 +142,67 @@ async function sendServerRequest(
     '[data-testid="tweetButtonInline"]'
   ).textContent;
 
-  const PromptData = {
-    prompt: {
-      description: isTweet === "Reply" ? prompt : txt,
-    },
-    toneId: toneId,
-    maxTokens: 100,
-    numResponses: 1,
-    categoryInfoId: PLATFORMS.TWITTER,
-    meta: {
-      source:
-        isTweet === "Reply" ? PLATFORMS.LINKEDIN_COMMENT : PLATFORMS.TWITTER,
-      description:
-        isTweet === "Reply" ? "replied to a tweet" : "Created post on twitter",
-    },
-  };
+  let PromptData = {};
+  if (toneId !== null) {
+    PromptData = {
+      prompt: {
+        description: isTweet === "Reply" ? prompt : txt,
+      },
+      toneId: toneId,
+      maxTokens: MAX_WORDS.TWITTER,
+      numResponses: 1,
+      categoryInfoId: PLATFORMS.TWITTER,
+      meta: {
+        source:
+          isTweet === "Reply" ? PLATFORMS.LINKEDIN_COMMENT : PLATFORMS.TWITTER,
+        description:
+          isTweet === "Reply"
+            ? "replied to a tweet"
+            : "Created post on twitter",
+      },
+    };
+  }
+  if (toneId === null) {
+    PromptData = {
+      prompt: {
+        description: isTweet === "Reply" ? prompt : txt,
+      },
+      toneId: "",
+      maxTokens: MAX_WORDS.TWITTER,
+      numResponses: 1,
+      categoryInfoId: PLATFORMS.TWITTER,
+      customToneId: profileId,
+      meta: {
+        source:
+          isTweet === "Reply" ? PLATFORMS.LINKEDIN_COMMENT : PLATFORMS.TWITTER,
+        description:
+          isTweet === "Reply"
+            ? "replied to a tweet"
+            : "Created post on twitter",
+      },
+    };
+  }
+
+  if (profileId === null) {
+    PromptData = {
+      prompt: {
+        description: isTweet === "Reply" ? prompt : txt,
+      },
+      toneId: toneId,
+      maxTokens: MAX_WORDS.TWITTER,
+      numResponses: 1,
+      categoryInfoId: PLATFORMS.TWITTER,
+      additionalInfo: twitterAditionalInfo,
+      meta: {
+        source:
+          isTweet === "Reply" ? PLATFORMS.LINKEDIN_COMMENT : PLATFORMS.TWITTER,
+        description:
+          isTweet === "Reply"
+            ? "replied to a tweet"
+            : "Created post on twitter",
+      },
+    };
+  }
 
   addLoading(isLinkedIn);
   // const loremI =
@@ -147,15 +210,21 @@ async function sendServerRequest(
   // updateInput(twitterTextArea, loremI);
   chrome.runtime.sendMessage(
     { type: "getPrompt", promptData: PromptData },
-    async (response) => {
+    (response) => {
       if (response?.data?.length) {
-        const resText = response.data[0];
+        const resText = response.data[0] || "";
         const ptag = document.getElementById("failed69");
         if (ptag.style.display === "block") ptag.style.display = "none";
-        await chrome.storage.sync.set({ twitterRes: resText });
-        updateInput(ele, resText);
+        const txt = resText
+          .trim()
+          .replace(/^\"/g, "")
+          .replace(/\"$/g, "")
+          .trim();
+
+        updateInput(ele, txt);
         removeLoading(isLinkedIn);
         regenerateBtn69.style.display = "flex";
+        chrome.storage.sync.set({ twitterRes: txt });
       } else {
         removeLoading(isLinkedIn);
         const ptag = document.getElementById("failed69");
@@ -190,18 +259,25 @@ export const EmbedTwitterButtons = () => {
   );
 
   funnyBtn.addEventListener("click", async () => {
-    const text = findCurrentTweetText();
+    // const text = findCurrentTweetText();
+    const text = getTweetText();
     const toolbar = document.querySelector('[data-testid="toolBar"]');
     const twitterTextArea = findClosestInput(toolbar);
 
     let promptToSend = "";
     let text1 = twitterTextArea.innerText;
+    const txt = text1.trim().replace(/^\"/g, "").replace(/\"$/g, "").trim();
     const respText = await chrome.storage.sync.get("twitterRes");
     const oldPrompt = await chrome.storage.sync.get("oldTwittePrompt");
-    if (respText?.twitterRes && text1 === respText.twitterRes) {
+    const twitterResText = respText?.twitterRes
+      ?.trim()
+      .replace(/^\"/g, "")
+      .replace(/\"$/g, "")
+      .trim();
+    if (respText?.twitterRes && txt.toString() == twitterResText.toString()) {
       promptToSend = oldPrompt.oldTwittePrompt;
     } else {
-      promptToSend = text1;
+      promptToSend = txt;
     }
     sendServerRequest(TONE_IDS.FUNNY, text, promptToSend, twitterTextArea);
   });
@@ -215,15 +291,24 @@ export const EmbedTwitterButtons = () => {
   );
 
   interestingBtn.addEventListener("click", async () => {
-    const text = findCurrentTweetText();
+    // const text = findCurrentTweetText();
+    const text = getTweetText();
     const toolbar = document.querySelector('[data-testid="toolBar"]');
     const twitterTextArea = findClosestInput(toolbar);
 
     let promptToSend = "";
     let text1 = twitterTextArea.innerText;
+    const txt = text1.trim().replace(/^\"/g, "").replace(/\"$/g, "").trim();
     const respText = await chrome.storage.sync.get("twitterRes");
     const oldPrompt = await chrome.storage.sync.get("oldTwittePrompt");
-    if (respText?.twitterRes && text1 === respText.twitterRes) {
+
+    const twitterResText = respText?.twitterRes
+      ?.trim()
+      .replace(/^\"/g, "")
+      .replace(/\"$/g, "")
+      .trim();
+
+    if (respText?.twitterRes && txt.toString() == twitterResText.toString()) {
       promptToSend = oldPrompt.oldTwittePrompt;
     } else {
       promptToSend = text1;
@@ -245,15 +330,21 @@ export const EmbedTwitterButtons = () => {
   );
 
   qaBtn.addEventListener("click", async () => {
-    const text = findCurrentTweetText();
+    const text = getTweetText();
     const toolbar = document.querySelector('[data-testid="toolBar"]');
     const twitterTextArea = findClosestInput(toolbar);
 
     let promptToSend = "";
     let text1 = twitterTextArea.innerText;
+    const txt = text1.trim().replace(/^\"/g, "").replace(/\"$/g, "").trim();
     const respText = await chrome.storage.sync.get("twitterRes");
     const oldPrompt = await chrome.storage.sync.get("oldTwittePrompt");
-    if (respText?.twitterRes && text1 === respText.twitterRes) {
+    const twitterResText = respText?.twitterRes
+      ?.trim()
+      .replace(/^\"/g, "")
+      .replace(/\"$/g, "")
+      .trim();
+    if (respText?.twitterRes && txt.toString() === twitterResText.toString()) {
       promptToSend = oldPrompt.oldTwittePrompt;
     } else {
       promptToSend = text1;
@@ -273,16 +364,26 @@ export const EmbedTwitterButtons = () => {
   );
 
   regenerate.addEventListener("click", async () => {
-    const text = findCurrentTweetText();
+    const text = getTweetText();
     const toolbar = document.querySelector('[data-testid="toolBar"]');
     const twitterTextArea = findClosestInput(toolbar);
 
     let promptToSend = "";
     let text1 = twitterTextArea.innerText;
+    const txt = text1.trim().replace(/^\"/g, "").replace(/\"$/g, "").trim();
     const respText = await chrome.storage.sync.get("twitterRes");
     const oldPrompt = await chrome.storage.sync.get("oldTwittePrompt");
     const oldTonId = await chrome.storage.sync.get("oldTwitterToneId");
-    if (respText?.twitterRes && text1 === respText.twitterRes) {
+    const profileId = await chrome.storage.sync.get("twitterProfileId");
+    const twitterAditionalInfo = await chrome.storage.sync.get(
+      "twitterAditionalInfo"
+    );
+    const twitterResText = respText?.twitterRes
+      ?.trim()
+      .replace(/^\"/g, "")
+      .replace(/\"$/g, "")
+      .trim();
+    if (respText?.twitterRes && txt.toString() === twitterResText.toString()) {
       promptToSend = oldPrompt.oldTwittePrompt;
     } else {
       promptToSend = text1;
@@ -291,7 +392,9 @@ export const EmbedTwitterButtons = () => {
       oldTonId.oldTwitterToneId,
       text,
       promptToSend,
-      twitterTextArea
+      twitterTextArea,
+      profileId.twitterProfileId,
+      twitterAditionalInfo.twitterAditionalInfo
     );
   });
 
@@ -312,7 +415,7 @@ export const EmbedTwitterButtons = () => {
       '[data-testid="tweetTextarea_0"]'
     ) as any;
     let text = twitterTextArea.innerText;
-    const currentTweetText = findCurrentTweetText();
+    const currentTweetText = getTweetText();
 
     text = text.replace(/(\r\n|\n|\r)/gm, "");
     text = text.replace(/(\s\s)/gm, " ");

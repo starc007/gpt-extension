@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../options/AuthContext";
-import { PLATFORMS, TONE_IDS } from "../config";
+import { MAX_WORDS, PLATFORMS, TONE_IDS } from "../config";
 import { ProfileType } from "../../api";
 
 const Linkedin = () => {
@@ -248,7 +248,7 @@ const Linkedin = () => {
         description: txtPrompt,
       },
       toneId: "",
-      maxTokens: 100,
+      maxTokens: MAX_WORDS.LINKEDIN,
       numResponses: 1,
       customToneId: profileId,
       categoryInfoId: PLATFORMS.LINKEDIN,
@@ -341,8 +341,8 @@ const Linkedin = () => {
       prompt: {
         description: txtPrompt,
       },
-      toneId: "",
-      maxTokens: 100,
+      toneId: TONE_IDS.WRITE_AS,
+      maxTokens: MAX_WORDS.LINKEDIN,
       numResponses: 1,
       categoryInfoId: PLATFORMS.LINKEDIN,
       additionalInfo: name,
