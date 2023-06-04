@@ -15,13 +15,26 @@ const Linkedin = () => {
   const interestingBtn69 = document.getElementById("interestingBtn69");
   const qaBtn69 = document.getElementById("qaBtn69");
   const regenerateBtn69 = document.getElementById("regenerateBtn69");
+  const containerId = document.getElementById("containerVakya69");
   useEffect(() => {
     moreBtnId?.addEventListener("click", () => {
       setIsDropdownOpen(!isDropdownOpen);
     });
 
+    document.addEventListener("click", (e) => {
+      const isDropdown =
+        e.target === moreBtnId ||
+        e.target === containerId ||
+        containerId?.contains(e.target as Node);
+
+      if (!isDropdown) {
+        setIsDropdownOpen(false);
+      }
+    });
+
     return () => {
       moreBtnId?.removeEventListener("click", () => {});
+      document.removeEventListener("click", () => {});
     };
   }, [isDropdownOpen]);
   const qlEditor = document?.querySelector(".ql-editor");
