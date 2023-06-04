@@ -441,4 +441,5 @@ export const EmbedTwitterButtons = () => {
   toolbar.firstElementChild.setAttribute("style", "margin-top: 9px;");
   toolbar.lastElementChild.setAttribute("style", "margin-top: 9px;");
   toolbar.parentNode.prepend(buttons);
+  (toolbar as HTMLDivElement).click();
 };
