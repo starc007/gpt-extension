@@ -119,7 +119,6 @@ export function AuthProvider({ children }) {
             type: "getUser",
           })
           .then((res) => {
-            console.log("user", res);
             if (res.message === "success") {
               setUser(res.data);
               setIsLoggedin(true);

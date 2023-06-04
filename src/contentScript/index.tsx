@@ -117,7 +117,7 @@ function SocialInit() {
     }
     appDiv.setAttribute(
       "style",
-      "position: absolute; top: 31px; right: -103px; z-index: 999;"
+      "position: absolute; top: 31px; right: -103px; z-index: 9999;"
     );
   }
   if (isLinkedin) {

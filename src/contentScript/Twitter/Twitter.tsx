@@ -17,6 +17,7 @@ const Twitter = () => {
 
   useEffect(() => {
     const commentEl = document.querySelectorAll('[data-testid="cellInnerDiv"]');
+    const containerId = document.getElementById("containerVakya69");
     moreBtnId?.addEventListener("click", () => {
       setIsDropdownOpen(!isDropdownOpen);
       if (isDropdownOpen) {
@@ -31,8 +32,23 @@ const Twitter = () => {
         });
       }
     });
+    document.addEventListener("click", (e) => {
+      const isDropdown =
+        e.target === moreBtnId ||
+        e.target === containerId ||
+        containerId?.contains(e.target as Node);
+
+      if (!isDropdown) {
+        setIsDropdownOpen(false);
+        commentEl?.forEach((el: HTMLDivElement, i) => {
+          if (i == 0 || i == 1) return;
+          el?.style.setProperty("z-index", "-1", "important");
+        });
+      }
+    });
     return () => {
       moreBtnId?.removeEventListener("click", () => {});
+      document.removeEventListener("click", () => {});
     };
   }, [isDropdownOpen]);
 
@@ -41,16 +57,16 @@ const Twitter = () => {
     else removeLoading(false);
   }, [isGenerating]);
 
-  const twitterTextArea = document.querySelector(
-    '[data-testid="tweetTextarea_0"]'
-  ) as HTMLTextAreaElement;
-  useEffect(() => {
-    const url = window.location.href;
-    if (url.includes("compose/tweet")) {
-    } else {
-      twitterTextArea.click();
-    }
-  }, []);
+  // const twitterTextArea = document.querySelector(
+  //   '[data-testid="tweetTextarea_0"]'
+  // ) as HTMLTextAreaElement;
+  // useEffect(() => {
+  //   const url = window.location.href;
+  //   if (url.includes("compose/tweet")) {
+  //   } else {
+  //     // twitterTextArea.click();
+  //   }
+  // }, []);
 
   const handleSubmitProfile = async (profileId: string) => {
     const isTweet = document.querySelector(
