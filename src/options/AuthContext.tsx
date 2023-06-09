@@ -177,7 +177,11 @@ export function AuthProvider({ children }) {
         profileData: body,
         default:
           profiles.length === 0 ? true : data.default ? data.default : false,
-        categoryID: UPWORK_ID,
+        categoryID: window.location.host.includes("upwork")
+          ? UPWORK_ID
+          : window.location.host.includes("freelancer")
+          ? FREELANCER_ID
+          : null,
       })
       .then((res) => {
         if (res) {

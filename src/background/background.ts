@@ -202,23 +202,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 
-  if (
-    request.type === "saveProfile" &&
-    request.profileData
-    // request.categoryID
-  ) {
+  if (request.type === "saveProfile" && request.profileData) {
     var filldata = {};
 
     if (request?.default === true) {
       filldata = {
         toneDescription: request.profileData,
-        categoryID: UPWORK_ID,
+        categoryID: request.categoryID,
         default: 1,
       };
     } else {
       filldata = {
         toneDescription: request.profileData,
-        categoryID: UPWORK_ID,
+        categoryID: request.categoryID,
       };
     }
 
