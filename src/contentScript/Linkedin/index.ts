@@ -70,6 +70,15 @@ export const EmbedLinkedinButtons = () => {
       "color: red; font-size: 12px; font-weight: 600; margin-left: 8px; display: none;"
     );
 
+    const spinner = document.createElement("img");
+
+    spinner.src = chrome.runtime.getURL("spinner.gif");
+    spinner.setAttribute(
+      "style",
+      "width: 40px; height: 40px; margin-left: 1px; display: none;"
+    );
+    spinner.id = "spinner69";
+
     const buttons = document.createElement("div");
     buttons.id = "vakyaBtn69";
     buttons.setAttribute(
@@ -82,6 +91,7 @@ export const EmbedLinkedinButtons = () => {
     buttons.appendChild(qaBtn);
     buttons.appendChild(regenerate);
     buttons.appendChild(moreBtn);
+    buttons.appendChild(spinner);
     buttons.appendChild(p);
     toolbar[0].appendChild(buttons);
   }
@@ -137,6 +147,8 @@ function sendServerRequest(toneId: string, text: string, linkElem: any) {
   //     linkElem.textContent = txt;
   //   }
   // });
+  const spinerId = document.getElementById("spinner69");
+  spinerId.style.display = "block";
   chrome.runtime.sendMessage(
     { type: "getPrompt", promptData: PromptData },
     (response) => {
@@ -158,7 +170,9 @@ function sendServerRequest(toneId: string, text: string, linkElem: any) {
         txt = txt.replace(/^\s+|\s+$/g, "");
         linkElem.textContent = txt;
         removeLoading(isLinkedIn);
+        spinerId.style.display = "none";
       } else {
+        spinerId.style.display = "none";
         removeLoading(isLinkedIn);
         linkElem.textContent = "";
         const ptag = document.getElementById("failedLink69");
@@ -257,6 +271,14 @@ export const EmbedButtonsInCommentBox = () => {
     //   "style",
     //   "cursor:pointer; background: #F9F5FF; border: none; color: #7F56D9; font-size: 12px; font-weight: 600; border-radius:9999px; padding: 4px 10px; margin-left: 8px; display: flex; align-items: center;"
     // );
+    const spinner = document.createElement("img");
+
+    spinner.src = chrome.runtime.getURL("spinner.gif");
+    spinner.setAttribute(
+      "style",
+      "width: 40px; height: 40px; margin-left: 1px; display: none;"
+    );
+    spinner.id = "spinner69";
 
     const buttons = document.createElement("div");
     buttons.id = "vakyaCommentBtn69";
@@ -266,6 +288,7 @@ export const EmbedButtonsInCommentBox = () => {
     buttons.appendChild(funnyBtn);
     buttons.appendChild(questionBtn);
     buttons.appendChild(supportBtn);
+    buttons.appendChild(spinner);
     // buttons.appendChild(regenerate);
     // buttons.appendChild(moreBtn);
 

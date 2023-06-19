@@ -182,6 +182,8 @@ async function sendServerRequest(
     };
   }
   addLoading(isLinkedIn);
+  const spinerId = document.getElementById("spinner69");
+  spinerId.style.display = "block";
 
   chrome.runtime.sendMessage(
     { type: "getPrompt", promptData: PromptData },
@@ -200,8 +202,10 @@ async function sendServerRequest(
         removeLoading(isLinkedIn);
         regenerateBtn69.style.display = "flex";
         chrome.storage.sync.set({ twitterRes: resp });
+        spinerId.style.display = "none";
       } else {
         removeLoading(isLinkedIn);
+        spinerId.style.display = "none";
         const ptag = document.getElementById("failed69");
         ptag.style.display = "block";
         regenerateBtn69.style.display = "none";
@@ -377,7 +381,6 @@ export const EmbedTwitterButtons = () => {
     } else {
       promptToSend = txt;
     }
-    console.log("prompt re", promptToSend);
     sendServerRequest(
       oldTonId.oldTwitterToneId,
       text,
@@ -416,6 +419,15 @@ export const EmbedTwitterButtons = () => {
     chrome.storage.sync.set({ twitterPrompt: pmpt });
   });
 
+  const spinner = document.createElement("img");
+
+  spinner.src = chrome.runtime.getURL("spinner.gif");
+  spinner.setAttribute(
+    "style",
+    "width: 40px; height: 40px; margin-left: 1px; display: none;"
+  );
+  spinner.id = "spinner69";
+
   const p = document.createElement("p");
   p.innerHTML = "Failed";
   p.id = "failed69";
@@ -436,6 +448,7 @@ export const EmbedTwitterButtons = () => {
   buttons.appendChild(qaBtn);
   buttons.appendChild(regenerate);
   buttons.appendChild(moreBtn);
+  buttons.appendChild(spinner);
   buttons.appendChild(p);
 
   toolbar.firstElementChild.setAttribute("style", "margin-top: 9px;");

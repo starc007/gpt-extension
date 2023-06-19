@@ -16,6 +16,7 @@ const Linkedin = () => {
   const qaBtn69 = document.getElementById("qaBtn69");
   const regenerateBtn69 = document.getElementById("regenerateBtn69");
   const containerId = document.getElementById("containerVakya69");
+
   useEffect(() => {
     moreBtnId?.addEventListener("click", () => {
       setIsDropdownOpen(!isDropdownOpen);
@@ -115,6 +116,8 @@ const Linkedin = () => {
     //     setText(txt);
     //   }
     // });
+    const spinerId = document.getElementById("spinner69");
+    spinerId.style.display = "block";
     chrome.runtime.sendMessage(
       { type: "getPrompt", promptData: PromptData },
       (response) => {
@@ -138,8 +141,10 @@ const Linkedin = () => {
           setText(txt);
           const qlEditorValue = qlEditor?.textContent;
           chrome.storage.sync.set({ responsetext: qlEditorValue });
+          spinerId.style.display = "none";
         } else {
           setIsGenerating(false);
+          spinerId.style.display = "none";
           //remove Writing......
           qlEditor.textContent = "";
           const ptag = document.getElementById("failedLink69");
@@ -297,6 +302,8 @@ const Linkedin = () => {
     //     setText(txt);
     //   }
     // });
+    const spinerId = document.getElementById("spinner69");
+    spinerId.style.display = "block";
     chrome.runtime.sendMessage(
       { type: "getPrompt", promptData: PromptData },
       (response) => {
@@ -320,8 +327,10 @@ const Linkedin = () => {
           setText(txt);
           const qlEditorValue = qlEditor?.textContent;
           chrome.storage.sync.set({ responsetext: qlEditorValue });
+          spinerId.style.display = "none";
         } else {
           setIsGenerating(false);
+          spinerId.style.display = "none";
           //remove Writing......
           qlEditor.textContent = "";
           const ptag = document.getElementById("failedLink69");
@@ -392,6 +401,8 @@ const Linkedin = () => {
     //     setText(txt);
     //   }
     // });
+    const spinerId = document.getElementById("spinner69");
+    spinerId.style.display = "block";
     chrome.runtime.sendMessage(
       { type: "getPrompt", promptData: PromptData },
       (response) => {
@@ -415,8 +426,10 @@ const Linkedin = () => {
           setText(txt);
           const qlEditorValue = qlEditor?.textContent;
           chrome.storage.sync.set({ responsetext: qlEditorValue });
+          spinerId.style.display = "none";
         } else {
           setIsGenerating(false);
+          spinerId.style.display = "none";
           //remove Writing......
           qlEditor.textContent = "";
           const ptag = document.getElementById("failedLink69");

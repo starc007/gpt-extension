@@ -134,6 +134,8 @@ const Twitter = () => {
     //   }
     // });
     setIsDropdownOpen(false);
+    const spinerId = document.getElementById("spinner69");
+    spinerId.style.display = "block";
     chrome.runtime.sendMessage(
       { type: "getPrompt", promptData: PromptData },
       async (response) => {
@@ -153,8 +155,10 @@ const Twitter = () => {
           regenerateBtn69.style.display = "flex";
           updateInput(twitterTextArea, txt);
           setIsGenerating(false);
+          spinerId.style.display = "none";
         } else {
           setIsGenerating(false);
+          spinerId.style.display = "none";
           const ptag = document.getElementById("failed69");
           ptag.style.display = "block";
           regenerateBtn69.style.display = "none";
@@ -212,6 +216,8 @@ const Twitter = () => {
 
     setIsGenerating(true);
     setIsDropdownOpen(false);
+    const spinerId = document.getElementById("spinner69");
+    spinerId.style.display = "block";
     chrome.runtime.sendMessage(
       { type: "getPrompt", promptData: PromptData },
       async (response) => {
@@ -228,8 +234,10 @@ const Twitter = () => {
           setIsGenerating(false);
           setName("");
           regenerateBtn69.style.display = "flex";
+          spinerId.style.display = "none";
         } else {
           setIsGenerating(false);
+          spinerId.style.display = "none";
           setName("");
           const ptag = document.getElementById("failed69");
           ptag.style.display = "block";
@@ -328,7 +336,7 @@ const Twitter = () => {
             want vakya to generate results as.
           </p>
           <div
-            className="divLinkedin__moreBtn69"
+            className="divTwitter__moreBtn69"
             style={{
               border: "1px solid #E5E5E5",
               padding: "0.2rem 0",
