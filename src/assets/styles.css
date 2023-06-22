@@ -85,13 +85,25 @@ css-v7duua:hover {
 }
 /* w-full h-10 px-3 text-base placeholder-gray-600 border rounded-lg appearance-none focus:shadow-outline */
 .selectLinkedin69 {
-  @apply rounded-lg appearance-none focus:outline-none focus:ring-0 bg-transparent mt-2 dark:text-white text-black;
+  @apply mt-2 text-white;
   width: 100%;
   height: 35px;
   padding: 0 1rem;
   font-size: 12px;
   background-color: transparent !important;
-  border: none;
+  border: 1px solid #e5e5e5;
+  outline: none;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%23fff'><polygon points='0,0 100,0 50,50'/></svg>")
+    no-repeat right 0.5rem center/1rem;
+}
+
+.selectLinkedin69:hover {
+  border: 1px solid #e5e5e5;
+  outline: none;
+}
+
+.selectLinkedin69:focus {
+  border: 1px solid #e5e5e5;
   outline: none;
 }
 
@@ -121,6 +133,12 @@ css-v7duua:hover {
 }
 
 .divLinkedin__moreBtn69 > input:hover {
+  border: 0.6px solid #fff;
+  outline: none;
+  box-shadow: none;
+}
+
+.divLinkedin__moreBtn69 > input:focus {
   border: 0.6px solid #fff;
   outline: none;
   box-shadow: none;

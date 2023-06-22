@@ -72,7 +72,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     chrome.storage.sync.get("isLoggedin", async (res) => {
-      if (res.isLoggedin) {
+      if (res.isLoggedin && !isLoggedin) {
         setIsLoggedin(true);
         setLoading(true);
         chrome.runtime
@@ -114,42 +114,44 @@ export function AuthProvider({ children }) {
       } else {
         // setIsLoggedin(false);
         // chrome.storage.sync.set({ isLoggedin: false });
-        chrome.runtime
-          .sendMessage({
-            type: "getUser",
-          })
-          .then((res) => {
-            if (res.message === "success") {
-              setUser(res.data);
-              setIsLoggedin(true);
-              chrome.storage.sync.set({ isLoggedin: true });
-              chrome.runtime
-                .sendMessage({
-                  type: "fetchProfiles",
-                })
-                .then((res) => {
-                  setProfiles(
-                    res.profiles?.length > 0
-                      ? res.profiles.map((profile) => {
-                          if (
-                            profile?.toneDescription?.title &&
-                            profile?.toneDescription?.bio &&
-                            (profile?.toneDescription?.skills ||
-                              profile?.toneDescription?.tone)
-                          ) {
-                            return profile;
-                          }
-                        })
-                      : []
-                  );
-                  setLoading(false);
-                  chrome.storage.sync.set({ profiles: res.profiles });
-                });
-            } else {
-              setIsLoggedin(false);
-              chrome.storage.sync.set({ isLoggedin: false });
-            }
-          });
+        if (!isLoggedin) {
+          chrome.runtime
+            .sendMessage({
+              type: "getUser",
+            })
+            .then((res) => {
+              if (res.message === "success") {
+                setUser(res.data);
+                setIsLoggedin(true);
+                chrome.storage.sync.set({ isLoggedin: true });
+                chrome.runtime
+                  .sendMessage({
+                    type: "fetchProfiles",
+                  })
+                  .then((res) => {
+                    setProfiles(
+                      res.profiles?.length > 0
+                        ? res.profiles.map((profile) => {
+                            if (
+                              profile?.toneDescription?.title &&
+                              profile?.toneDescription?.bio &&
+                              (profile?.toneDescription?.skills ||
+                                profile?.toneDescription?.tone)
+                            ) {
+                              return profile;
+                            }
+                          })
+                        : []
+                    );
+                    setLoading(false);
+                    chrome.storage.sync.set({ profiles: res.profiles });
+                  });
+              } else {
+                setIsLoggedin(false);
+                chrome.storage.sync.set({ isLoggedin: false });
+              }
+            });
+        }
       }
     });
   }, [isLoggedin]);
