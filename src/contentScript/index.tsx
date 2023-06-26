@@ -134,10 +134,14 @@ function SocialInit() {
     );
   }
 
-  const btnVakya = document.getElementById("vakyaBtn69");
+  if (isEmbeded) return;
 
-  if (!btnVakya) return;
-  btnVakya?.appendChild(appDiv);
+  document.body.appendChild(appDiv);
+
+  // const btnVakya = document.getElementById("vakyaBtn69");
+
+  // if (!btnVakya) return;
+  // btnVakya?.appendChild(appDiv);
   const root = createRoot(appDiv);
 
   root.render(
