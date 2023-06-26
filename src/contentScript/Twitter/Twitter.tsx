@@ -15,10 +15,14 @@ const Twitter = () => {
   const [name, setName] = useState("");
   const moreBtnId = document.getElementById("moreBtn69");
 
+  console.log("profiles<<<<<,");
+
   useEffect(() => {
+    console.log("useefecet");
     const commentEl = document.querySelectorAll('[data-testid="cellInnerDiv"]');
     const containerId = document.getElementById("containerVakya69");
     moreBtnId?.addEventListener("click", () => {
+      console.log("indsidisdis click");
       setIsDropdownOpen(!isDropdownOpen);
       if (isDropdownOpen) {
         commentEl?.forEach((el: HTMLDivElement, i) => {
