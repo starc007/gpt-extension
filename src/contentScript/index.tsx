@@ -117,7 +117,7 @@ function SocialInit() {
     }
     appDiv.setAttribute(
       "style",
-      "position: absolute; top: 31px; right: -103px; z-index: 9999;"
+      "position: absolute; top: 31px; right: -103px; z-index: 9999; display: none;"
     );
   }
   if (isLinkedin) {
@@ -130,18 +130,18 @@ function SocialInit() {
     }
     appDiv.setAttribute(
       "style",
-      "position: absolute; top: 28px; right: 0px; z-index: 999;"
+      "position: absolute; top: 28px; right: 0px; z-index: 999; display: none;"
     );
   }
 
   if (isEmbeded) return;
 
-  document.body.appendChild(appDiv);
+  // document.body.appendChild(appDiv);
 
-  // const btnVakya = document.getElementById("vakyaBtn69");
+  const btnVakya = document.getElementById("vakyaBtn69");
 
-  // if (!btnVakya) return;
-  // btnVakya?.appendChild(appDiv);
+  if (!btnVakya) return;
+  btnVakya?.appendChild(appDiv);
   const root = createRoot(appDiv);
 
   root.render(

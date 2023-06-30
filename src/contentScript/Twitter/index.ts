@@ -397,6 +397,7 @@ export const EmbedTwitterButtons = () => {
   const img = document.createElement("img");
   img.src = chrome.runtime.getURL("downArrow.png");
   img.setAttribute("style", "width: 10px; height: 7px; margin-left: 4px;");
+  img.id = "moreBtnImg69";
   moreBtn.appendChild(img);
   moreBtn.setAttribute(
     "style",
@@ -417,6 +418,29 @@ export const EmbedTwitterButtons = () => {
     text = text?.includes("#") ? text?.replace(/#\S+/g, "") : text;
     const pmpt = text.length > 0 ? text : currentTweetText;
     chrome.storage.sync.set({ twitterPrompt: pmpt });
+
+    //dropdown
+    const commentEl = document.querySelectorAll('[data-testid="cellInnerDiv"]');
+    const containerId = document.getElementById("containerVakya69");
+
+    if (containerId) {
+      // console.log("inside");
+      //check  the display property of the container
+      const display = containerId.style.display;
+      if (display === "none") {
+        containerId.style.display = "block";
+        commentEl?.forEach((el: HTMLDivElement, i) => {
+          if (i == 0 || i == 1) return;
+          el?.style.setProperty("z-index", "-1", "important");
+        });
+      } else {
+        commentEl?.forEach((el: HTMLDivElement, i) => {
+          if (i == 0 || i == 1) return;
+          el?.style.setProperty("z-index", "1", "important");
+        });
+        containerId.style.display = "none";
+      }
+    }
   });
 
   const spinner = document.createElement("img");

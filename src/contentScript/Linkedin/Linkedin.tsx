@@ -18,9 +18,10 @@ const Linkedin = () => {
   const containerId = document.getElementById("containerVakya69");
 
   useEffect(() => {
-    moreBtnId?.addEventListener("click", () => {
-      setIsDropdownOpen(!isDropdownOpen);
-    });
+    // moreBtnId?.addEventListener("click", () => {
+    //   console.log("more btn clicked");
+    //   setIsDropdownOpen(!isDropdownOpen);
+    // });
 
     document.addEventListener("click", (e) => {
       const isDropdown =
@@ -29,15 +30,15 @@ const Linkedin = () => {
         containerId?.contains(e.target as Node);
 
       if (!isDropdown) {
-        setIsDropdownOpen(false);
+        // setIsDropdownOpen(false);
+        containerId.style.display = "none";
       }
     });
 
     return () => {
-      moreBtnId?.removeEventListener("click", () => {});
       document.removeEventListener("click", () => {});
     };
-  }, [isDropdownOpen]);
+  }, []);
   const qlEditor = document?.querySelector(".ql-editor");
 
   const handleSubmit = (prompt: string, toneId: string) => {
@@ -158,7 +159,8 @@ const Linkedin = () => {
     if (isLoggedin) {
       funnyBtn69.addEventListener("click", async () => {
         const qlEditorValue = qlEditor?.textContent;
-        setIsDropdownOpen(false);
+        // setIsDropdownOpen(false);
+        containerId.style.display = "none";
         if (qlEditorValue === "Writing......") return;
 
         const prompt = await chrome.storage.sync.get("responsetext");
@@ -173,7 +175,8 @@ const Linkedin = () => {
 
       interestingBtn69.addEventListener("click", async () => {
         const qlEditorValue = qlEditor?.textContent;
-        setIsDropdownOpen(false);
+        containerId.style.display = "none";
+        false;
         if (qlEditorValue === "Writing......") return;
         const prompt = await chrome.storage.sync.get("responsetext");
         if (prompt.responsetext === qlEditorValue) {
@@ -187,7 +190,8 @@ const Linkedin = () => {
 
       qaBtn69.addEventListener("click", async () => {
         const qlEditorValue = qlEditor?.textContent;
-        setIsDropdownOpen(false);
+        containerId.style.display = "none";
+        false;
         if (qlEditorValue === "Writing......") return;
         const prompt = await chrome.storage.sync.get("responsetext");
         if (prompt.responsetext === qlEditorValue) {
@@ -277,7 +281,8 @@ const Linkedin = () => {
     };
 
     setIsGenerating(true);
-    setIsDropdownOpen(false);
+    containerId.style.display = "none";
+    false;
     qlEditor.textContent = "Writing......";
     // var port = chrome.runtime.connect({ name: "vakya" });
     // port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
@@ -344,7 +349,8 @@ const Linkedin = () => {
     const val = e.target.value;
     if (val === "0") return;
     handleSubmitProfile(val);
-    setIsDropdownOpen(false);
+    containerId.style.display = "none";
+    false;
   };
 
   const SubmitGenerateThirdPerson = async () => {
@@ -376,8 +382,8 @@ const Linkedin = () => {
 
     setIsGenerating(true);
     qlEditor.textContent = "Writing......";
-    setIsDropdownOpen(false);
-    setIsDropdownOpen(false);
+    containerId.style.display = "none";
+    false;
     // var port = chrome.runtime.connect({ name: "vakya" });
     // port.postMessage({ type: "getStreamPrompt", promptData: PromptData });
     // port.onMessage.addListener((msg) => {
@@ -444,7 +450,7 @@ const Linkedin = () => {
     (profile: ProfileType) => profile?.categoryInfoId == PLATFORMS.LINKEDIN
   );
 
-  return isDropdownOpen ? (
+  return (
     <div className="div__parentLinkedin69">
       {linkedinProfiles?.length > 0 ? (
         <div className="cmn__cls69">
@@ -499,7 +505,8 @@ const Linkedin = () => {
               "https://test.vakya.ai/dashboard/profile?showModal=true",
               "_blank"
             );
-            setIsDropdownOpen(false);
+            containerId.style.display = "none";
+            false;
           }}
           className="linkedin__cmn2"
           style={{
@@ -567,7 +574,7 @@ const Linkedin = () => {
         </div>
       </div>
     </div>
-  ) : null;
+  );
 };
 
 export default Linkedin;

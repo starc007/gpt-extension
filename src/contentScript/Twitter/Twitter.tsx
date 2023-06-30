@@ -9,41 +9,49 @@ import { removeLoading } from "../common";
 // import "../../assets/tailwind.css";
 
 const Twitter = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { profiles } = useAuth();
   const [isGenerating, setIsGenerating] = useState(false);
   const [name, setName] = useState("");
   const moreBtnId = document.getElementById("moreBtn69");
-
-  console.log("profiles<<<<<,");
-
+  const containerId = document.getElementById("containerVakya69");
   useEffect(() => {
-    console.log("useefecet");
     const commentEl = document.querySelectorAll('[data-testid="cellInnerDiv"]');
-    const containerId = document.getElementById("containerVakya69");
-    moreBtnId?.addEventListener("click", () => {
-      console.log("indsidisdis click");
-      setIsDropdownOpen(!isDropdownOpen);
-      if (isDropdownOpen) {
-        commentEl?.forEach((el: HTMLDivElement, i) => {
-          if (i == 0 || i == 1) return;
-          el?.style.setProperty("z-index", "1", "important");
-        });
-      } else {
-        commentEl?.forEach((el: HTMLDivElement, i) => {
-          if (i == 0 || i == 1) return;
-          el?.style.setProperty("z-index", "-1", "important");
-        });
-      }
-    });
+    // const containerId = document.getElementById("containerVakya69");
+    const imgId = document.getElementById("moreBtnImg69");
+    // moreBtnId?.addEventListener("click", () => {
+    //   console.log("inside click");
+    //   containerId.style.display = "none";(!isDropdownOpen);
+    //   if (isDropdownOpen) {
+    //     commentEl?.forEach((el: HTMLDivElement, i) => {
+    //       if (i == 0 || i == 1) return;
+    //       el?.style.setProperty("z-index", "1", "important");
+    //     });
+    //   } else {
+    //     commentEl?.forEach((el: HTMLDivElement, i) => {
+    //       if (i == 0 || i == 1) return;
+    //       el?.style.setProperty("z-index", "-1", "important");
+    //     });
+    //   }
+    // });
     document.addEventListener("click", (e) => {
       const isDropdown =
         e.target === moreBtnId ||
         e.target === containerId ||
         containerId?.contains(e.target as Node);
 
+      // console.log("isDropdown", isDropdown);
+      // console.log("e.target", e.target);
+      // console.log("containerId", containerId);
+      // console.log("moreBtnId", moreBtnId);
+      // console.log(
+      //   "containerId?.contains(e.target as Node)",
+      //   containerId?.contains(e.target as Node)
+      // );
+      // console.log("e.target === moreBtnId", e.target === moreBtnId);
+      // console.log("e.target === containerId", e.target === containerId);
       if (!isDropdown) {
-        setIsDropdownOpen(false);
+        // console.log("outside click");
+        containerId.style.display = "none";
         commentEl?.forEach((el: HTMLDivElement, i) => {
           if (i == 0 || i == 1) return;
           el?.style.setProperty("z-index", "-1", "important");
@@ -54,7 +62,7 @@ const Twitter = () => {
       moreBtnId?.removeEventListener("click", () => {});
       document.removeEventListener("click", () => {});
     };
-  }, [isDropdownOpen]);
+  }, []);
 
   useEffect(() => {
     if (isGenerating) addLoading(false);
@@ -137,7 +145,8 @@ const Twitter = () => {
     //     setText(txt);
     //   }
     // });
-    setIsDropdownOpen(false);
+    containerId.style.display = "none";
+    false;
     const spinerId = document.getElementById("spinner69");
     spinerId.style.display = "block";
     chrome.runtime.sendMessage(
@@ -175,7 +184,8 @@ const Twitter = () => {
     const val = e.target.value;
     if (val === "0") return;
     handleSubmitProfile(val);
-    setIsDropdownOpen(false);
+    containerId.style.display = "none";
+    false;
   };
 
   const SubmitGenerateThirdPerson = async () => {
@@ -219,7 +229,8 @@ const Twitter = () => {
     };
 
     setIsGenerating(true);
-    setIsDropdownOpen(false);
+    containerId.style.display = "none";
+    false;
     const spinerId = document.getElementById("spinner69");
     spinerId.style.display = "block";
     chrome.runtime.sendMessage(
@@ -255,7 +266,7 @@ const Twitter = () => {
     (profile: ProfileType) => profile?.categoryInfoId == PLATFORMS.TWITTER
   );
 
-  return isDropdownOpen ? (
+  return (
     <div className="twitter__parent69">
       {twitterProfiles?.length > 0 ? (
         <div className="cmn__cls69">
@@ -301,7 +312,8 @@ const Twitter = () => {
               "https://test.vakya.ai/dashboard/profile?showModal=true",
               "_blank"
             );
-            setIsDropdownOpen(false);
+            containerId.style.display = "none";
+            false;
           }}
           className="linkedin__cmn2"
           style={{
@@ -363,7 +375,7 @@ const Twitter = () => {
         </div>
       </div>
     </div>
-  ) : null;
+  );
 };
 
 export default Twitter;

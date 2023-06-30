@@ -62,6 +62,20 @@ export const EmbedLinkedinButtons = () => {
       "style",
       "cursor:pointer; background: #F9F5FF; border: none; color: #7F56D9; font-size: 12px; font-weight: 600; border-radius:9999px; padding: 4px 10px; margin-left: 8px; display: flex; align-items: center;"
     );
+
+    moreBtn.addEventListener("click", () => {
+      const containerId = document.getElementById("containerVakya69");
+      if (containerId) {
+        // check the display property to see
+        const dis = containerId.style.display;
+        if (dis === "none") {
+          containerId.style.display = "block";
+        } else {
+          containerId.style.display = "none";
+        }
+      }
+    });
+
     const p = document.createElement("p");
     p.innerHTML = "Failed";
     p.id = "failedLink69";
