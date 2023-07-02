@@ -136,12 +136,12 @@ function SocialInit() {
 
   if (isEmbeded) return;
 
-  // document.body.appendChild(appDiv);
+  document.body.appendChild(appDiv);
 
-  const btnVakya = document.getElementById("vakyaBtn69");
+  // const btnVakya = document.getElementById("vakyaBtn69");
 
-  if (!btnVakya) return;
-  btnVakya?.appendChild(appDiv);
+  // if (!btnVakya) return;
+  // btnVakya?.appendChild(appDiv);
   const root = createRoot(appDiv);
 
   root.render(
