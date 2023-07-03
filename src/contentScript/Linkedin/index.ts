@@ -69,6 +69,14 @@ export const EmbedLinkedinButtons = () => {
         // check the display property to see
         const dis = containerId.style.display;
         if (dis === "none") {
+          const bodyRect = document?.body?.getBoundingClientRect();
+          const elemRect = moreBtn?.getBoundingClientRect();
+
+          const top = elemRect.top - bodyRect.top;
+          const left = elemRect.left - bodyRect.left + 65;
+
+          containerId.style.top = `${top}px`;
+          containerId.style.left = `${left}px`;
           containerId.style.display = "block";
         } else {
           containerId.style.display = "none";

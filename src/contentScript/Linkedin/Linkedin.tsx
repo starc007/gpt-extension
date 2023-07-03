@@ -24,9 +24,15 @@ const Linkedin = () => {
     // });
 
     document.addEventListener("click", (e) => {
+      // const isDropdown =
+      //   e.target === moreBtnId ||
+      //   e.target === containerId ||
+      //   containerId?.contains(e.target as Node);
+
+      const ele = e.target as HTMLDivElement;
       const isDropdown =
-        e.target === moreBtnId ||
-        e.target === containerId ||
+        ele.isEqualNode(moreBtnId) ||
+        ele.isEqualNode(containerId) ||
         containerId?.contains(e.target as Node);
 
       if (!isDropdown) {

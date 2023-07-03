@@ -115,22 +115,46 @@ function SocialInit() {
     } else {
       EmbedEmptyMessageBtn();
     }
+
+    const moreBtnId = document.getElementById("moreBtn69");
+    const bodyRect = document?.body?.getBoundingClientRect();
+    const elemRect = moreBtnId?.getBoundingClientRect();
+
+    const top = elemRect.top - bodyRect.top;
+    const left = elemRect.left - bodyRect.left + 65;
+
+    // appDiv.setAttribute(
+    //   "style",
+    //   "position: absolute; top: 31px; right: -103px; z-index: 9999; display: none;"
+    // );
+    // appDiv.setAttribute("style", "z-index: 999999; display: none;");
     appDiv.setAttribute(
       "style",
-      "position: absolute; top: 31px; right: -103px; z-index: 9999; display: none;"
+      `position: absolute; top: ${top}px; left: ${left}px; z-index: 9999999; display: none;`
     );
   }
   if (isLinkedin) {
-    if (isEmbeded) return;
+    // if (isEmbeded) return;
     if (loggedIn) {
       EmbedLinkedinButtons();
       EmbedButtonsInCommentBox();
     } else {
       EmbedEmptyMessageBtn();
     }
+
+    const moreBtnId = document?.getElementById("moreBtn69");
+    const bodyRect = document.body.getBoundingClientRect();
+    const elemRect = moreBtnId.getBoundingClientRect();
+
+    const top = elemRect.top - bodyRect.top + 25;
+    const left = elemRect.left - bodyRect.left + 60;
+    // appDiv.setAttribute(
+    //   "style",
+    //   "position: absolute; top: 28px; right: 0px; z-index: 999; display: none;"
+    // );
     appDiv.setAttribute(
       "style",
-      "position: absolute; top: 28px; right: 0px; z-index: 999; display: none;"
+      `position: absolute; top: ${top}px; left: ${left}px; z-index: 9999999; display: none;`
     );
   }
 

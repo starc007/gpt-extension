@@ -14,43 +14,39 @@ const Twitter = () => {
   const [name, setName] = useState("");
   const moreBtnId = document.getElementById("moreBtn69");
   const containerId = document.getElementById("containerVakya69");
+  // const bodyRect = document?.body?.getBoundingClientRect();
+  // const elemRect = moreBtnId?.getBoundingClientRect();
+
+  // const top = elemRect.top - bodyRect.top;
+  // const left = elemRect.left - bodyRect.left + 65;
+
+  // useEffect(() => {
+  //   const bodyRect = document?.body?.getBoundingClientRect();
+  //   const elemRect = moreBtnId?.getBoundingClientRect();
+  //   const tweetVakya = document?.getElementById("twitterVakya69");
+
+  //   if (!elemRect) return;
+  //   const top = elemRect.top - bodyRect.top;
+  //   const left = elemRect.left - bodyRect.left + 65;
+
+  //   tweetVakya?.setAttribute(
+  //     "style",
+  //     `position: absolute; top: ${top}px; left: ${left}px;`
+  //   );
+  // }, [
+  //   moreBtnId?.getBoundingClientRect(), // eslint-disable-line react-hooks/exhaustive-deps
+  // ]);
+
   useEffect(() => {
     const commentEl = document.querySelectorAll('[data-testid="cellInnerDiv"]');
-    // const containerId = document.getElementById("containerVakya69");
-    const imgId = document.getElementById("moreBtnImg69");
-    // moreBtnId?.addEventListener("click", () => {
-    //   console.log("inside click");
-    //   containerId.style.display = "none";(!isDropdownOpen);
-    //   if (isDropdownOpen) {
-    //     commentEl?.forEach((el: HTMLDivElement, i) => {
-    //       if (i == 0 || i == 1) return;
-    //       el?.style.setProperty("z-index", "1", "important");
-    //     });
-    //   } else {
-    //     commentEl?.forEach((el: HTMLDivElement, i) => {
-    //       if (i == 0 || i == 1) return;
-    //       el?.style.setProperty("z-index", "-1", "important");
-    //     });
-    //   }
-    // });
     document.addEventListener("click", (e) => {
+      const ele = e.target as HTMLDivElement;
       const isDropdown =
-        e.target === moreBtnId ||
-        e.target === containerId ||
+        ele.isEqualNode(moreBtnId) ||
+        ele.isEqualNode(containerId) ||
         containerId?.contains(e.target as Node);
 
-      // console.log("isDropdown", isDropdown);
-      // console.log("e.target", e.target);
-      // console.log("containerId", containerId);
-      // console.log("moreBtnId", moreBtnId);
-      // console.log(
-      //   "containerId?.contains(e.target as Node)",
-      //   containerId?.contains(e.target as Node)
-      // );
-      // console.log("e.target === moreBtnId", e.target === moreBtnId);
-      // console.log("e.target === containerId", e.target === containerId);
       if (!isDropdown) {
-        // console.log("outside click");
         containerId.style.display = "none";
         commentEl?.forEach((el: HTMLDivElement, i) => {
           if (i == 0 || i == 1) return;
@@ -59,7 +55,6 @@ const Twitter = () => {
       }
     });
     return () => {
-      moreBtnId?.removeEventListener("click", () => {});
       document.removeEventListener("click", () => {});
     };
   }, []);
@@ -267,7 +262,15 @@ const Twitter = () => {
   );
 
   return (
-    <div className="twitter__parent69">
+    <div
+      className="twitter__parent69"
+      id="twitterVakya69"
+      // style={{
+      //   position: "absolute",
+      //   top: `${top || 0}px`,
+      //   left: `${left || 0}px`,
+      // }}
+    >
       {twitterProfiles?.length > 0 ? (
         <div className="cmn__cls69">
           <img

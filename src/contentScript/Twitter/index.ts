@@ -422,23 +422,30 @@ export const EmbedTwitterButtons = () => {
     //dropdown
     const commentEl = document.querySelectorAll('[data-testid="cellInnerDiv"]');
     const containerId = document.getElementById("containerVakya69");
-
     if (containerId) {
-      // console.log("inside");
-      //check  the display property of the container
       const display = containerId.style.display;
       if (display === "none") {
+        const bodyRect = document?.body?.getBoundingClientRect();
+        const elemRect = moreBtn?.getBoundingClientRect();
+
+        const top = elemRect.top - bodyRect.top;
+        const left = elemRect.left - bodyRect.left + 65;
+
+        containerId.style.top = `${top}px`;
+        containerId.style.left = `${left}px`;
         containerId.style.display = "block";
-        commentEl?.forEach((el: HTMLDivElement, i) => {
-          if (i == 0 || i == 1) return;
-          el?.style.setProperty("z-index", "-1", "important");
-        });
+
+        // commentEl?.forEach((el: HTMLDivElement, i) => {
+        //   if (i == 0 || i == 1) return;
+        //   el?.style.setProperty("z-index", "-1", "important");
+        // });
       } else {
-        commentEl?.forEach((el: HTMLDivElement, i) => {
-          if (i == 0 || i == 1) return;
-          el?.style.setProperty("z-index", "1", "important");
-        });
+        console.log("inside else");
         containerId.style.display = "none";
+        // commentEl?.forEach((el: HTMLDivElement, i) => {
+        //   if (i == 0 || i == 1) return;
+        //   el?.style.setProperty("z-index", "1", "important");
+        // });
       }
     }
   });
