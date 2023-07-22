@@ -4,7 +4,7 @@ import { MAX_WORDS, PLATFORMS, TONE_IDS } from "../config";
 import { ProfileType } from "../../api";
 
 const Linkedin = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  // const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { isLoggedin, profiles } = useAuth();
   const [isGenerating, setIsGenerating] = useState(false);
   const [name, setName] = useState("");
@@ -30,8 +30,9 @@ const Linkedin = () => {
       //   containerId?.contains(e.target as Node);
 
       const ele = e.target as HTMLDivElement;
+      const btnId = document.getElementById("moreBtn69");
       const isDropdown =
-        ele.isEqualNode(moreBtnId) ||
+        ele.isEqualNode(btnId) ||
         ele.isEqualNode(containerId) ||
         containerId?.contains(e.target as Node);
 
@@ -162,7 +163,7 @@ const Linkedin = () => {
   };
 
   useEffect(() => {
-    if (isLoggedin) {
+    if (isLoggedin && funnyBtn69 && interestingBtn69 && qaBtn69) {
       funnyBtn69.addEventListener("click", async () => {
         const qlEditorValue = qlEditor?.textContent;
         // setIsDropdownOpen(false);
@@ -217,7 +218,7 @@ const Linkedin = () => {
         }
       });
 
-      regenerateBtn69.addEventListener("click", async () => {
+      regenerateBtn69?.addEventListener("click", async () => {
         const prompt = await chrome.storage.sync.get("linkedinPrompt");
         const toneId = await chrome.storage.sync.get("toneIdLinkedin");
         handleSubmit(prompt.linkedinPrompt, toneId.toneIdLinkedin);
@@ -466,7 +467,7 @@ const Linkedin = () => {
   );
 
   return (
-    <div className="div__parentLinkedin69">
+    <div className="div__parentLinkedin69" id="childParent69">
       {linkedinProfiles?.length > 0 ? (
         <div className="cmn__cls69">
           <img

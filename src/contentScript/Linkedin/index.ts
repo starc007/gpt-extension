@@ -135,7 +135,7 @@ function sendServerRequest(toneId: string, text: string, linkElem: any) {
       description: text,
     },
     toneId: toneId,
-    maxTokens: MAX_WORDS.LINKEDIN,
+    maxTokens: MAX_WORDS.LINKEDIN_COMMENT, ///linkedin comment word limit
     numResponses: 1,
     categoryInfoId: PLATFORMS.LINKEDIN,
     meta: {

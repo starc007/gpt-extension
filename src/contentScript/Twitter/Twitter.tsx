@@ -41,8 +41,10 @@ const Twitter = () => {
     const commentEl = document.querySelectorAll('[data-testid="cellInnerDiv"]');
     document.addEventListener("click", (e) => {
       const ele = e.target as HTMLDivElement;
+
+      const btnId = document.getElementById("moreBtn69");
       const isDropdown =
-        ele.isEqualNode(moreBtnId) ||
+        ele.isEqualNode(btnId) ||
         ele.isEqualNode(containerId) ||
         containerId?.contains(e.target as Node);
 

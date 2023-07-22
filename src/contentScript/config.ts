@@ -28,4 +28,5 @@ export const TONE_IDS = {
 export const MAX_WORDS = {
   LINKEDIN: 500,
   TWITTER: 100,
+  LINKEDIN_COMMENT: 200,
 };

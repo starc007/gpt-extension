@@ -120,8 +120,8 @@ function SocialInit() {
     const bodyRect = document?.body?.getBoundingClientRect();
     const elemRect = moreBtnId?.getBoundingClientRect();
 
-    const top = elemRect.top - bodyRect.top;
-    const left = elemRect.left - bodyRect.left + 65;
+    const top = elemRect?.top || 0 - bodyRect?.top || 0;
+    const left = elemRect?.left || 0 - bodyRect?.left || 0 + 65;
 
     // appDiv.setAttribute(
     //   "style",
@@ -173,6 +173,7 @@ function SocialInit() {
       {isTwitter ? <Twitter /> : isLinkedin ? <Linkedin /> : null}
     </AuthProvider>
   );
+  if (isEmbeded) return;
 }
 
 const interval = setInterval(() => {
