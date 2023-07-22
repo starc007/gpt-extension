@@ -70,10 +70,17 @@ export const EmbedEmptyMessageBtn = () => {
   // const isBox = document.getElementsByClassName(
   //   "share-box"
   // ) as HTMLCollectionOf<HTMLElement>;
+
   const url = chrome.runtime.getURL("icon.png");
   const NologinBtn = document.createElement("a");
-  NologinBtn.href = "https://test.vakya.ai";
-  NologinBtn.target = "_blank";
+
+  NologinBtn.href = `https://test.vakya.ai?type=${
+    isLinkedin ? "linkedin" : "twitter"
+  }`;
+  // NologinBtn.href = `https://127.0.0.1:3000/?type=${
+  //   isLinkedin ? "linkedin" : "twitter"
+  // }`;
+  // NologinBtn.target = "_blank";
   NologinBtn.innerHTML =
     "<span style='color: #7F56D9; font-weight: 700; margin-right:3px'>Use Vakya </span> for creating posts through AI";
   NologinBtn.id = "NologinBtn69";
@@ -94,11 +101,13 @@ export const EmbedEmptyMessageBtn = () => {
   );
   buttons.appendChild(NologinBtn);
 
-  if (isLinkedin) {
-    toolbar.appendChild(buttons);
-  } else {
-    toolbar.firstElementChild.setAttribute("style", "margin-top: 9px;");
-    toolbar.lastElementChild.setAttribute("style", "margin-top: 9px;");
-    toolbar.parentNode.prepend(buttons);
+  if (toolbar) {
+    if (isLinkedin) {
+      toolbar?.appendChild(buttons);
+    } else {
+      toolbar.firstElementChild.setAttribute("style", "margin-top: 9px;");
+      toolbar.lastElementChild.setAttribute("style", "margin-top: 9px;");
+      toolbar.parentNode.prepend(buttons);
+    }
   }
 };

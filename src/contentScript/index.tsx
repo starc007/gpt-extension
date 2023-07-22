@@ -143,11 +143,11 @@ function SocialInit() {
     }
 
     const moreBtnId = document?.getElementById("moreBtn69");
-    const bodyRect = document.body.getBoundingClientRect();
-    const elemRect = moreBtnId.getBoundingClientRect();
+    const bodyRect = document?.body?.getBoundingClientRect();
+    const elemRect = moreBtnId?.getBoundingClientRect();
 
-    const top = elemRect.top - bodyRect.top + 25;
-    const left = elemRect.left - bodyRect.left + 60;
+    const top = elemRect?.top || 0 - bodyRect?.top || 0 + 25;
+    const left = elemRect?.left || 0 - bodyRect?.left || 0 + 60;
     // appDiv.setAttribute(
     //   "style",
     //   "position: absolute; top: 28px; right: 0px; z-index: 999; display: none;"

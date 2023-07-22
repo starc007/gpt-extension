@@ -57,7 +57,7 @@ const Linkedin = () => {
         description: prompt,
       },
       toneId: toneId,
-      maxTokens: 100,
+      maxTokens: MAX_WORDS.LINKEDIN,
       numResponses: 1,
       categoryInfoId: PLATFORMS.LINKEDIN,
       meta: {
@@ -170,7 +170,11 @@ const Linkedin = () => {
         if (qlEditorValue === "Writing......") return;
 
         const prompt = await chrome.storage.sync.get("responsetext");
-
+        console.log("prompt1", prompt);
+        console.log(
+          "qlEditorValue funn",
+          qlEditorValue === prompt.responsetext
+        );
         if (prompt.responsetext === qlEditorValue) {
           const oldPrompt = await chrome.storage.sync.get("linkedinPrompt");
           handleSubmit(oldPrompt.linkedinPrompt, TONE_IDS.FUNNY);
@@ -185,6 +189,11 @@ const Linkedin = () => {
         false;
         if (qlEditorValue === "Writing......") return;
         const prompt = await chrome.storage.sync.get("responsetext");
+        console.log("prompt2", prompt);
+        console.log(
+          "qlEditorValue inter",
+          qlEditorValue === prompt.responsetext
+        );
         if (prompt.responsetext === qlEditorValue) {
           const oldPrompt = await chrome.storage.sync.get("linkedinPrompt");
           handleSubmit(oldPrompt.linkedinPrompt, TONE_IDS.INTERESTING);
@@ -245,7 +254,7 @@ const Linkedin = () => {
       moreBtnId?.style.setProperty("cursor", "pointer");
 
       const qlEditorValue = qlEditor?.textContent;
-      if (qlEditorValue.length === 0 || !qlEditorValue || text.length === 0) {
+      if (qlEditorValue?.length === 0 || !qlEditorValue || text?.length === 0) {
         regenerateBtn69?.style.setProperty("display", "none");
       } else {
         regenerateBtn69?.style.setProperty("display", "block");
